@@ -5,67 +5,203 @@
     <title>Cody tech</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* LIGHT THEME */
+        body.light { background:#f4f4f4; color:#111; }
+        body.light .navbar { background:rgba(255,255,255,0.95); }
+        body.light .navbar a { color:#111; }
+        body.light .navbar a:hover { color:#1100ff; }
+        body.light .section { color:#111; }
+        body.light .section.dark { background:#e0e0e0; color:#111; }
+        body.light .card { background:#d8d8d8; color:#111; }
+        body.light .section1 { color:#111; }
+        body.light footer { background:#ddd; color:#555; }
+        body.light .hero {
+            background: linear-gradient(to bottom, #ffffffcc, #f0f0f0ee),
+                        url("https://algorithmman.com/wp-content/uploads/2024/04/programming-languages.png") center/cover no-repeat;
+            color:#111;
+        }
+        body.light .hero h1 { color:#111; }
+        body.light .hero p { color:#333; }
+
+        /* LANG / THEME CONTROLS */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ctrl-btn {
+            padding: 5px 11px;
+            border-radius: 7px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: transparent;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .ctrl-btn:hover, .ctrl-btn.active {
+            background: #1100ff;
+            border-color: #1100ff;
+            color: #fff;
+        }
+        body.light .ctrl-btn { border-color:#bbb; color:#555; }
+        body.light .ctrl-btn:hover, body.light .ctrl-btn.active {
+            background:#1100ff; border-color:#1100ff; color:#fff;
+        }
+        .theme-btn {
+            padding: 5px 9px;
+            border-radius: 7px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: transparent;
+            cursor: pointer;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        body.light .theme-btn { border-color:#bbb; }
+    </style>
 </head>
 <body>
 
 <nav class="navbar">
     <div class="logo">
-    <img src="C:\Users\Студент\Downloads\imagezzzzs-removebg-preview.png" alt="Cody tech" class="logo-img">
-    CODY
-</div>
+        <img src="C:\Users\Студент\Downloads\imagezzzzs-removebg-preview.png" alt="Cody tech" class="logo-img">
+        CODY
+    </div>
     <ul>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#features">Foundation</a></li>
-        <li><a href="#learning">Learning</a></li>
+        <li><a href="login.html" data-i="nav_login">Login</a></li>
+        <li><a href="#about" data-i="nav_about">About</a></li>
+        <li><a href="#features" data-i="nav_foundation">Foundation</a></li>
+        <li><a href="#learning" data-i="nav_learning">Learning</a></li>
     </ul>
+    <div class="nav-controls">
+        <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+        <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    </div>
 </nav>
 
 <section class="hero">
-    <h1>Cody Tech</h1>
-    <p>Cody Tech is a modern technology platform focused on programming languages, software development, and building a strong developer ecosystem.</p>
+    <h1 data-i="hero_title">Cody Tech</h1>
+    <p data-i="hero_desc">Cody Tech is a modern technology platform focused on programming languages, software development, and building a strong developer ecosystem.</p>
     <div class="buttons">
-       <button type="button" class="btn neon" onclick="window.location.href='download.html'">
-    Start Learning
-</button>
-        
+        <button type="button" class="btn neon" onclick="window.location.href='download.html'" data-i="btn_start">
+            Start Learning
+        </button>
     </div>
-</section>
 </section>
 
 <section id="about" class="section">
-    <h2>About</h2>
-    <p>
-        Our mission is to create a space where developers grow — from fundamentals to advanced engineering.
-    </p>
+    <h2 data-i="about_title">About</h2>
+    <p data-i="about_desc">Our mission is to create a space where developers grow — from fundamentals to advanced engineering.</p>
 </section>
 
 <section id="features" class="section dark">
-    <h2>Foundation</h2>
+    <h2 data-i="found_title">Foundation</h2>
     <div class="grid">
         <div class="card">
-            <h3>Goal: Build the core infrastructure</h3>
-            <p>Launch of the Cody Tech platform. Structured programming fundamentals</p>
+            <h3 data-i="card1_title">Goal: Build the core infrastructure</h3>
+            <p data-i="card1_desc">Launch of the Cody Tech platform. Structured programming fundamentals</p>
         </div>
         <div class="card">
-            <h3>Core language tracks:</h3>
-            <p>JavaScript , HTML, CSS. Hands-on coding challenges. Documentation & real-world examples</p>
+            <h3 data-i="card2_title">Core language tracks:</h3>
+            <p data-i="card2_desc">JavaScript, HTML, CSS. Hands-on coding challenges. Documentation & real-world examples</p>
         </div>
         <div class="card">
-            <h3>Ecosystem</h3>
-            <p>Goal: Build a developer environment. Open-source Cody Tech projects. Collaboration tools. Version control integration. Community-driven development. Project showcase platform.</p>
+            <h3 data-i="card3_title">Ecosystem</h3>
+            <p data-i="card3_desc">Goal: Build a developer environment. Open-source projects. Collaboration tools. Version control. Community-driven development.</p>
         </div>
     </div>
 </section>
 
 <section id="download" class="section1">
-        <h2>Ready to Start?</h2>
-       <button type="button" class="btn neon" onclick="window.location.href='download.html'">
-    Start Learning
+    <h2 data-i="ready_title">Ready to Start?</h2>
+    <button type="button" class="btn neon" onclick="window.location.href='download.html'" data-i="btn_start">
+        Start Learning
+    </button>
 </section>
+
 <footer>
-    © 2026 Cody Tech. Web Development Courses (HTML, CSS, JavaScript).
+    © 2026 Cody Tech. <span data-i="footer_txt">Web Development Courses (HTML, CSS, JavaScript).</span>
 </footer>
+
+<script>
+// ---- TRANSLATIONS ----
+const T = {
+    en: {
+        nav_login:"Login", nav_about:"About", nav_foundation:"Foundation", nav_learning:"Learning",
+        hero_title:"Cody Tech",
+        hero_desc:"Cody Tech is a modern technology platform focused on programming languages, software development, and building a strong developer ecosystem.",
+        btn_start:"Start Learning",
+        about_title:"About",
+        about_desc:"Our mission is to create a space where developers grow — from fundamentals to advanced engineering.",
+        found_title:"Foundation",
+        card1_title:"Goal: Build the core infrastructure",
+        card1_desc:"Launch of the Cody Tech platform. Structured programming fundamentals",
+        card2_title:"Core language tracks:",
+        card2_desc:"JavaScript, HTML, CSS. Hands-on coding challenges. Documentation & real-world examples",
+        card3_title:"Ecosystem",
+        card3_desc:"Goal: Build a developer environment. Open-source projects. Collaboration tools. Version control. Community-driven development.",
+        ready_title:"Ready to Start?",
+        footer_txt:"Web Development Courses (HTML, CSS, JavaScript).",
+    },
+    ru: {
+        nav_login:"Войти", nav_about:"О нас", nav_foundation:"Основы", nav_learning:"Обучение",
+        hero_title:"Cody Tech",
+        hero_desc:"Cody Tech — современная технологическая платформа, ориентированная на языки программирования, разработку ПО и создание сильной экосистемы разработчиков.",
+        btn_start:"Начать обучение",
+        about_title:"О нас",
+        about_desc:"Наша миссия — создать пространство, где разработчики растут от основ до продвинутой инженерии.",
+        found_title:"Основы",
+        card1_title:"Цель: создать базовую инфраструктуру",
+        card1_desc:"Запуск платформы Cody Tech. Структурированные основы программирования",
+        card2_title:"Основные языковые треки:",
+        card2_desc:"JavaScript, HTML, CSS. Практические задачи. Документация и реальные примеры",
+        card3_title:"Экосистема",
+        card3_desc:"Цель: создать среду разработки. Open-source проекты. Инструменты совместной работы. Контроль версий. Разработка сообществом.",
+        ready_title:"Готовы начать?",
+        footer_txt:"Курсы веб-разработки (HTML, CSS, JavaScript).",
+    },
+    kz: {
+        nav_login:"Кіру", nav_about:"Біз туралы", nav_foundation:"Негіздер", nav_learning:"Оқыту",
+        hero_title:"Cody Tech",
+        hero_desc:"Cody Tech — бағдарламалау тілдеріне, бағдарламалық жасақтамаға және әзірлеушілер экожүйесін дамытуға бағытталған заманауи технологиялық платформа.",
+        btn_start:"Оқуды бастау",
+        about_title:"Біз туралы",
+        about_desc:"Біздің миссиямыз — әзірлеушілер негіздерден жоғары деңгейлі инженерияға дейін өсетін кеңістік жасау.",
+        found_title:"Негіздер",
+        card1_title:"Мақсат: негізгі инфрақұрылымды құру",
+        card1_desc:"Cody Tech платформасын іске қосу. Бағдарламалаудың құрылымдалған негіздері",
+        card2_title:"Негізгі тіл бағыттары:",
+        card2_desc:"JavaScript, HTML, CSS. Практикалық тапсырмалар. Құжаттама және нақты мысалдар",
+        card3_title:"Экожүйе",
+        card3_desc:"Мақсат: әзірлеу ортасын құру. Ашық бастапқы жобалар. Ынтымақтастық құралдары. Нұсқаларды бақылау.",
+        ready_title:"Бастауға дайынсыз ба?",
+        footer_txt:"Веб-әзірлеу курстары (HTML, CSS, JavaScript).",
+    }
+};
+
+let lang = 'en';
+
+function setLang(l, btn) {
+    lang = l;
+    document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const t = T[l];
+    document.querySelectorAll('[data-i]').forEach(el => {
+        const k = el.getAttribute('data-i');
+        if (t[k] !== undefined) el.textContent = t[k];
+    });
+}
+
+let dark = true;
+function toggleTheme() {
+    dark = !dark;
+    document.body.classList.toggle('light', !dark);
+    document.getElementById('themeBtn').textContent = dark ? '🌙' : '☀️';
+}
+</script>
 
 <script src="script.js"></script>
 </body>
