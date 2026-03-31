@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#e44d26;
+  --accent2:#f16529;
+  --bg:#080808;
+  --bg2:#111;
+  --bg3:#181818;
+  --border:#222;
+  --text:#e8e8e8;
+  --muted:#666;
+  --code-bg:#0d0d0d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+/* TOP BAR */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(8,8,8,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a2a;background:transparent;
+  color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}
+body.light .back-a{color:#888;}
+body.light .back-a:hover{color:#111;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .sidebar-link{color:#555;}
+body.light .sidebar-link:hover,.body.light .sidebar-link.active{color:var(--accent);}
+
+/* HERO STRIP */
+.hero-strip{
+  margin-top:56px;
+  padding:48px 32px 36px;
+  background:linear-gradient(135deg,#0e0302 0%,#1a0800 40%,#0d0000 100%);
+  border-bottom:1px solid #2a1008;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  font-size:64px;width:88px;height:88px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(228,77,38,.35);
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:28px;color:#fff;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}
+.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{
+  padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;
+  background:rgba(228,77,38,.15);border:1px solid rgba(228,77,38,.3);color:var(--accent2);
+}
+
+/* LAYOUT */
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;flex-shrink:0;
+  padding:28px 0 0 0;position:sticky;top:56px;
+  height:calc(100vh - 56px);overflow-y:auto;
+}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{
+  display:block;padding:6px 10px;border-radius:6px;
+  text-decoration:none;color:#666;font-size:13px;
+  transition:all .2s;margin-bottom:1px;
+}
+.sidebar-link:hover{background:#151515;color:#ccc;}
+.sidebar-link.active{background:rgba(228,77,38,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+body.light .sidebar-link:hover{background:#e0e0e0;}
+
+/* CONTENT */
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+
+.learn-section{margin-bottom:56px;}
+.learn-section h2{
+  font-size:22px;font-weight:800;margin-bottom:4px;
+  color:#fff;padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+/* CODE BLOCK */
+.code-block{
+  background:var(--code-bg);
+  border:1px solid #1e1e1e;
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:16px 0;
+  overflow-x:auto;
+  position:relative;
+}
+.code-block pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.75;color:#c9d1d9;
+}
+.code-label{
+  font-size:10px;color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:10px;display:block;
+}
+.kw{color:#ff7b72;}
+.at{color:#79c0ff;}
+.str{color:#a5d6ff;}
+.tag{color:#7ee787;}
+.com{color:#8b949e;font-style:italic;}
+.val{color:#ffa657;}
+
+/* CONCEPT CARDS */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:16px;
+}
+.concept-card h4{font-size:14px;color:var(--accent2);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* TAG TABLE */
+.tag-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px;}
+.tag-table th{
+  text-align:left;padding:10px 14px;
+  background:#0f0f0f;color:#555;
+  font-size:11px;text-transform:uppercase;letter-spacing:.7px;
+  border-bottom:1px solid var(--border);
+}
+body.light .tag-table th{background:#e8e8e8;color:#888;}
+.tag-table td{padding:10px 14px;border-bottom:1px solid #161616;color:#ccc;}
+body.light .tag-table td{color:#333;border-bottom:1px solid #ddd;}
+.tag-table tr:hover td{background:#0e0e0e;}
+body.light .tag-table tr:hover td{background:#e8e8e8;}
+.tag-name{color:var(--accent2);font-family:'JetBrains Mono',monospace;font-weight:600;}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+.step{display:flex;gap:16px;align-items:flex-start;}
+.step-num{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;
+}
+.step-body h4{font-size:14px;margin-bottom:3px;color:#ddd;}
+body.light .step-body h4{color:#222;}
+.step-body p{font-size:13px;color:var(--muted);}
+
+/* TIP BOX */
+.tip{
+  background:rgba(228,77,38,.06);border:1px solid rgba(228,77,38,.2);
+  border-radius:10px;padding:14px 18px;margin:16px 0;
+  font-size:13px;color:#c9a080;
+}
+.tip strong{color:var(--accent2);}
+
+/* PROGRESS */
+.progress-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.progress-bar-outer{flex:1;height:5px;background:#1e1e1e;border-radius:3px;}
+.progress-bar-inner{height:5px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+
+/* FOOTER */
+.page-footer{
+  border-top:1px solid var(--border);padding:24px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  max-width:1180px;margin:0 auto;font-size:12px;color:#444;
+}
+.next-btn{
+  padding:10px 20px;background:var(--accent);border:none;border-radius:8px;
+  color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;
+  text-decoration:none;transition:all .2s;
+}
+.next-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">&lt;/&gt;</div>
+  <div class="hero-info">
+    <h1 data-i="title">HTML — HyperText Markup Language</h1>
+    <p data-i="hero_desc">The skeleton of every webpage. Learn how to structure content using tags, elements and attributes — the foundation of all web development.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Beginner Friendly</span>
+      <span class="badge" data-i="b2">Web Foundation</span>
+      <span class="badge" data-i="b3">Markup Language</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is HTML?</a>
+      <a href="#structure" class="sidebar-link" data-i="nav_structure">Document Structure</a>
+      <a href="#tags" class="sidebar-link" data-i="nav_tags">Essential Tags</a>
+      <a href="#attributes" class="sidebar-link" data-i="nav_attrs">Attributes</a>
+      <a href="#forms" class="sidebar-link" data-i="nav_forms">Forms & Inputs</a>
+      <a href="#semantic" class="sidebar-link" data-i="nav_semantic">Semantic HTML</a>
+      <a href="#links" class="sidebar-link" data-i="nav_links">Links & Images</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">First Project</a>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- WHAT IS HTML -->
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is HTML?</h2>
+      <p class="intro" data-i="s1_intro">HTML stands for HyperText Markup Language. It defines the structure and meaning of web content using elements (tags). Every website you visit is built on HTML.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h4 data-i="c1_t">📄 Markup Language</h4>
+          <p data-i="c1_d">HTML uses tags to annotate text and define its role: heading, paragraph, link, image, etc.</p>
+        </div>
+        <div class="concept-card">
+          <h4 data-i="c2_t">🌐 Rendered by Browsers</h4>
+          <p data-i="c2_d">Browsers read HTML and display it visually. They hide the tags and show only the content.</p>
+        </div>
+        <div class="concept-card">
+          <h4 data-i="c3_t">🧱 Foundation Layer</h4>
+          <p data-i="c3_d">HTML is the base layer. CSS adds styling, JavaScript adds behaviour — but HTML is always first.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCUMENT STRUCTURE -->
+    <div class="learn-section" id="structure">
+      <h2 data-i="s2_title">Document Structure</h2>
+      <p class="intro" data-i="s2_intro">Every HTML file follows the same skeleton. Here is the minimal template that every page starts with:</p>
+      <div class="code-block">
+        <span class="code-label">boilerplate</span>
+        <pre><span class="com">&lt;!-- Every HTML page starts with this --&gt;</span>
+<span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="at">lang</span>=<span class="str">"en"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="at">charset</span>=<span class="str">"UTF-8"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="at">name</span>=<span class="str">"viewport"</span> <span class="at">content</span>=<span class="str">"width=device-width, initial-scale=1.0"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>My First Page<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Hello, World!<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>This is a paragraph.<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4 data-i="step1_t">&lt;!DOCTYPE html&gt;</h4><p data-i="step1_d">Tells the browser this is an HTML5 document. Always the very first line.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4 data-i="step2_t">&lt;head&gt;</h4><p data-i="step2_d">Contains invisible metadata: character set, page title, links to stylesheets and scripts.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4 data-i="step3_t">&lt;body&gt;</h4><p data-i="step3_d">Everything visible on the page goes here — text, images, buttons, menus.</p></div></div>
+      </div>
+    </div>
+
+    <!-- ESSENTIAL TAGS -->
+    <div class="learn-section" id="tags">
+      <h2 data-i="s3_title">Essential Tags</h2>
+      <p class="intro" data-i="s3_intro">These are the most commonly used HTML tags. Memorize these and you can build any basic page.</p>
+      <table class="tag-table">
+        <thead><tr><th data-i="th_tag">Tag</th><th data-i="th_use">Use</th><th data-i="th_ex">Example</th></tr></thead>
+        <tbody>
+          <tr><td class="tag-name">&lt;h1&gt;–&lt;h6&gt;</td><td data-i="td1">Headings, h1 = largest</td><td><code>&lt;h1&gt;Title&lt;/h1&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;p&gt;</td><td data-i="td2">Paragraph of text</td><td><code>&lt;p&gt;Hello&lt;/p&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;a&gt;</td><td data-i="td3">Hyperlink</td><td><code>&lt;a href="#"&gt;Click&lt;/a&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;img&gt;</td><td data-i="td4">Image</td><td><code>&lt;img src="cat.jpg"&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;ul&gt; / &lt;ol&gt;</td><td data-i="td5">Unordered / ordered list</td><td><code>&lt;ul&gt;&lt;li&gt;Item&lt;/li&gt;&lt;/ul&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;div&gt;</td><td data-i="td6">Generic container block</td><td><code>&lt;div class="box"&gt;…&lt;/div&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;span&gt;</td><td data-i="td7">Inline container</td><td><code>&lt;span&gt;word&lt;/span&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;br&gt;</td><td data-i="td8">Line break (self-closing)</td><td><code>Line 1&lt;br&gt;Line 2</code></td></tr>
+          <tr><td class="tag-name">&lt;strong&gt;</td><td data-i="td9">Bold / important text</td><td><code>&lt;strong&gt;Bold&lt;/strong&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;em&gt;</td><td data-i="td10">Italic / emphasis</td><td><code>&lt;em&gt;Italic&lt;/em&gt;</code></td></tr>
+          <tr><td class="tag-name">&lt;table&gt;</td><td data-i="td11">Data table</td><td><code>&lt;table&gt;&lt;tr&gt;&lt;td&gt;…</code></td></tr>
+          <tr><td class="tag-name">&lt;button&gt;</td><td data-i="td12">Clickable button</td><td><code>&lt;button&gt;OK&lt;/button&gt;</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ATTRIBUTES -->
+    <div class="learn-section" id="attributes">
+      <h2 data-i="s4_title">Attributes</h2>
+      <p class="intro" data-i="s4_intro">Attributes provide extra information about elements. They are written inside the opening tag as name="value" pairs.</p>
+      <div class="code-block">
+        <span class="code-label">attributes example</span>
+        <pre><span class="com">&lt;!-- href is an attribute of &lt;a&gt; --&gt;</span>
+<span class="tag">&lt;a</span> <span class="at">href</span>=<span class="str">"https://example.com"</span> <span class="at">target</span>=<span class="str">"_blank"</span><span class="tag">&gt;</span>Open Link<span class="tag">&lt;/a&gt;</span>
+
+<span class="com">&lt;!-- src and alt are attributes of &lt;img&gt; --&gt;</span>
+<span class="tag">&lt;img</span> <span class="at">src</span>=<span class="str">"photo.jpg"</span> <span class="at">alt</span>=<span class="str">"A photo"</span> <span class="at">width</span>=<span class="str">"300"</span><span class="tag">&gt;</span>
+
+<span class="com">&lt;!-- id and class are universal attributes --&gt;</span>
+<span class="tag">&lt;div</span> <span class="at">id</span>=<span class="str">"header"</span> <span class="at">class</span>=<span class="str">"container dark"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/div&gt;</span></pre>
+      </div>
+      <div class="tip"><strong>💡 Tip:</strong> <span data-i="tip_attr">The <code>id</code> must be unique on the page. The <code>class</code> can be reused on many elements and is the main way CSS targets elements.</span></div>
+    </div>
+
+    <!-- FORMS -->
+    <div class="learn-section" id="forms">
+      <h2 data-i="s5_title">Forms &amp; Inputs</h2>
+      <p class="intro" data-i="s5_intro">Forms collect user input — login data, search queries, signup info. Every interactive website uses them.</p>
+      <div class="code-block">
+        <span class="code-label">login form</span>
+        <pre><span class="tag">&lt;form</span> <span class="at">action</span>=<span class="str">"/login"</span> <span class="at">method</span>=<span class="str">"post"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;label</span> <span class="at">for</span>=<span class="str">"user"</span><span class="tag">&gt;</span>Username:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="at">type</span>=<span class="str">"text"</span> <span class="at">id</span>=<span class="str">"user"</span> <span class="at">name</span>=<span class="str">"username"</span> <span class="at">placeholder</span>=<span class="str">"Enter name"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;label</span> <span class="at">for</span>=<span class="str">"pass"</span><span class="tag">&gt;</span>Password:<span class="tag">&lt;/label&gt;</span>
+  <span class="tag">&lt;input</span> <span class="at">type</span>=<span class="str">"password"</span> <span class="at">id</span>=<span class="str">"pass"</span> <span class="at">name</span>=<span class="str">"password"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;button</span> <span class="at">type</span>=<span class="str">"submit"</span><span class="tag">&gt;</span>Login<span class="tag">&lt;/button&gt;</span>
+
+<span class="tag">&lt;/form&gt;</span></pre>
+      </div>
+      <div class="concept-grid">
+        <div class="concept-card"><h4>type="text"</h4><p data-i="ft1">Single-line text input.</p></div>
+        <div class="concept-card"><h4>type="password"</h4><p data-i="ft2">Hides typed characters.</p></div>
+        <div class="concept-card"><h4>type="email"</h4><p data-i="ft3">Validates email format automatically.</p></div>
+        <div class="concept-card"><h4>type="checkbox"</h4><p data-i="ft4">On/off toggle box.</p></div>
+        <div class="concept-card"><h4>type="radio"</h4><p data-i="ft5">Pick one from a group.</p></div>
+        <div class="concept-card"><h4>&lt;textarea&gt;</h4><p data-i="ft6">Multi-line text input.</p></div>
+      </div>
+    </div>
+
+    <!-- SEMANTIC HTML -->
+    <div class="learn-section" id="semantic">
+      <h2 data-i="s6_title">Semantic HTML</h2>
+      <p class="intro" data-i="s6_intro">Semantic tags describe the meaning of content, not just its appearance. They improve accessibility and SEO.</p>
+      <div class="code-block">
+        <span class="code-label">semantic layout</span>
+        <pre><span class="tag">&lt;header&gt;</span>
+  <span class="tag">&lt;nav&gt;</span>…<span class="tag">&lt;/nav&gt;</span>
+<span class="tag">&lt;/header&gt;</span>
+
+<span class="tag">&lt;main&gt;</span>
+  <span class="tag">&lt;article&gt;</span>
+    <span class="tag">&lt;h2&gt;</span>Blog Post Title<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;section&gt;</span>…<span class="tag">&lt;/section&gt;</span>
+  <span class="tag">&lt;/article&gt;</span>
+  <span class="tag">&lt;aside&gt;</span>Related Links<span class="tag">&lt;/aside&gt;</span>
+<span class="tag">&lt;/main&gt;</span>
+
+<span class="tag">&lt;footer&gt;</span>© 2026<span class="tag">&lt;/footer&gt;</span></pre>
+      </div>
+      <div class="tip"><strong>✅ Best Practice:</strong> <span data-i="tip_semantic">Use <code>&lt;div&gt;</code> for styling/layout purposes only. Use semantic tags like <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;article&gt;</code> when the content has a clear meaning.</span></div>
+    </div>
+
+    <!-- LINKS & IMAGES -->
+    <div class="learn-section" id="links">
+      <h2 data-i="s7_title">Links &amp; Images</h2>
+      <p class="intro" data-i="s7_intro">Hyperlinks connect pages together and images make the web visual. These two tags are used on every site.</p>
+      <div class="code-block">
+        <span class="code-label">links</span>
+        <pre><span class="com">&lt;!-- External link, opens in new tab --&gt;</span>
+<span class="tag">&lt;a</span> <span class="at">href</span>=<span class="str">"https://google.com"</span> <span class="at">target</span>=<span class="str">"_blank"</span><span class="tag">&gt;</span>Google<span class="tag">&lt;/a&gt;</span>
+
+<span class="com">&lt;!-- Internal link to another page --&gt;</span>
+<span class="tag">&lt;a</span> <span class="at">href</span>=<span class="str">"about.html"</span><span class="tag">&gt;</span>About Us<span class="tag">&lt;/a&gt;</span>
+
+<span class="com">&lt;!-- Anchor link on same page --&gt;</span>
+<span class="tag">&lt;a</span> <span class="at">href</span>=<span class="str">"#contact"</span><span class="tag">&gt;</span>Jump to Contact<span class="tag">&lt;/a&gt;</span></pre>
+      </div>
+      <div class="code-block">
+        <span class="code-label">images</span>
+        <pre><span class="com">&lt;!-- Always include alt text for accessibility --&gt;</span>
+<span class="tag">&lt;img</span> <span class="at">src</span>=<span class="str">"logo.png"</span> <span class="at">alt</span>=<span class="str">"Company Logo"</span> <span class="at">width</span>=<span class="str">"200"</span><span class="tag">&gt;</span>
+
+<span class="com">&lt;!-- Clickable image --&gt;</span>
+<span class="tag">&lt;a</span> <span class="at">href</span>=<span class="str">"gallery.html"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="at">src</span>=<span class="str">"thumb.jpg"</span> <span class="at">alt</span>=<span class="str">"View Gallery"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/a&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- FIRST PROJECT -->
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 First Project: Personal Card</h2>
+      <p class="intro" data-i="s8_intro">Put it all together! Build your first HTML page — a personal profile card using everything you've learned.</p>
+      <div class="code-block">
+        <span class="code-label">project: profile-card.html</span>
+        <pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="at">lang</span>=<span class="str">"en"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="at">charset</span>=<span class="str">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>My Profile<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;header&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>John Doe<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Junior Web Developer<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/header&gt;</span>
+
+  <span class="tag">&lt;main&gt;</span>
+    <span class="tag">&lt;img</span> <span class="at">src</span>=<span class="str">"avatar.jpg"</span> <span class="at">alt</span>=<span class="str">"Profile photo"</span> <span class="at">width</span>=<span class="str">"120"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;section&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>About Me<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span>I love building websites and learning new tech.<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/section&gt;</span>
+    <span class="tag">&lt;section&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>Skills<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;ul&gt;</span>
+        <span class="tag">&lt;li&gt;</span>HTML<span class="tag">&lt;/li&gt;</span>
+        <span class="tag">&lt;li&gt;</span>CSS<span class="tag">&lt;/li&gt;</span>
+        <span class="tag">&lt;li&gt;</span>JavaScript<span class="tag">&lt;/li&gt;</span>
+      <span class="tag">&lt;/ul&gt;</span>
+    <span class="tag">&lt;/section&gt;</span>
+  <span class="tag">&lt;/main&gt;</span>
+
+  <span class="tag">&lt;footer&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Contact: <span class="tag">&lt;a</span> <span class="at">href</span>=<span class="str">"mailto:john@example.com"</span><span class="tag">&gt;</span>john@example.com<span class="tag">&lt;/a&gt;&lt;/p&gt;</span>
+  <span class="tag">&lt;/footer&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add a &lt;form&gt; at the bottom that lets visitors send a message. Use inputs for name, email and a &lt;textarea&gt; for the message.</span></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — HTML Course</span>
+  <a href="learn-css.html" class="next-btn" data-i="next_btn">Next: CSS →</a>
+</div>
+
+<script>
+const T={
+  en:{
+    back:"Back to Courses", title:"HTML — HyperText Markup Language",
+    hero_desc:"The skeleton of every webpage. Learn how to structure content using tags, elements and attributes — the foundation of all web development.",
+    b1:"Beginner Friendly",b2:"Web Foundation",b3:"Markup Language",
+    nav_label:"Topics",nav_intro:"What is HTML?",nav_structure:"Document Structure",
+    nav_tags:"Essential Tags",nav_attrs:"Attributes",nav_forms:"Forms & Inputs",
+    nav_semantic:"Semantic HTML",nav_links:"Links & Images",nav_practice:"First Project",
+    s1_title:"What is HTML?",s1_intro:"HTML stands for HyperText Markup Language. It defines the structure and meaning of web content using elements (tags). Every website you visit is built on HTML.",
+    c1_t:"📄 Markup Language",c1_d:"HTML uses tags to annotate text and define its role: heading, paragraph, link, image, etc.",
+    c2_t:"🌐 Rendered by Browsers",c2_d:"Browsers read HTML and display it visually. They hide the tags and show only the content.",
+    c3_t:"🧱 Foundation Layer",c3_d:"HTML is the base layer. CSS adds styling, JavaScript adds behaviour — but HTML is always first.",
+    s2_title:"Document Structure",s2_intro:"Every HTML file follows the same skeleton. Here is the minimal template that every page starts with:",
+    step1_t:"<!DOCTYPE html>",step1_d:"Tells the browser this is an HTML5 document. Always the very first line.",
+    step2_t:"<head>",step2_d:"Contains invisible metadata: character set, page title, links to stylesheets and scripts.",
+    step3_t:"<body>",step3_d:"Everything visible on the page goes here — text, images, buttons, menus.",
+    s3_title:"Essential Tags",s3_intro:"These are the most commonly used HTML tags. Memorize these and you can build any basic page.",
+    th_tag:"Tag",th_use:"Purpose",th_ex:"Example",
+    td1:"Headings, h1=largest",td2:"Paragraph of text",td3:"Hyperlink",td4:"Image",td5:"Unordered/Ordered list",td6:"Generic block container",td7:"Inline container",td8:"Line break",td9:"Bold / important",td10:"Italic / emphasis",td11:"Data table",td12:"Clickable button",
+    s4_title:"Attributes",s4_intro:"Attributes provide extra information about elements. They are written inside the opening tag as name=\"value\" pairs.",
+    tip_attr:'The id must be unique on the page. The class can be reused on many elements and is the main way CSS targets elements.',
+    s5_title:"Forms & Inputs",s5_intro:"Forms collect user input — login data, search queries, signup info. Every interactive website uses them.",
+    ft1:"Single-line text input.",ft2:"Hides typed characters.",ft3:"Validates email format automatically.",ft4:"On/off toggle box.",ft5:"Pick one from a group.",ft6:"Multi-line text input.",
+    s6_title:"Semantic HTML",s6_intro:"Semantic tags describe the meaning of content, not just its appearance. They improve accessibility and SEO.",
+    tip_semantic:"Use <div> for styling/layout purposes only. Use semantic tags like <header>, <main>, <footer>, <article> when the content has a clear meaning.",
+    s7_title:"Links & Images",s7_intro:"Hyperlinks connect pages together and images make the web visual. These two tags are used on every site.",
+    s8_title:"🛠 First Project: Personal Card",s8_intro:"Put it all together! Build your first HTML page — a personal profile card using everything you've learned.",
+    challenge:"Add a <form> at the bottom that lets visitors send a message. Use inputs for name, email and a <textarea> for the message.",
+    footer_txt:"© 2026 Cody Tech — HTML Course",next_btn:"Next: CSS →",
+  },
+  ru:{
+    back:"Назад к курсам",title:"HTML — Язык разметки гипертекста",
+    hero_desc:"Скелет каждой веб-страницы. Изучите структурирование контента с помощью тегов, элементов и атрибутов — основа всей веб-разработки.",
+    b1:"Для начинающих",b2:"Основа веба",b3:"Язык разметки",
+    nav_label:"Темы",nav_intro:"Что такое HTML?",nav_structure:"Структура документа",
+    nav_tags:"Основные теги",nav_attrs:"Атрибуты",nav_forms:"Формы и поля",
+    nav_semantic:"Семантический HTML",nav_links:"Ссылки и изображения",nav_practice:"Первый проект",
+    s1_title:"Что такое HTML?",s1_intro:"HTML — HyperText Markup Language. Определяет структуру веб-контента с помощью элементов (тегов). Каждый сайт построен на HTML.",
+    c1_t:"📄 Язык разметки",c1_d:"HTML использует теги для обозначения роли текста: заголовок, абзац, ссылка, изображение.",
+    c2_t:"🌐 Рендеринг браузером",c2_d:"Браузеры читают HTML и отображают его визуально, скрывая теги.",
+    c3_t:"🧱 Базовый слой",c3_d:"HTML — это основа. CSS добавляет стили, JS — поведение. HTML всегда первый.",
+    s2_title:"Структура документа",s2_intro:"Каждый HTML-файл следует одному шаблону. Вот минимальная структура:",
+    step1_t:"<!DOCTYPE html>",step1_d:"Сообщает браузеру, что это HTML5. Всегда первая строка.",
+    step2_t:"<head>",step2_d:"Содержит метаданные: кодировку, заголовок страницы, ссылки на стили и скрипты.",
+    step3_t:"<body>",step3_d:"Всё видимое на странице — текст, изображения, кнопки, меню.",
+    s3_title:"Основные теги",s3_intro:"Самые часто используемые HTML-теги. Запомните их и сможете создать любую базовую страницу.",
+    th_tag:"Тег",th_use:"Назначение",th_ex:"Пример",
+    td1:"Заголовки, h1=самый крупный",td2:"Абзац текста",td3:"Гиперссылка",td4:"Изображение",td5:"Маркированный/нумерованный список",td6:"Блочный контейнер",td7:"Строчный контейнер",td8:"Перенос строки",td9:"Жирный/важный",td10:"Курсив/акцент",td11:"Таблица данных",td12:"Кнопка",
+    s4_title:"Атрибуты",s4_intro:"Атрибуты дают дополнительную информацию об элементах. Пишутся в открывающем теге как имя=\"значение\".",
+    tip_attr:"id должен быть уникальным на странице. class можно переиспользовать и именно через него CSS стилизует элементы.",
+    s5_title:"Формы и поля ввода",s5_intro:"Формы собирают данные от пользователя — логин, поиск, регистрация.",
+    ft1:"Однострочный текстовый ввод.",ft2:"Скрывает введённые символы.",ft3:"Автоматически проверяет формат email.",ft4:"Чекбокс вкл/выкл.",ft5:"Выбор одного из нескольких.",ft6:"Многострочный ввод.",
+    s6_title:"Семантический HTML",s6_intro:"Семантические теги описывают смысл контента. Улучшают доступность и SEO.",
+    tip_semantic:"Используйте <div> только для стилизации. Используйте <header>, <main>, <footer>, <article> когда у контента есть смысловое значение.",
+    s7_title:"Ссылки и изображения",s7_intro:"Гиперссылки связывают страницы, изображения делают веб визуальным.",
+    s8_title:"🛠 Первый проект: Карточка профиля",s8_intro:"Соберите всё вместе! Создайте свою первую HTML-страницу — карточку профиля.",
+    challenge:"Добавьте <form> внизу с полями имени, email и <textarea> для сообщения.",
+    footer_txt:"© 2026 Cody Tech — Курс HTML",next_btn:"Далее: CSS →",
+  },
+  kz:{
+    back:"Курстарға оралу",title:"HTML — Гипермәтіндік белгілеу тілі",
+    hero_desc:"Әр веб-беттің қаңқасы. Тегтер, элементтер және атрибуттар арқылы контентті құрылымдауды үйреніңіз.",
+    b1:"Жаңадайлар үшін",b2:"Веб негізі",b3:"Белгілеу тілі",
+    nav_label:"Тақырыптар",nav_intro:"HTML дегеніміз не?",nav_structure:"Құжат құрылымы",
+    nav_tags:"Негізгі тегтер",nav_attrs:"Атрибуттар",nav_forms:"Формалар",
+    nav_semantic:"Семантикалық HTML",nav_links:"Сілтемелер мен суреттер",nav_practice:"Алғашқы жоба",
+    s1_title:"HTML дегеніміз не?",s1_intro:"HTML — HyperText Markup Language. Тегтер арқылы веб-контенттің құрылымын анықтайды.",
+    c1_t:"📄 Белгілеу тілі",c1_d:"HTML тегтер арқылы мәтіннің рөлін анықтайды: тақырып, абзац, сілтеме, сурет.",
+    c2_t:"🌐 Браузер арқылы",c2_d:"Браузерлер HTML-ді оқып, визуалды көрсетеді.",
+    c3_t:"🧱 Базалық қабат",c3_d:"HTML — негіз. CSS — стиль, JS — мінез-құлық.",
+    s2_title:"Құжат құрылымы",s2_intro:"Әр HTML файлы бірдей шаблонды ұстанады.",
+    step1_t:"<!DOCTYPE html>",step1_d:"Браузерге HTML5 екенін хабарлайды. Әрқашан бірінші жолда.",
+    step2_t:"<head>",step2_d:"Метадеректерді қамтиды: кодировка, тақырып, стильдер мен скриптерге сілтемелер.",
+    step3_t:"<body>",step3_d:"Беттегі барлық көрінетін нәрсе — мәтін, суреттер, батырмалар.",
+    s3_title:"Негізгі тегтер",s3_intro:"Ең жиі қолданылатын HTML тегтері.",
+    th_tag:"Тег",th_use:"Мақсаты",th_ex:"Мысал",
+    td1:"Тақырыптар, h1=ең үлкен",td2:"Мәтін абзацы",td3:"Гиперсілтеме",td4:"Сурет",td5:"Тізім",td6:"Блок контейнер",td7:"Жол контейнер",td8:"Жол аудару",td9:"Жуан/маңызды",td10:"Курсив/екпін",td11:"Кесте",td12:"Батырма",
+    s4_title:"Атрибуттар",s4_intro:"Атрибуттар элементтер туралы қосымша ақпарат береді.",
+    tip_attr:"id бет бойынша бірегей болуы керек. class қайталануы мүмкін және CSS элементтерді солар арқылы таңдайды.",
+    s5_title:"Формалар мен енгізу өрістері",s5_intro:"Формалар пайдаланушы деректерін жинайды.",
+    ft1:"Бір жолды мәтін енгізу.",ft2:"Енгізілген таңбаларды жасырады.",ft3:"Email форматын автоматты тексереді.",ft4:"Чекбокс қосу/өшіру.",ft5:"Бірнешеден бірін таңдау.",ft6:"Көп жолды енгізу.",
+    s6_title:"Семантикалық HTML",s6_intro:"Семантикалық тегтер контенттің мағынасын сипаттайды. Қолжетімділік пен SEO-ны жақсартады.",
+    tip_semantic:"<div> тек стилизация үшін қолданыңыз. Мазмұны бар жерлерде <header>, <main>, <footer>, <article> қолданыңыз.",
+    s7_title:"Сілтемелер мен суреттер",s7_intro:"Гиперсілтемелер беттерді байланыстырады, суреттер визуалды болдырады.",
+    s8_title:"🛠 Алғашқы жоба: Профиль картасы",s8_intro:"Бәрін біріктіріңіз! Алғашқы HTML бетіңізді жасаңыз.",
+    challenge:"Төменге <form> қосыңыз — аты, email енгізу өрістері мен <textarea> хабарлама үшін.",
+    footer_txt:"© 2026 Cody Tech — HTML Курсы",next_btn:"Келесі: CSS →",
+  }
+};
+let lang='en';
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+}
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.body.classList.toggle('light',!dark);
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+// Sidebar active on scroll
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>{
+    l.classList.toggle('active',l.getAttribute('href')==='#'+cur);
+  });
+});
+</script>
+</body>
+</html>
