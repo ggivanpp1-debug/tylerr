@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swift — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#F05138;
+  --accent2:#FF6B4A;
+  --bg:#080808;
+  --bg2:#111;
+  --bg3:#181818;
+  --border:#222;
+  --text:#e8e8e8;
+  --muted:#666;
+  --code-bg:#0d0d0d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(8,8,8,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a2a;background:transparent;
+  color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}
+body.light .back-a{color:#888;}
+body.light .back-a:hover{color:#111;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .sidebar-link{color:#555;}
+body.light .sidebar-link:hover,.body.light .sidebar-link.active{color:var(--accent);}
+
+.hero-strip{
+  margin-top:56px;
+  padding:48px 32px 36px;
+  background:linear-gradient(135deg,#2a100a 0%,#4a1a10 40%,#1a0805 100%);
+  border-bottom:1px solid #8a3a2a;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  font-size:64px;width:88px;height:88px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(240,81,56,.35);
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:28px;color:#fff;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}
+.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{
+  padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;
+  background:rgba(240,81,56,.15);border:1px solid rgba(240,81,56,.3);color:var(--accent2);
+}
+
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#666;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#151515;color:#ccc;}
+.sidebar-link.active{background:rgba(240,81,56,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+.code-block{
+  background:var(--code-bg);
+  border:1px solid #1e1e1e;
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:16px 0;
+  overflow-x:auto;
+}
+.code-block pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.75;color:#c9d1d9;
+}
+.code-label{
+  font-size:10px;color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:10px;display:block;
+}
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.concept-card h4{font-size:14px;color:var(--accent2);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+.tip{background:rgba(240,81,56,.06);border:1px solid rgba(240,81,56,.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13px;color:#aaa;}
+.tip strong{color:var(--accent2);}
+.page-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1180px;margin:0 auto;font-size:12px;color:#444;}
+.nav-btns{display:flex;gap:10px;}
+.next-btn{padding:10px 20px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;}
+.next-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.prev-btn{padding:10px 20px;background:transparent;border:1px solid #2a2a2a;border-radius:8px;color:#888;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;text-decoration:none;transition:all .2s;}
+.prev-btn:hover{border-color:var(--accent);color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">Swift</div>
+  <div class="hero-info">
+    <h1 data-i="title">Swift — Apple's Modern Programming Language</h1>
+    <p data-i="hero_desc">Swift is a powerful and intuitive programming language for iOS, macOS, watchOS, and tvOS. Developed by Apple, it's designed to be safe, fast, and expressive, combining the best of modern language features.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">iOS & macOS</span>
+      <span class="badge" data-i="b2">Safe & Fast</span>
+      <span class="badge" data-i="b3">Modern Syntax</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is Swift?</a>
+      <a href="#syntax" class="sidebar-link" data-i="nav_syntax">Basic Syntax</a>
+      <a href="#optionals" class="sidebar-link" data-i="nav_optionals">Optionals</a>
+      <a href="#functions" class="sidebar-link" data-i="nav_fns">Functions & Closures</a>
+      <a href="#structs" class="sidebar-link" data-i="nav_structs">Structs & Classes</a>
+      <a href="#protocols" class="sidebar-link" data-i="nav_protocols">Protocols & Extensions</a>
+      <a href="#async" class="sidebar-link" data-i="nav_async">Async/Await</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Project: Todo App</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is Swift?</h2>
+      <p class="intro" data-i="s1_intro">Swift is Apple's modern programming language introduced in 2014. It's designed to be safe, fast, and expressive, with features like optionals, type inference, and powerful functional programming capabilities. Swift is used for developing iOS, macOS, watchOS, and tvOS applications.</p>
+      <div class="concept-grid">
+        <div class="concept-card"><h4 data-i="c1_t">📱 Apple Ecosystem</h4><p data-i="c1_d">Primary language for all Apple platforms: iOS, iPadOS, macOS, watchOS, tvOS.</p></div>
+        <div class="concept-card"><h4 data-i="c2_t">🛡️ Safety First</h4><p data-i="c2_d">Optionals eliminate null pointer crashes. Memory is managed automatically with ARC.</p></div>
+        <div class="concept-card"><h4 data-i="c3_t">⚡ Performance</h4><p data-i="c3_d">Compiles to native code using LLVM, with performance comparable to C++.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="syntax">
+      <h2 data-i="s2_title">Basic Syntax</h2>
+      <p class="intro" data-i="s2_intro">Swift syntax is clean and expressive. No semicolons needed, with strong type inference and modern features.</p>
+      <div class="code-block">
+        <span class="code-label">hello world</span>
+        <pre><span class="com">// This is a comment</span>
+<span class="kw">import</span> Foundation
+
+<span class="com">// Variables</span>
+<span class="kw">var</span> name = <span class="str">"Alice"</span>        <span class="com">// Mutable</span>
+<span class="kw">let</span> age = <span class="num">25</span>               <span class="com">// Immutable (constant)</span>
+<span class="kw">let</span> pi: Double = <span class="num">3.14159</span>   <span class="com">// Explicit type annotation</span>
+
+<span class="com">// String interpolation</span>
+print(<span class="str">"Hello, \(name)! You are \(age) years old."</span>)
+
+<span class="com">// Type inference</span>
+<span class="kw">let</span> isActive = <span class="kw">true</span>
+<span class="kw">let</span> numbers = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]  <span class="com">// Array of Int</span>
+<span class="kw">let</span> scores = [<span class="str">"Alice"</span>: <span class="num">95</span>, <span class="str">"Bob"</span>: <span class="num">87</span>]  <span class="com">// Dictionary</span>
+
+<span class="com">// If statements</span>
+<span class="kw">if</span> age >= <span class="num">18</span> {
+    print(<span class="str">"Adult"</span>)
+} <span class="kw">else</span> {
+    print(<span class="str">"Minor"</span>)
+}
+
+<span class="com">// Switch statement (powerful, no fallthrough by default)</span>
+<span class="kw">let</span> grade = <span class="num">85</span>
+<span class="kw">switch</span> grade {
+<span class="kw">case</span> <span class="num">90</span>...<span class="num">100</span>:
+    print(<span class="str">"A"</span>)
+<span class="kw">case</span> <span class="num">80</span>..<<span class="num">90</span>:
+    print(<span class="str">"B"</span>)
+<span class="kw">default</span>:
+    print(<span class="str">"C"</span>)
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="optionals">
+      <h2 data-i="s3_title">Optionals — Safe Handling of Missing Values</h2>
+      <p class="intro" data-i="s3_intro">Optionals represent values that might be nil (absent). Swift forces you to handle nil safely, eliminating null pointer crashes.</p>
+      <div class="code-block">
+        <span class="code-label">optionals</span>
+        <pre><span class="com">// Optional type (can be nil)</span>
+<span class="kw">var</span> middleName: String? = <span class="str">"Marie"</span>
+middleName = <span class="kw">nil</span>  <span class="com">// Allowed</span>
+
+<span class="com">// Unwrapping with if let (safe)</span>
+<span class="kw">if let</span> name = middleName {
+    print(<span class="str">"Middle name: \(name)"</span>)
+} <span class="kw">else</span> {
+    print(<span class="str">"No middle name"</span>)
+}
+
+<span class="com">// Guard let (early exit)</span>
+<span class="kw">func</span> <span class="at">greet</span>(_ name: String?) {
+    <span class="kw">guard let</span> name = name <span class="kw">else</span> {
+        print(<span class="str">"No name provided"</span>)
+        <span class="kw">return</span>
+    }
+    print(<span class="str">"Hello, \(name)!"</span>)
+}
+
+<span class="com">// Nil coalescing operator (provide default)</span>
+<span class="kw">let</span> displayName = middleName ?? <span class="str">"Anonymous"</span>
+
+<span class="com">// Optional chaining</span>
+<span class="kw">let</span> length = middleName?.count  <span class="com">// Returns nil if middleName is nil</span>
+
+<span class="com">// Force unwrap (use carefully!)</span>
+<span class="kw">let</span> forced = middleName!  <span class="com">// Crashes if nil</span>
+
+<span class="com">// Implicitly unwrapped optional (for IBOutlets)</span>
+<span class="kw">var</span> button: UIButton!  <span class="com">// Assume it will be set before use</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="functions">
+      <h2 data-i="s4_title">Functions & Closures</h2>
+      <p class="intro" data-i="s4_intro">Functions are first-class citizens. Closures are self-contained blocks of functionality that can be passed around.</p>
+      <div class="code-block">
+        <span class="code-label">functions and closures</span>
+        <pre><span class="com">// Basic function</span>
+<span class="kw">func</span> <span class="at">add</span>(_ a: Int, _ b: Int) -> Int {
+    <span class="kw">return</span> a + b
+}
+
+<span class="com">// Function with default parameters</span>
+<span class="kw">func</span> <span class="at">greet</span>(_ name: String, prefix: String = <span class="str">"Hello"</span>) -> String {
+    <span class="kw">return</span> <span class="str">"\(prefix), \(name)!"</span>
+}
+
+<span class="com">// Multiple return values (tuple)</span>
+<span class="kw">func</span> <span class="at">minMax</span>(_ numbers: [Int]) -> (min: Int, max: Int) {
+    <span class="kw">return</span> (numbers.min() ?? <span class="num">0</span>, numbers.max() ?? <span class="num">0</span>)
+}
+
+<span class="com">// Variadic parameters</span>
+<span class="kw">func</span> <span class="at">sum</span>(_ numbers: Int...) -> Int {
+    <span class="kw">return</span> numbers.reduce(<span class="num">0</span>, +)
+}
+
+<span class="com">// Closure expression</span>
+<span class="kw">let</span> square = { (x: Int) -> Int <span class="kw">in</span>
+    <span class="kw">return</span> x * x
+}
+print(square(<span class="num">5</span>))  <span class="com">// 25</span>
+
+<span class="com">// Trailing closure syntax</span>
+<span class="kw">let</span> numbers = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+<span class="kw">let</span> doubled = numbers.map { $0 * <span class="num">2</span> }  <span class="com">// [2,4,6,8,10]</span>
+
+<span class="com">// Function as parameter (higher-order function)</span>
+<span class="kw">func</span> <span class="at">repeatTask</span>(times: Int, task: () -> Void) {
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="num">1</span>...times {
+        task()
+    }
+}
+repeatTask(times: <span class="num">3</span>) { print(<span class="str">"Hello!"</span>) }</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="structs">
+      <h2 data-i="s5_title">Structs & Classes</h2>
+      <p class="intro" data-i="s5_intro">Swift uses structs (value types) and classes (reference types). Structs are preferred for most data modeling.</p>
+      <div class="code-block">
+        <span class="code-label">structs and classes</span>
+        <pre><span class="com">// Struct (value type) - preferred for most cases</span>
+<span class="kw">struct</span> <span class="at">Person</span> {
+    <span class="kw">let</span> name: String
+    <span class="kw">var</span> age: Int
+    
+    <span class="com">// Methods</span>
+    <span class="kw">func</span> <span class="at">greet</span>() -> String {
+        <span class="kw">return</span> <span class="str">"Hi, I'm \(name)"</span>
+    }
+    
+    <span class="com">// Mutating method (modifies self)</span>
+    <span class="kw">mutating func</span> <span class="at">haveBirthday</span>() {
+        age += <span class="num">1</span>
+    }
+}
+
+<span class="com">// Struct with computed properties</span>
+<span class="kw">struct</span> <span class="at">Rectangle</span> {
+    <span class="kw">var</span> width: Double
+    <span class="kw">var</span> height: Double
+    
+    <span class="kw">var</span> area: Double {
+        <span class="kw">return</span> width * height
+    }
+    
+    <span class="kw">var</span> perimeter: Double {
+        <span class="kw">return</span> <span class="num">2</span> * (width + height)
+    }
+}
+
+<span class="com">// Class (reference type) - for shared state</span>
+<span class="kw">class</span> <span class="at">BankAccount</span> {
+    <span class="kw">var</span> balance: Double
+    
+    <span class="kw">init</span>(initialBalance: Double) {
+        <span class="kw">self</span>.balance = initialBalance
+    }
+    
+    <span class="kw">func</span> <span class="at">deposit</span>(_ amount: Double) {
+        balance += amount
+    }
+    
+    <span class="kw">func</span> <span class="at">withdraw</span>(_ amount: Double) -> Bool {
+        <span class="kw">guard</span> balance >= amount <span class="kw">else</span> { <span class="kw">return</span> <span class="kw">false</span> }
+        balance -= amount
+        <span class="kw">return</span> <span class="kw">true</span>
+    }
+}
+
+<span class="com">// Usage</span>
+<span class="kw">var</span> person = Person(name: <span class="str">"Alice"</span>, age: <span class="num">25</span>)
+person.haveBirthday()
+print(person.age)  <span class="com">// 26</span>
+
+<span class="kw">let</span> rect = Rectangle(width: <span class="num">10</span>, height: <span class="num">20</span>)
+print(<span class="str">"Area: \(rect.area)"</span>)  <span class="com">// 200</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="protocols">
+      <h2 data-i="s6_title">Protocols & Extensions</h2>
+      <p class="intro" data-i="s6_intro">Protocols define blueprints of methods and properties. Extensions add functionality to existing types.</p>
+      <div class="code-block">
+        <span class="code-label">protocols and extensions</span>
+        <pre><span class="com">// Protocol definition</span>
+<span class="kw">protocol</span> <span class="at">Vehicle</span> {
+    <span class="kw">var</span> make: String { get }
+    <span class="kw">var</span> model: String { get }
+    <span class="kw">func</span> <span class="at">start</span>() -> String
+}
+
+<span class="com">// Protocol conformance</span>
+<span class="kw">struct</span> <span class="at">Car</span>: Vehicle {
+    <span class="kw">let</span> make: String
+    <span class="kw">let</span> model: String
+    
+    <span class="kw">func</span> <span class="at">start</span>() -> String {
+        <span class="kw">return</span> <span class="str">"\(make) \(model) engine starts!"</span>
+    }
+}
+
+<span class="com">// Protocol extension (default implementation)</span>
+<span class="kw">extension</span> Vehicle {
+    <span class="kw">func</span> <span class="at">info</span>() -> String {
+        <span class="kw">return</span> <span class="str">"This is a \(make) \(model)"</span>
+    }
+}
+
+<span class="com">// Extending existing types</span>
+<span class="kw">extension</span> Int {
+    <span class="kw">var</span> squared: Int { <span class="kw">return</span> <span class="kw">self</span> * <span class="kw">self</span> }
+    <span class="kw">func</span> <span class="at">repeated</span>() -> [Int] {
+        <span class="kw">return</span> Array(repeating: <span class="kw">self</span>, count: <span class="kw">self</span>)
+    }
+}
+print(<span class="num">5</span>.squared)  <span class="com">// 25</span>
+print(<span class="num">3</span>.repeated())  <span class="com">// [3,3,3]</span>
+
+<span class="com">// Protocol-oriented programming</span>
+<span class="kw">protocol</span> <span class="at">Identifiable</span> {
+    <span class="kw">var</span> id: String { get }
+}
+
+<span class="kw">extension</span> Identifiable {
+    <span class="kw">func</span> <span class="at">displayID</span>() {
+        print(<span class="str">"ID: \(id)"</span>)
+    }
+}
+
+<span class="kw">struct</span> <span class="at">User</span>: Identifiable {
+    <span class="kw">let</span> id: String
+    <span class="kw">let</span> name: String
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="async">
+      <h2 data-i="s7_title">Async/Await — Modern Concurrency</h2>
+      <p class="intro" data-i="s7_intro">Swift 5.5 introduced structured concurrency with async/await, making asynchronous code easier to write and understand.</p>
+      <div class="code-block">
+        <span class="code-label">async/await</span>
+        <pre><span class="kw">import</span> Foundation
+
+<span class="com">// Simulate network request</span>
+<span class="kw">func</span> <span class="at">fetchUserData</span>(userId: Int) <span class="kw">async throws</span> -> String {
+    <span class="kw">try await</span> Task.sleep(nanoseconds: <span class="num">1_000_000_000</span>)  <span class="com">// 1 second</span>
+    <span class="kw">return</span> <span class="str">"User \(userId) data"</span>
+}
+
+<span class="com">// Async function with multiple calls</span>
+<span class="kw">func</span> <span class="at">fetchAllUsers</span>() <span class="kw">async throws</span> -> [String] {
+    <span class="kw">async let</span> user1 = fetchUserData(userId: <span class="num">1</span>)
+    <span class="kw">async let</span> user2 = fetchUserData(userId: <span class="num">2</span>)
+    <span class="kw">async let</span> user3 = fetchUserData(userId: <span class="num">3</span>)
+    
+    <span class="kw">return try await</span> [user1, user2, user3]  <span class="com">// All run in parallel</span>
+}
+
+<span class="com">// Task for running async code</span>
+<span class="kw">func</span> <span class="at">runAsyncExample</span>() {
+    Task {
+        <span class="kw">do</span> {
+            <span class="kw">let</span> users = <span class="kw">try await</span> fetchAllUsers()
+            print(<span class="str">"Users: \(users)"</span>)
+        } <span class="kw">catch</span> {
+            print(<span class="str">"Error: \(error)"</span>)
+        }
+    }
+}
+
+<span class="com">// Main actor for UI updates (iOS/macOS)</span>
+<span class="kw">@MainActor</span>
+<span class="kw">class</span> <span class="at">ViewModel</span> {
+    <span class="kw">var</span> data: [String] = []
+    
+    <span class="kw">func</span> <span class="at">loadData</span>() <span class="kw">async</span> {
+        <span class="kw">do</span> {
+            <span class="kw">let</span> users = <span class="kw">try await</span> fetchAllUsers()
+            <span class="kw">self</span>.data = users  <span class="com">// Safe on main actor</span>
+        } <span class="kw">catch</span> {
+            print(<span class="str">"Error loading data"</span>)
+        }
+    }
+}
+
+<span class="com">// Async sequence (AsyncStream)</span>
+<span class="kw">func</span> <span class="at">counter</span>() -> AsyncStream&lt;Int&gt; {
+    <span class="kw">return</span> AsyncStream { continuation <span class="kw">in</span>
+        Task {
+            <span class="kw">for</span> i <span class="kw">in</span> <span class="num">1</span>...<span class="num">5</span> {
+                <span class="kw">try await</span> Task.sleep(nanoseconds: <span class="num">500_000_000</span>)
+                continuation.yield(i)
+            }
+            continuation.finish()
+        }
+    }
+}
+
+<span class="com">// Using async sequence</span>
+Task {
+    <span class="kw">for await</span> value <span class="kw">in</span> counter() {
+        print(<span class="str">"Received: \(value)"</span>)
+    }
+}</pre>
+      </div>
+      <div class="tip"><strong>💡 SwiftUI Integration:</strong> <span data-i="tip_async">Use `@State` and `@ObservableObject` with async/await. Combine framework provides publishers for reactive programming.</span></div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 Project: Todo App (SwiftUI)</h2>
+      <p class="intro" data-i="s8_intro">Build a simple todo list app using SwiftUI with persistent storage.</p>
+      <div class="code-block">
+        <span class="code-label">TodoApp.swift</span>
+        <pre><span class="kw">import</span> SwiftUI
+
+<span class="com">// Model</span>
+<span class="kw">struct</span> <span class="at">TodoItem</span>: Identifiable, Codable {
+    <span class="kw">let</span> id = UUID()
+    <span class="kw">var</span> title: String
+    <span class="kw">var</span> isCompleted: Bool = <span class="kw">false</span>
+    <span class="kw">let</span> createdAt = Date()
+}
+
+<span class="com">// ViewModel</span>
+<span class="kw">class</span> <span class="at">TodoViewModel</span>: ObservableObject {
+    <span class="kw">@Published var</span> todos: [TodoItem] = []
+    <span class="kw">@Published var</span> newTodoTitle: String = <span class="str">""</span>
+    
+    <span class="kw">private let</span> saveKey = <span class="str">"SavedTodos"</span>
+    
+    <span class="kw">init</span>() {
+        loadTodos()
+    }
+    
+    <span class="kw">func</span> <span class="at">addTodo</span>() {
+        <span class="kw">guard</span> !newTodoTitle.isEmpty <span class="kw">else</span> { <span class="kw">return</span> }
+        
+        <span class="kw">let</span> todo = TodoItem(title: newTodoTitle)
+        todos.append(todo)
+        newTodoTitle = <span class="str">""</span>
+        saveTodos()
+    }
+    
+    <span class="kw">func</span> <span class="at">toggleTodo</span>(_ todo: TodoItem) {
+        <span class="kw">if let</span> index = todos.firstIndex(where: { $0.id == todo.id }) {
+            todos[index].isCompleted.toggle()
+            saveTodos()
+        }
+    }
+    
+    <span class="kw">func</span> <span class="at">deleteTodo</span>(at offsets: IndexSet) {
+        todos.remove(atOffsets: offsets)
+        saveTodos()
+    }
+    
+    <span class="kw">func</span> <span class="at">saveTodos</span>() {
+        <span class="kw">if let</span> encoded = <span class="kw">try?</span> JSONEncoder().encode(todos) {
+            UserDefaults.standard.set(encoded, forKey: saveKey)
+        }
+    }
+    
+    <span class="kw">func</span> <span class="at">loadTodos</span>() {
+        <span class="kw">guard let</span> data = UserDefaults.standard.data(forKey: saveKey),
+              <span class="kw">let</span> savedTodos = <span class="kw">try?</span> JSONDecoder().decode([TodoItem].self, from: data)
+        <span class="kw">else</span> { <span class="kw">return</span> }
+        
+        todos = savedTodos
+    }
+    
+    <span class="kw">var</span> pendingCount: Int {
+        todos.filter { !$0.isCompleted }.count
+    }
+    
+    <span class="kw">var</span> completedCount: Int {
+        todos.filter { $0.isCompleted }.count
+    }
+}
+
+<span class="com">// Main View</span>
+<span class="kw">struct</span> <span class="at">ContentView</span>: View {
+    <span class="kw">@StateObject private var</span> viewModel = TodoViewModel()
+    
+    <span class="kw">var</span> body: some View {
+        NavigationView {
+            VStack {
+                <span class="com">// Input section</span>
+                HStack {
+                    TextField(<span class="str">"New todo..."</span>, text: $viewModel.newTodoTitle)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    
+                    Button(action: viewModel.addTodo) {
+                        Image(systemName: <span class="str">"plus.circle.fill"</span>)
+                            .font(.title)
+                    }
+                    .disabled(viewModel.newTodoTitle.isEmpty)
+                }
+                .padding()
+                
+                <span class="com">// Statistics</span>
+                HStack {
+                    Text(<span class="str">"Pending: \(viewModel.pendingCount)"</span>)
+                        .foregroundColor(.orange)
+                    Spacer()
+                    Text(<span class="str">"Completed: \(viewModel.completedCount)"</span>)
+                        .foregroundColor(.green)
+                }
+                .padding(.horizontal)
+                
+                <span class="com">// Todo list</span>
+                List {
+                    <span class="kw">ForEach</span>(viewModel.todos) { todo <span class="kw">in</span>
+                        HStack {
+                            Image(systemName: todo.isCompleted ? <span class="str">"checkmark.circle.fill"</span> : <span class="str">"circle"</span>)
+                                .foregroundColor(todo.isCompleted ? .green : .gray)
+                                .onTapGesture {
+                                    viewModel.toggleTodo(todo)
+                                }
+                            
+                            Text(todo.title)
+                                .strikethrough(todo.isCompleted)
+                                .foregroundColor(todo.isCompleted ? .gray : .primary)
+                            
+                            Spacer()
+                            
+                            Text(todo.createdAt, style: .date)
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .onDelete(perform: viewModel.deleteTodo)
+                }
+            }
+            .navigationTitle(<span class="str">"My Todo List"</span>)
+        }
+    }
+}
+
+<span class="com">// Preview</span>
+<span class="kw">struct</span> <span class="at">ContentView_Previews</span>: PreviewProvider {
+    <span class="kw">static var</span> previews: some View {
+        ContentView()
+    }
+}</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add due dates and priority levels. Implement notifications for overdue tasks. Add categories/tags for todos. Sync with iCloud using CloudKit.</span></div>
+    </div>
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — Swift Course</span>
+  <div class="nav-btns">
+    <a href="learn-kotlin.html" class="prev-btn" data-i="prev_btn">← Kotlin</a>
+    <a href="learn-rust.html" class="next-btn" data-i="next_btn">Next: Rust →</a>
+  </div>
+</div>
+
+<script>
+const T = {
+  en:{
+    back:"Back to Courses", title:"Swift — Apple's Modern Programming Language",
+    hero_desc:"Swift is a powerful and intuitive programming language for iOS, macOS, watchOS, and tvOS. Developed by Apple, it's designed to be safe, fast, and expressive.",
+    b1:"iOS & macOS", b2:"Safe & Fast", b3:"Modern Syntax",
+    nav_label:"Topics", nav_intro:"What is Swift?", nav_syntax:"Basic Syntax",
+    nav_optionals:"Optionals", nav_fns:"Functions & Closures", nav_structs:"Structs & Classes",
+    nav_protocols:"Protocols & Extensions", nav_async:"Async/Await", nav_practice:"Project: Todo App",
+    s1_title:"What is Swift?", s1_intro:"Swift is Apple's modern programming language introduced in 2014. It's designed to be safe, fast, and expressive, with features like optionals, type inference, and powerful functional programming capabilities.",
+    c1_t:"📱 Apple Ecosystem", c1_d:"Primary language for all Apple platforms: iOS, iPadOS, macOS, watchOS, tvOS.",
+    c2_t:"🛡️ Safety First", c2_d:"Optionals eliminate null pointer crashes. Memory is managed automatically with ARC.",
+    c3_t:"⚡ Performance", c3_d:"Compiles to native code using LLVM, with performance comparable to C++.",
+    s2_title:"Basic Syntax", s2_intro:"Swift syntax is clean and expressive. No semicolons needed, with strong type inference and modern features.",
+    s3_title:"Optionals — Safe Handling of Missing Values", s3_intro:"Optionals represent values that might be nil (absent). Swift forces you to handle nil safely, eliminating null pointer crashes.",
+    s4_title:"Functions & Closures", s4_intro:"Functions are first-class citizens. Closures are self-contained blocks of functionality that can be passed around.",
+    s5_title:"Structs & Classes", s5_intro:"Swift uses structs (value types) and classes (reference types). Structs are preferred for most data modeling.",
+    s6_title:"Protocols & Extensions", s6_intro:"Protocols define blueprints of methods and properties. Extensions add functionality to existing types.",
+    s7_title:"Async/Await — Modern Concurrency", s7_intro:"Swift 5.5 introduced structured concurrency with async/await, making asynchronous code easier to write and understand.",
+    tip_async:"Use `@State` and `@ObservableObject` with async/await. Combine framework provides publishers for reactive programming.",
+    s8_title:"🛠 Project: Todo App (SwiftUI)", s8_intro:"Build a simple todo list app using SwiftUI with persistent storage.",
+    challenge:"Add due dates and priority levels. Implement notifications for overdue tasks. Add categories/tags for todos. Sync with iCloud using CloudKit.",
+    footer_txt:"© 2026 Cody Tech — Swift Course", prev_btn:"← Kotlin", next_btn:"Next: Rust →",
+  },
+  ru:{
+    back:"Назад к курсам", title:"Swift — Современный язык программирования Apple",
+    hero_desc:"Swift — мощный и интуитивный язык программирования для iOS, macOS, watchOS и tvOS. Разработан Apple для безопасности, скорости и выразительности.",
+    b1:"iOS & macOS", b2:"Безопасный", b3:"Современный синтаксис",
+    nav_label:"Темы", nav_intro:"Что такое Swift?", nav_syntax:"Синтаксис",
+    nav_optionals:"Опционалы", nav_fns:"Функции и замыкания", nav_structs:"Структуры и классы",
+    nav_protocols:"Протоколы и расширения", nav_async:"Async/Await", nav_practice:"Проект: Список дел",
+    s1_title:"Что такое Swift?", s1_intro:"Swift — современный язык программирования Apple, представленный в 2014 году. Он безопасен, быстр и выразителен.",
+    c1_t:"📱 Экосистема Apple", c1_d:"Основной язык для всех платформ Apple: iOS, iPadOS, macOS, watchOS, tvOS.",
+    c2_t:"🛡️ Безопасность", c2_d:"Опционалы устраняют ошибки нулевых указателей. Память управляется автоматически с помощью ARC.",
+    c3_t:"⚡ Производительность", c3_d:"Компилируется в нативный код с помощью LLVM, производительность сравнима с C++.",
+    s2_title:"Базовый синтаксис", s2_intro:"Синтаксис Swift чистый и выразительный. Точки с запятой не нужны, сильный вывод типов.",
+    s3_title:"Опционалы", s3_intro:"Опционалы представляют значения, которые могут отсутствовать (nil). Swift заставляет безопасно обрабатывать nil.",
+    s4_title:"Функции и замыкания", s4_intro:"Функции — объекты первого класса. Замыкания — самодостаточные блоки функциональности.",
+    s5_title:"Структуры и классы", s5_intro:"Swift использует структуры (типы-значения) и классы (ссылочные типы). Структуры предпочтительнее.",
+    s6_title:"Протоколы и расширения", s6_intro:"Протоколы определяют требования к методам и свойствам. Расширения добавляют функциональность существующим типам.",
+    s7_title:"Async/Await", s7_intro:"Swift 5.5 представил структурированную конкурентность с async/await, упрощая асинхронный код.",
+    tip_async:"Используйте `@State` и `@ObservableObject` с async/await. Combine предоставляет издатели для реактивного программирования.",
+    s8_title:"🛠 Проект: Приложение Список дел", s8_intro:"Создайте простое приложение со списком дел на SwiftUI с постоянным хранилищем.",
+    challenge:"Добавьте сроки выполнения и приоритеты. Реализуйте уведомления для просроченных задач. Добавьте категории. Синхронизируйте с iCloud через CloudKit.",
+    footer_txt:"© 2026 Cody Tech — Курс Swift", prev_btn:"← Kotlin", next_btn:"Далее: Rust →",
+  },
+  kz:{
+    back:"Курстарға оралу", title:"Swift — Apple-дің заманауи бағдарламалау тілі",
+    hero_desc:"Swift — iOS, macOS, watchOS және tvOS үшін қуатты және интуитивті бағдарламалау тілі. Apple қауіпсіздік, жылдамдық және мәнерлілік үшін жасаған.",
+    b1:"iOS & macOS", b2:"Қауіпсіз әрі жылдам", b3:"Заманауи синтаксис",
+    nav_label:"Тақырыптар", nav_intro:"Swift дегеніміз не?", nav_syntax:"Синтаксис",
+    nav_optionals:"Опционалдар", nav_fns:"Функциялар мен жабындылар", nav_structs:"Құрылымдар мен класстар",
+    nav_protocols:"Протоколдар мен кеңейтулер", nav_async:"Async/Await", nav_practice:"Жоба: Істер тізімі",
+    s1_title:"Swift дегеніміз не?", s1_intro:"Swift — 2014 жылы Apple ұсынған заманауи бағдарламалау тілі. Қауіпсіз, жылдам және мәнерлі.",
+    c1_t:"📱 Apple экожүйесі", c1_d:"Барлық Apple платформалары үшін негізгі тіл: iOS, iPadOS, macOS, watchOS, tvOS.",
+    c2_t:"🛡️ Қауіпсіздік", c2_d:"Опционалдар null көрсеткіш қателерін жояды. Жад ARC арқылы автоматты басқарылады.",
+    c3_t:"⚡ Өнімділік", c3_d:"LLVM көмегімен нативті кодқа компиляцияланады, C++-мен салыстырмалы өнімділік.",
+    s2_title:"Негізгі синтаксис", s2_intro:"Swift синтаксисі таза және мәнерлі. Нүктелі үтір қажет емес, күшті типті болжау.",
+    s3_title:"Опционалдар", s3_intro:"Опционалдар жоқ болуы мүмкін мәндерді (nil) білдіреді. Swift nil-ді қауіпсіз өңдеуге мәжбүрлейді.",
+    s4_title:"Функциялар мен жабындылар", s4_intro:"Функциялар — бірінші деңгейлі объектілер. Жабындылар — беріліп жүретін функционалдық блоктар.",
+    s5_title:"Құрылымдар мен класстар", s5_intro:"Swift құрылымдарды (мән типтері) және класстарды (сілтеме типтері) пайдаланады. Құрылымдар жиі қолданылады.",
+    s6_title:"Протоколдар мен кеңейтулер", s6_intro:"Протоколдар әдістер мен қасиеттердің талаптарын анықтайды. Кеңейтулер бар типтерге мүмкіндік қосады.",
+    s7_title:"Async/Await", s7_intro:"Swift 5.5 асинхронды кодты жеңілдететін async/await құрылымдық конкуренттігін енгізді.",
+    tip_async:"async/await-пен `@State` және `@ObservableObject` пайдаланыңыз. Combine реактивті бағдарламалау үшін издательдер береді.",
+    s8_title:"🛠 Жоба: Істер тізімі қосымшасы", s8_intro:"SwiftUI көмегімен тұрақты сақтау орны бар қарапайым істер тізімі қосымшасын жасаңыз.",
+    challenge:"Мерзімдер мен басымдықтарды қосыңыз. Кешіктірілген тапсырмалар үшін хабарландырулар жасаңыз. Категориялар қосыңыз. CloudKit арқылы iCloud синхронизациясын қосыңыз.",
+    footer_txt:"© 2026 Cody Tech — Swift Курсы", prev_btn:"← Kotlin", next_btn:"Келесі: Rust →",
+  }
+};
+let lang='en';
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+}
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.body.classList.toggle('light',!dark);
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Cody Tech</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+
+        body {
+            background:#0a0a0a; color:#fff;
+            min-height:100vh; display:flex;
+            flex-direction:column; align-items:center; justify-content:center;
+            transition:background 0.3s, color 0.3s;
+        }
+        body.light { background:#f0f0f0; color:#111; }
+
+        /* TOP BAR */
+        .top-bar {
+            position:fixed; top:0; left:0; right:0;
+            display:flex; justify-content:space-between; align-items:center;
+            padding:11px 24px;
+            background:rgba(10,10,10,0.95);
+            border-bottom:1px solid #1e1e1e;
+            z-index:100;
+        }
+        body.light .top-bar { background:rgba(255,255,255,0.95); border-bottom:1px solid #ddd; }
+        .back-a { color:#aaa; text-decoration:none; font-size:13px; transition:color 0.2s; }
+        .back-a:hover { color:#fff; }
+        body.light .back-a { color:#555; }
+        body.light .back-a:hover { color:#111; }
+        .top-right { display:flex; gap:6px; align-items:center; }
+
+        .ctrl-btn {
+            padding:5px 11px; border-radius:7px;
+            border:1px solid #333; background:transparent;
+            color:#888; cursor:pointer; font-size:12px; transition:all 0.2s;
+        }
+        .ctrl-btn:hover, .ctrl-btn.active { background:#1100ff; border-color:#1100ff; color:#fff; }
+        body.light .ctrl-btn { border-color:#ccc; color:#555; }
+        body.light .ctrl-btn:hover, body.light .ctrl-btn.active { background:#1100ff; border-color:#1100ff; color:#fff; }
+
+        .theme-btn {
+            padding:5px 9px; border-radius:7px; font-size:15px;
+            border:1px solid #333; background:transparent; cursor:pointer;
+        }
+        body.light .theme-btn { border-color:#ccc; }
+
+        /* CARD */
+        .card {
+            background:rgba(255,255,255,0.04);
+            border:1px solid rgba(255,255,255,0.09);
+            border-radius:16px; padding:42px 36px;
+            width:360px; margin-top:60px;
+            box-shadow:0 0 30px rgba(17,0,255,0.1);
+        }
+        body.light .card { background:#fff; border-color:#e0e0e0; box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+
+        .brand { text-align:center; margin-bottom:26px; }
+        .brand-name {
+            font-size:26px; font-weight:bold; letter-spacing:3px;
+            background:linear-gradient(90deg,#1100ff,#00aaff);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+        }
+        .brand-sub { font-size:12px; color:#555; margin-top:3px; }
+
+        .tabs {
+            display:flex; background:rgba(255,255,255,0.05);
+            border-radius:9px; padding:3px; margin-bottom:24px;
+        }
+        body.light .tabs { background:#f0f0f0; }
+        .tab {
+            flex:1; padding:9px; text-align:center; border-radius:7px;
+            cursor:pointer; font-size:13px; color:#666; transition:all 0.2s; user-select:none;
+        }
+        .tab.active { background:#1100ff; color:#fff; box-shadow:0 0 12px #1100ff66; }
+
+        .form-group { margin-bottom:18px; }
+        .form-group label { display:block; font-size:11px; color:#666; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
+        body.light .form-group label { color:#888; }
+        .form-group input {
+            width:100%; padding:11px 14px;
+            background:rgba(255,255,255,0.05);
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:9px; color:#fff; font-size:14px; outline:none;
+            transition:border-color 0.25s, box-shadow 0.25s;
+        }
+        body.light .form-group input { background:#f8f8f8; border-color:#ddd; color:#111; }
+        .form-group input:focus { border-color:#1100ff; box-shadow:0 0 0 3px rgba(17,0,255,0.12); }
+        .form-group input::placeholder { color:#444; }
+        body.light .form-group input::placeholder { color:#bbb; }
+
+        .pass-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+        .pass-row label { margin-bottom:0; }
+        .forgot { font-size:11px; color:#1100ff; text-decoration:none; }
+
+        .sub-btn {
+            width:100%; padding:13px; margin-top:6px;
+            background:linear-gradient(90deg,#1100ff,#0077ff);
+            border:none; border-radius:9px; color:#fff;
+            font-size:14px; font-weight:bold; cursor:pointer;
+            box-shadow:0 0 18px rgba(17,0,255,0.25);
+            transition:transform 0.2s, box-shadow 0.2s;
+        }
+        .sub-btn:hover { transform:translateY(-2px); box-shadow:0 0 28px rgba(17,0,255,0.4); }
+        .sub-btn:active { transform:scale(0.98); }
+
+        .ghost-btn {
+            width:100%; padding:11px; margin-top:8px;
+            background:rgba(255,255,255,0.05);
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:9px; color:#ccc; font-size:13px; cursor:pointer; transition:background 0.2s;
+        }
+        body.light .ghost-btn { background:#f0f0f0; border-color:#ddd; color:#555; }
+
+        .msg { margin-top:14px; padding:10px; border-radius:8px; font-size:12px; text-align:center; display:none; }
+        .msg.ok { background:rgba(0,255,100,0.08); border:1px solid rgba(0,255,100,0.25); color:#00dd55; display:block; }
+        .msg.err { background:rgba(255,50,50,0.08); border:1px solid rgba(255,50,50,0.25); color:#ff5555; display:block; }
+
+        .divider { display:flex; align-items:center; gap:10px; margin:18px 0; color:#333; font-size:11px; }
+        .divider::before,.divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
+        body.light .divider::before, body.light .divider::after { background:#e0e0e0; }
+
+        #regForm { display:none; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-a">← <span data-i="back">Back</span></a>
+    <div class="top-right">
+        <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+        <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="brand">
+        <div class="brand-name">CODY</div>
+        <div class="brand-sub" data-i="brand_sub">Developer Learning Platform</div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" id="tabL" onclick="switchTab('login')" data-i="tab_login">Login</div>
+        <div class="tab" id="tabR" onclick="switchTab('register')" data-i="tab_reg">Register</div>
+    </div>
+
+    <div id="loginForm">
+        <div class="form-group">
+            <label data-i="lbl_user">Username</label>
+            <input type="text" id="lUser" placeholder="Enter your username" data-i-ph="ph_user">
+        </div>
+        <div class="form-group">
+            <div class="pass-row">
+                <label data-i="lbl_pass">Password</label>
+                <a href="#" class="forgot" data-i="forgot">Forgot?</a>
+            </div>
+            <input type="password" id="lPass" placeholder="Enter your password" data-i-ph="ph_pass">
+        </div>
+        <button class="sub-btn" onclick="doLogin()" data-i="btn_login">Login →</button>
+        <div id="loginMsg" class="msg"></div>
+    </div>
+
+    <div id="regForm">
+        <div class="form-group">
+            <label data-i="lbl_user">Username</label>
+            <input type="text" id="rUser" placeholder="Choose a username" data-i-ph="ph_newuser">
+        </div>
+        <div class="form-group">
+            <label data-i="lbl_email">Email</label>
+            <input type="email" id="rEmail" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+            <label data-i="lbl_pass">Password</label>
+            <input type="password" id="rPass" placeholder="Create a password (min 6)" data-i-ph="ph_newpass">
+        </div>
+        <button class="sub-btn" onclick="doRegister()" data-i="btn_reg">Create Account →</button>
+        <div id="regMsg" class="msg"></div>
+    </div>
+
+    <div class="divider" data-i="or">or continue with</div>
+    <button class="ghost-btn" onclick="alert('GitHub OAuth — coming soon!')">🐙 &nbsp; GitHub</button>
+</div>
+
+<script>
+const T={
+    en:{
+        back:"Back", brand_sub:"Developer Learning Platform",
+        tab_login:"Login", tab_reg:"Register",
+        lbl_user:"Username", lbl_pass:"Password", lbl_email:"Email",
+        ph_user:"Enter your username", ph_pass:"Enter your password",
+        ph_newuser:"Choose a username", ph_newpass:"Create a password (min 6)",
+        forgot:"Forgot?", btn_login:"Login →", btn_reg:"Create Account →",
+        or:"or continue with",
+        err_fill:"⚠ Please fill in all fields.",
+        err_short:"⚠ Password must be at least 6 characters.",
+        err_creds:"✗ Wrong username or password.",
+        ok_login:"✓ Welcome! Redirecting...",
+        ok_reg:"✓ Account created! Please login.",
+    },
+    ru:{
+        back:"Назад", brand_sub:"Платформа для разработчиков",
+        tab_login:"Войти", tab_reg:"Регистрация",
+        lbl_user:"Имя пользователя", lbl_pass:"Пароль", lbl_email:"Email",
+        ph_user:"Введите имя пользователя", ph_pass:"Введите пароль",
+        ph_newuser:"Придумайте имя", ph_newpass:"Придумайте пароль (мин. 6)",
+        forgot:"Забыли?", btn_login:"Войти →", btn_reg:"Создать аккаунт →",
+        or:"или войти через",
+        err_fill:"⚠ Заполните все поля.",
+        err_short:"⚠ Пароль минимум 6 символов.",
+        err_creds:"✗ Неверный логин или пароль.",
+        ok_login:"✓ Добро пожаловать! Перенаправление...",
+        ok_reg:"✓ Аккаунт создан! Войдите.",
+    },
+    kz:{
+        back:"Артқа", brand_sub:"Әзірлеушілер платформасы",
+        tab_login:"Кіру", tab_reg:"Тіркелу",
+        lbl_user:"Пайдаланушы аты", lbl_pass:"Құпия сөз", lbl_email:"Email",
+        ph_user:"Пайдаланушы атын енгізіңіз", ph_pass:"Құпия сөзді енгізіңіз",
+        ph_newuser:"Пайдаланушы атын таңдаңыз", ph_newpass:"Құпия сөз жасаңыз (мин. 6)",
+        forgot:"Ұмыттыңыз ба?", btn_login:"Кіру →", btn_reg:"Аккаунт жасау →",
+        or:"немесе арқылы кіру",
+        err_fill:"⚠ Барлық өрістерді толтырыңыз.",
+        err_short:"⚠ Құпия сөз кемінде 6 таңба болуы керек.",
+        err_creds:"✗ Қате пайдаланушы аты немесе құпия сөз.",
+        ok_login:"✓ Қош келдіңіз! Бағытталуда...",
+        ok_reg:"✓ Аккаунт жасалды! Кіріңіз.",
+    }
+};
+let lang='en';
+
+function setLang(l,btn){
+    lang=l;
+    document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const t=T[l];
+    document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(t[k])el.textContent=t[k];});
+    document.querySelectorAll('[data-i-ph]').forEach(el=>{const k=el.getAttribute('data-i-ph');if(t[k])el.placeholder=t[k];});
+}
+
+function switchTab(tab){
+    document.getElementById('tabL').classList.toggle('active',tab==='login');
+    document.getElementById('tabR').classList.toggle('active',tab==='register');
+    document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
+    document.getElementById('regForm').style.display=tab==='register'?'block':'none';
+}
+
+function showMsg(id,text,type){const el=document.getElementById(id);el.textContent=text;el.className='msg '+type;}
+
+function doLogin(){
+    const u=document.getElementById('lUser').value.trim();
+    const p=document.getElementById('lPass').value;
+    if(!u||!p){showMsg('loginMsg',T[lang].err_fill,'err');return;}
+    if(u==='admin'&&p==='1234'){
+        // Сохраняем пользователя
+        localStorage.setItem('cody_user', u);
+        showMsg('loginMsg',T[lang].ok_login,'ok');
+        setTimeout(()=>window.location.href='index.html',1400);
+    } else {
+        showMsg('loginMsg',T[lang].err_creds,'err');
+    }
+}
+
+function doRegister(){
+    const u=document.getElementById('rUser').value.trim();
+    const e=document.getElementById('rEmail').value.trim();
+    const p=document.getElementById('rPass').value;
+    if(!u||!e||!p){showMsg('regMsg',T[lang].err_fill,'err');return;}
+    if(p.length<6){showMsg('regMsg',T[lang].err_short,'err');return;}
+    // Сохраняем пользователя после регистрации
+    localStorage.setItem('cody_user', u);
+    showMsg('regMsg',T[lang].ok_reg,'ok');
+    setTimeout(()=>{
+        switchTab('login');
+        document.getElementById('regMsg').className='msg';
+    },1500);
+}
+
+let dark=true;
+function toggleTheme(){
+    dark=!dark;
+    document.body.classList.toggle('light',!dark);
+    document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+
+document.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+        document.getElementById('tabL').classList.contains('active')?doLogin():doRegister();
+    }
+});
+</script>
+</body>
+</html>

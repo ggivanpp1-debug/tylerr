@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#b07219;
+  --accent2:#cc8e34;
+  --bg:#080808;
+  --bg2:#111;
+  --bg3:#181818;
+  --border:#222;
+  --text:#e8e8e8;
+  --muted:#666;
+  --code-bg:#0d0d0d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(8,8,8,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a2a;background:transparent;
+  color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}
+body.light .back-a{color:#888;}
+body.light .back-a:hover{color:#111;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .sidebar-link{color:#555;}
+body.light .sidebar-link:hover,.body.light .sidebar-link.active{color:var(--accent);}
+
+.hero-strip{
+  margin-top:56px;
+  padding:48px 32px 36px;
+  background:linear-gradient(135deg,#2a1a0a 0%,#3a2a1a 40%,#1a1005 100%);
+  border-bottom:1px solid #6a4a2a;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  font-size:64px;width:88px;height:88px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(176,114,25,.35);
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:28px;color:#fff;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}
+.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{
+  padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;
+  background:rgba(176,114,25,.15);border:1px solid rgba(176,114,25,.3);color:var(--accent2);
+}
+
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#666;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#151515;color:#ccc;}
+.sidebar-link.active{background:rgba(176,114,25,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+.code-block{
+  background:var(--code-bg);
+  border:1px solid #1e1e1e;
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:16px 0;
+  overflow-x:auto;
+}
+.code-block pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.75;color:#c9d1d9;
+}
+.code-label{
+  font-size:10px;color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:10px;display:block;
+}
+.kw{color:#ff7b72;}
+.at{color:#79c0ff;}
+.str{color:#a5d6ff;}
+.tag{color:#7ee787;}
+.com{color:#8b949e;font-style:italic;}
+.val{color:#ffa657;}
+
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.concept-card h4{font-size:14px;color:var(--accent2);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+.tip{background:rgba(176,114,25,.06);border:1px solid rgba(176,114,25,.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13px;color:#aaa;}
+.tip strong{color:var(--accent2);}
+
+.page-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1180px;margin:0 auto;font-size:12px;color:#444;}
+.nav-btns{display:flex;gap:10px;}
+.next-btn{padding:10px 20px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;}
+.next-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.prev-btn{padding:10px 20px;background:transparent;border:1px solid #2a2a2a;border-radius:8px;color:#888;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;text-decoration:none;transition:all .2s;}
+.prev-btn:hover{border-color:var(--accent);color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">☕</div>
+  <div class="hero-info">
+    <h1 data-i="title">Java — Write Once, Run Anywhere</h1>
+    <p data-i="hero_desc">Java is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. Used for Android apps, enterprise software, and backend systems.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Object-Oriented</span>
+      <span class="badge" data-i="b2">JVM Based</span>
+      <span class="badge" data-i="b3">Enterprise Ready</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is Java?</a>
+      <a href="#syntax" class="sidebar-link" data-i="nav_syntax">Basic Syntax</a>
+      <a href="#oop" class="sidebar-link" data-i="nav_oop">OOP Concepts</a>
+      <a href="#variables" class="sidebar-link" data-i="nav_vars">Variables & Types</a>
+      <a href="#control" class="sidebar-link" data-i="nav_control">Control Flow</a>
+      <a href="#collections" class="sidebar-link" data-i="nav_collections">Collections</a>
+      <a href="#exceptions" class="sidebar-link" data-i="nav_exceptions">Exception Handling</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Project: Bank Account</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is Java?</h2>
+      <p class="intro" data-i="s1_intro">Java is a powerful, object-oriented programming language created by Sun Microsystems (now Oracle) in 1995. It runs on over 3 billion devices worldwide and follows the principle "Write Once, Run Anywhere" (WORA).</p>
+      <div class="concept-grid">
+        <div class="concept-card"><h4 data-i="c1_t">🖥️ JVM</h4><p data-i="c1_d">Java code compiles to bytecode that runs on the Java Virtual Machine (JVM), making it platform-independent.</p></div>
+        <div class="concept-card"><h4 data-i="c2_t">🏗️ Object-Oriented</h4><p data-i="c2_d">Everything in Java is an object (except primitives). Supports encapsulation, inheritance, and polymorphism.</p></div>
+        <div class="concept-card"><h4 data-i="c3_t">🔒 Robust & Secure</h4><p data-i="c3_d">Strong memory management, exception handling, and security features make Java ideal for enterprise applications.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="syntax">
+      <h2 data-i="s2_title">Basic Syntax</h2>
+      <p class="intro" data-i="s2_intro">Every Java program starts with a class. The main method is the entry point.</p>
+      <div class="code-block">
+        <span class="code-label">hello world</span>
+        <pre><span class="kw">public</span> <span class="kw">class</span> <span class="at">HelloWorld</span> {
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="at">main</span>(<span class="at">String</span>[] args) {
+        <span class="com">// This is a comment</span>
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Hello, World!"</span>);
+        
+        <span class="com">// Variables</span>
+        <span class="kw">int</span> age = <span class="num">25</span>;
+        <span class="at">String</span> name = <span class="str">"Alice"</span>;
+        <span class="kw">boolean</span> isActive = <span class="val">true</span>;
+        
+        <span class="com">// Output with concatenation</span>
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"My name is "</span> + name + <span class="str">" and I am "</span> + age);
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="oop">
+      <h2 data-i="s3_title">Object-Oriented Programming</h2>
+      <p class="intro" data-i="s3_intro">Java's core OOP concepts: Classes, Objects, Inheritance, Polymorphism, Encapsulation, and Abstraction.</p>
+      <div class="code-block">
+        <span class="code-label">class & object example</span>
+        <pre><span class="kw">public</span> <span class="kw">class</span> <span class="at">Car</span> {
+    <span class="com">// Fields (attributes)</span>
+    <span class="kw">private</span> <span class="at">String</span> brand;
+    <span class="kw">private</span> <span class="kw">int</span> year;
+    
+    <span class="com">// Constructor</span>
+    <span class="kw">public</span> <span class="at">Car</span>(<span class="at">String</span> brand, <span class="kw">int</span> year) {
+        <span class="kw">this</span>.brand = brand;
+        <span class="kw">this</span>.year = year;
+    }
+    
+    <span class="com">// Methods</span>
+    <span class="kw">public</span> <span class="kw">void</span> <span class="at">start</span>() {
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(brand + <span class="str">" is starting..."</span>);
+    }
+    
+    <span class="com">// Getters and Setters (encapsulation)</span>
+    <span class="kw">public</span> <span class="at">String</span> <span class="at">getBrand</span>() {
+        <span class="kw">return</span> brand;
+    }
+}
+
+<span class="com">// Inheritance</span>
+<span class="kw">public</span> <span class="kw">class</span> <span class="at">ElectricCar</span> <span class="kw">extends</span> <span class="at">Car</span> {
+    <span class="kw">private</span> <span class="kw">int</span> batteryCapacity;
+    
+    <span class="kw">public</span> <span class="at">ElectricCar</span>(<span class="at">String</span> brand, <span class="kw">int</span> year, <span class="kw">int</span> battery) {
+        <span class="kw">super</span>(brand, year);
+        <span class="kw">this</span>.batteryCapacity = battery;
+    }
+    
+    <span class="com">// Method overriding (polymorphism)</span>
+    <span class="at">@Override</span>
+    <span class="kw">public</span> <span class="kw">void</span> <span class="at">start</span>() {
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Electric car silently starts..."</span>);
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="variables">
+      <h2 data-i="s4_title">Variables & Data Types</h2>
+      <p class="intro" data-i="s4_intro">Java is statically typed — every variable must have a declared type.</p>
+      <div class="code-block">
+        <span class="code-label">primitive & reference types</span>
+        <pre><span class="com">// Primitive types</span>
+<span class="kw">byte</span> b = <span class="num">100</span>;
+<span class="kw">short</span> s = <span class="num">1000</span>;
+<span class="kw">int</span> i = <span class="num">50000</span>;
+<span class="kw">long</span> l = <span class="num">1000000000L</span>;
+<span class="kw">float</span> f = <span class="num">3.14f</span>;
+<span class="kw">double</span> d = <span class="num">3.14159265359</span>;
+<span class="kw">char</span> c = <span class="str">'A'</span>;
+<span class="kw">boolean</span> bool = <span class="val">true</span>;
+
+<span class="com">// Reference types</span>
+<span class="at">String</span> text = <span class="str">"Hello Java"</span>;
+<span class="kw">int</span>[] numbers = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>};
+
+<span class="com">// Type casting</span>
+<span class="kw">double</span> pi = <span class="num">3.14</span>;
+<span class="kw">int</span> piInt = (<span class="kw">int</span>) pi;  <span class="com">// 3 (explicit casting)</span>
+
+<span class="com">// var (Java 10+) - local variable type inference</span>
+<span class="kw">var</span> message = <span class="str">"Inferred type"</span>;</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="control">
+      <h2 data-i="s5_title">Control Flow</h2>
+      <p class="intro" data-i="s5_intro">Java supports standard control structures: if-else, switch, for, while, do-while.</p>
+      <div class="code-block">
+        <span class="code-label">control statements</span>
+        <pre><span class="com">// If-else</span>
+<span class="kw">int</span> score = <span class="num">85</span>;
+<span class="kw">if</span> (score >= <span class="num">90</span>) {
+    <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Grade A"</span>);
+} <span class="kw">else if</span> (score >= <span class="num">80</span>) {
+    <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Grade B"</span>);
+} <span class="kw">else</span> {
+    <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Grade C"</span>);
+}
+
+<span class="com">// Switch (supports strings and expressions)</span>
+<span class="kw">switch</span> (day) {
+    <span class="kw">case</span> <span class="str">"Monday"</span>:
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Start of week"</span>);
+        <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">"Friday"</span>:
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"TGIF!"</span>);
+        <span class="kw">break</span>;
+    <span class="kw">default</span>:
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Regular day"</span>);
+}
+
+<span class="com">// For loop</span>
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i < <span class="num">5</span>; i++) {
+    <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Count: "</span> + i);
+}
+
+<span class="com">// Enhanced for loop (for-each)</span>
+<span class="kw">int</span>[] nums = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>};
+<span class="kw">for</span> (<span class="kw">int</span> num : nums) {
+    <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(num);
+}
+
+<span class="com">// While loop</span>
+<span class="kw">int</span> count = <span class="num">3</span>;
+<span class="kw">while</span> (count > <span class="num">0</span>) {
+    <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Countdown: "</span> + count);
+    count--;
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="collections">
+      <h2 data-i="s6_title">Collections Framework</h2>
+      <p class="intro" data-i="s6_intro">Java's Collections Framework provides powerful data structures like ArrayList, HashMap, HashSet.</p>
+      <div class="code-block">
+        <span class="code-label">collections</span>
+        <pre><span class="kw">import</span> java.util.*;
+
+<span class="com">// ArrayList - dynamic array</span>
+<span class="at">List</span><<span class="at">String</span>> fruits = <span class="kw">new</span> <span class="at">ArrayList</span><>();
+fruits.<span class="at">add</span>(<span class="str">"Apple"</span>);
+fruits.<span class="at">add</span>(<span class="str">"Banana"</span>);
+fruits.<span class="at">add</span>(<span class="str">"Cherry"</span>);
+fruits.<span class="at">remove</span>(<span class="num">1</span>);
+<span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(fruits.<span class="at">get</span>(<span class="num">0</span>));  <span class="com">// Apple</span>
+
+<span class="com">// HashMap - key-value pairs</span>
+<span class="at">Map</span><<span class="at">String</span>, <span class="at">Integer</span>> scores = <span class="kw">new</span> <span class="at">HashMap</span><>();
+scores.<span class="at">put</span>(<span class="str">"Alice"</span>, <span class="num">95</span>);
+scores.<span class="at">put</span>(<span class="str">"Bob"</span>, <span class="num">87</span>);
+<span class="kw">int</span> aliceScore = scores.<span class="at">get</span>(<span class="str">"Alice"</span>);
+
+<span class="com">// HashSet - unique elements</span>
+<span class="at">Set</span><<span class="at">Integer</span>> numbers = <span class="kw">new</span> <span class="at">HashSet</span><>();
+numbers.<span class="at">add</span>(<span class="num">1</span>);
+numbers.<span class="at">add</span>(<span class="num">2</span>);
+numbers.<span class="at">add</span>(<span class="num">2</span>);  <span class="com">// duplicate ignored</span>
+numbers.<span class="at">size</span>();  <span class="com">// 2</span>
+
+<span class="com">// Iteration</span>
+<span class="kw">for</span> (<span class="at">String</span> fruit : fruits) {
+    <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(fruit);
+}
+
+<span class="com">// Using streams (Java 8+)</span>
+fruits.<span class="at">stream</span>()
+    .<span class="at">filter</span>(f -> f.<span class="at">startsWith</span>(<span class="str">"A"</span>))
+    .<span class="at">forEach</span>(<span class="at">System</span>.<span class="at">out</span>::<span class="at">println</span>);</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="exceptions">
+      <h2 data-i="s7_title">Exception Handling</h2>
+      <p class="intro" data-i="s7_intro">Java uses try-catch-finally blocks to handle exceptions gracefully.</p>
+      <div class="code-block">
+        <span class="code-label">exception handling</span>
+        <pre><span class="kw">try</span> {
+            <span class="kw">int</span> result = <span class="num">10</span> / <span class="num">0</span>;  <span class="com">// Throws ArithmeticException</span>
+        } <span class="kw">catch</span> (<span class="at">ArithmeticException</span> e) {
+            <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Cannot divide by zero: "</span> + e.<span class="at">getMessage</span>());
+        } <span class="kw">catch</span> (<span class="at">Exception</span> e) {
+            <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"General error: "</span> + e.<span class="at">getMessage</span>());
+        } <span class="kw">finally</span> {
+            <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"This always executes"</span>);
+        }
+
+<span class="com">// Try-with-resources (auto-closes resources)</span>
+<span class="kw">try</span> (<span class="at">BufferedReader</span> reader = <span class="kw">new</span> <span class="at">BufferedReader</span>(<span class="kw">new</span> <span class="at">FileReader</span>(<span class="str">"file.txt"</span>))) {
+            <span class="at">String</span> line = reader.<span class="at">readLine</span>();
+            <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(line);
+        } <span class="kw">catch</span> (<span class="at">IOException</span> e) {
+            e.<span class="at">printStackTrace</span>();
+        }
+
+<span class="com">// Creating custom exception</span>
+<span class="kw">class</span> <span class="at">InsufficientFundsException</span> <span class="kw">extends</span> <span class="at">Exception</span> {
+    <span class="kw">public</span> <span class="at">InsufficientFundsException</span>(<span class="at">String</span> message) {
+        <span class="kw">super</span>(message);
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 Project: Bank Account System</h2>
+      <p class="intro" data-i="s8_intro">Create a simple banking system with deposit, withdrawal, and balance check functionality.</p>
+      <div class="code-block">
+        <span class="code-label">BankAccount.java</span>
+        <pre><span class="kw">public</span> <span class="kw">class</span> <span class="at">BankAccount</span> {
+    <span class="kw">private</span> <span class="at">String</span> accountNumber;
+    <span class="kw">private</span> <span class="at">String</span> accountHolder;
+    <span class="kw">private</span> <span class="kw">double</span> balance;
+    
+    <span class="kw">public</span> <span class="at">BankAccount</span>(<span class="at">String</span> accountNumber, <span class="at">String</span> accountHolder, <span class="kw">double</span> initialDeposit) {
+        <span class="kw">this</span>.accountNumber = accountNumber;
+        <span class="kw">this</span>.accountHolder = accountHolder;
+        <span class="kw">this</span>.balance = initialDeposit;
+    }
+    
+    <span class="kw">public</span> <span class="kw">void</span> <span class="at">deposit</span>(<span class="kw">double</span> amount) {
+        <span class="kw">if</span> (amount > <span class="num">0</span>) {
+            balance += amount;
+            <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Deposited: $"</span> + amount);
+        } <span class="kw">else</span> {
+            <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Invalid deposit amount"</span>);
+        }
+    }
+    
+    <span class="kw">public</span> <span class="kw">void</span> <span class="at">withdraw</span>(<span class="kw">double</span> amount) <span class="kw">throws</span> <span class="at">InsufficientFundsException</span> {
+        <span class="kw">if</span> (amount > balance) {
+            <span class="kw">throw</span> <span class="kw">new</span> <span class="at">InsufficientFundsException</span>(<span class="str">"Insufficient funds. Balance: $"</span> + balance);
+        }
+        balance -= amount;
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Withdrawn: $"</span> + amount);
+    }
+    
+    <span class="kw">public</span> <span class="kw">double</span> <span class="at">getBalance</span>() {
+        <span class="kw">return</span> balance;
+    }
+    
+    <span class="kw">public</span> <span class="kw">void</span> <span class="at">displayInfo</span>() {
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Account: "</span> + accountNumber);
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Holder: "</span> + accountHolder);
+        <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Balance: $"</span> + balance);
+    }
+    
+    <span class="kw">public</span> <span class="kw">static</span> <span class="kw">void</span> <span class="at">main</span>(<span class="at">String</span>[] args) {
+        <span class="kw">try</span> {
+            <span class="at">BankAccount</span> account = <span class="kw">new</span> <span class="at">BankAccount</span>(<span class="str">"12345"</span>, <span class="str">"John Doe"</span>, <span class="num">1000.00</span>);
+            account.<span class="at">displayInfo</span>();
+            account.<span class="at">deposit</span>(<span class="num">500</span>);
+            account.<span class="at">withdraw</span>(<span class="num">200</span>);
+            account.<span class="at">withdraw</span>(<span class="num">1500</span>);  <span class="com">// This will throw exception</span>
+        } <span class="kw">catch</span> (<span class="at">InsufficientFundsException</span> e) {
+            <span class="at">System</span>.<span class="at">out</span>.<span class="at">println</span>(<span class="str">"Error: "</span> + e.<span class="at">getMessage</span>());
+        }
+    }
+}</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add interest calculation for savings accounts. Implement transfer between accounts. Add transaction history with ArrayList.</span></div>
+    </div>
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — Java Course</span>
+  <div class="nav-btns">
+    <a href="learn-php.html" class="prev-btn" data-i="prev_btn">← PHP</a>
+    <a href="learn-cpp.html" class="next-btn" data-i="next_btn">Next: C++ →</a>
+  </div>
+</div>
+
+<script>
+const T = {
+  en:{
+    back:"Back to Courses", title:"Java — Write Once, Run Anywhere",
+    hero_desc:"Java is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. Used for Android apps, enterprise software, and backend systems.",
+    b1:"Object-Oriented", b2:"JVM Based", b3:"Enterprise Ready",
+    nav_label:"Topics", nav_intro:"What is Java?", nav_syntax:"Basic Syntax",
+    nav_oop:"OOP Concepts", nav_vars:"Variables & Types", nav_control:"Control Flow",
+    nav_collections:"Collections", nav_exceptions:"Exception Handling", nav_practice:"Project: Bank Account",
+    s1_title:"What is Java?", s1_intro:"Java is a powerful, object-oriented programming language created by Sun Microsystems (now Oracle) in 1995. It runs on over 3 billion devices worldwide and follows the principle 'Write Once, Run Anywhere' (WORA).",
+    c1_t:"🖥️ JVM", c1_d:"Java code compiles to bytecode that runs on the Java Virtual Machine (JVM), making it platform-independent.",
+    c2_t:"🏗️ Object-Oriented", c2_d:"Everything in Java is an object (except primitives). Supports encapsulation, inheritance, and polymorphism.",
+    c3_t:"🔒 Robust & Secure", c3_d:"Strong memory management, exception handling, and security features make Java ideal for enterprise applications.",
+    s2_title:"Basic Syntax", s2_intro:"Every Java program starts with a class. The main method is the entry point.",
+    s3_title:"Object-Oriented Programming", s3_intro:"Java's core OOP concepts: Classes, Objects, Inheritance, Polymorphism, Encapsulation, and Abstraction.",
+    s4_title:"Variables & Data Types", s4_intro:"Java is statically typed — every variable must have a declared type.",
+    s5_title:"Control Flow", s5_intro:"Java supports standard control structures: if-else, switch, for, while, do-while.",
+    s6_title:"Collections Framework", s6_intro:"Java's Collections Framework provides powerful data structures like ArrayList, HashMap, HashSet.",
+    s7_title:"Exception Handling", s7_intro:"Java uses try-catch-finally blocks to handle exceptions gracefully.",
+    s8_title:"🛠 Project: Bank Account System", s8_intro:"Create a simple banking system with deposit, withdrawal, and balance check functionality.",
+    challenge:"Add interest calculation for savings accounts. Implement transfer between accounts. Add transaction history with ArrayList.",
+    footer_txt:"© 2026 Cody Tech — Java Course", prev_btn:"← PHP", next_btn:"Next: C++ →",
+  },
+  ru:{
+    back:"Назад к курсам", title:"Java — Напиши Один раз, Запускай Где Угодно",
+    hero_desc:"Java — высокоуровневый объектно-ориентированный язык программирования, разработанный с минимальными зависимостями реализации. Используется для Android-приложений, корпоративного ПО и бэкенд-систем.",
+    b1:"Объектно-ориентированный", b2:"На базе JVM", b3:"Для предприятий",
+    nav_label:"Темы", nav_intro:"Что такое Java?", nav_syntax:"Синтаксис",
+    nav_oop:"ООП", nav_vars:"Переменные и типы", nav_control:"Управление потоком",
+    nav_collections:"Коллекции", nav_exceptions:"Обработка исключений", nav_practice:"Проект: Банковский счет",
+    s1_title:"Что такое Java?", s1_intro:"Java — мощный объектно-ориентированный язык программирования, созданный Sun Microsystems (ныне Oracle) в 1995 году. Работает на более чем 3 миллиардах устройств.",
+    c1_t:"🖥️ JVM", c1_d:"Код Java компилируется в байт-код, который выполняется на JVM, обеспечивая независимость от платформы.",
+    c2_t:"🏗️ Объектно-ориентированный", c2_d:"В Java всё является объектом (кроме примитивов). Поддерживает инкапсуляцию, наследование и полиморфизм.",
+    c3_t:"🔒 Надежный и безопасный", c3_d:"Управление памятью, обработка исключений и функции безопасности делают Java идеальным для корпоративных приложений.",
+    s2_title:"Базовый синтаксис", s2_intro:"Каждая Java-программа начинается с класса. Метод main — точка входа.",
+    s3_title:"Объектно-ориентированное программирование", s3_intro:"Основные концепции ООП Java: классы, объекты, наследование, полиморфизм, инкапсуляция, абстракция.",
+    s4_title:"Переменные и типы данных", s4_intro:"Java — статически типизированный язык, каждая переменная должна иметь объявленный тип.",
+    s5_title:"Управление потоком", s5_intro:"Java поддерживает стандартные управляющие конструкции: if-else, switch, for, while, do-while.",
+    s6_title:"Фреймворк коллекций", s6_intro:"Java Collections Framework предоставляет мощные структуры данных: ArrayList, HashMap, HashSet.",
+    s7_title:"Обработка исключений", s7_intro:"Java использует блоки try-catch-finally для обработки исключений.",
+    s8_title:"🛠 Проект: Система банковского счета", s8_intro:"Создайте простую банковскую систему с функциями пополнения, снятия и проверки баланса.",
+    challenge:"Добавьте расчет процентов для сберегательных счетов. Реализуйте перевод между счетами. Добавьте историю транзакций.",
+    footer_txt:"© 2026 Cody Tech — Курс Java", prev_btn:"← PHP", next_btn:"Далее: C++ →",
+  },
+  kz:{
+    back:"Курстарға оралу", title:"Java — Бір рет жаз, кез келген жерде іске қос",
+    hero_desc:"Java — жоғары деңгейлі, класс-негізделген, объектілі-бағытталған бағдарламалау тілі. Android қосымшалары, корпоративтік ПЖ және бэкенд жүйелерде қолданылады.",
+    b1:"Объектілі-бағытталған", b2:"JVM негізінде", b3:"Кәсіпорынға арналған",
+    nav_label:"Тақырыптар", nav_intro:"Java дегеніміз не?", nav_syntax:"Синтаксис",
+    nav_oop:"ООП", nav_vars:"Айнымалылар мен түрлер", nav_control:"Басқару",
+    nav_collections:"Коллекциялар", nav_exceptions:"Ерекшеліктер", nav_practice:"Жоба: Банк шоты",
+    s1_title:"Java дегеніміз не?", s1_intro:"Java — 1995 жылы Sun Microsystems (қазір Oracle) жасаған қуатты объектілі-бағытталған бағдарламалау тілі. Бүкіл әлемде 3 миллиардтан астам құрылғыда жұмыс істейді.",
+    c1_t:"🖥️ JVM", c1_d:"Java коды байт-кодқа компиляцияланып, JVM-де орындалады — платформаға тәуелсіздік береді.",
+    c2_t:"🏗️ Объектілі-бағытталған", c2_d:"Java-да бәрі объект (примитивтерден басқа). Инкапсуляция, мұрагерлік және полиморфизмді қолдайды.",
+    c3_t:"🔒 Сенімді және қауіпсіз", c3_d:"Күшті жады менеджменті, ерекшеліктерді өңдеу және қауіпсіздік мүмкіндіктері Java-ны корпоративтік қосымшалар үшін өте қолайлы етеді.",
+    s2_title:"Негізгі синтаксис", s2_intro:"Әр Java бағдарламасы классынан басталады. main әдісі — кіру нүктесі.",
+    s3_title:"Объектілі-бағытталған бағдарламалау", s3_intro:"Java-ның негізгі ОББ ұғымдары: класстар, объектілер, мұрагерлік, полиморфизм, инкапсуляция, абстракция.",
+    s4_title:"Айнымалылар мен деректер түрлері", s4_intro:"Java — статикалық типтелген тіл, әр айнымалының типі жариялануы керек.",
+    s5_title:"Басқару операторлары", s5_intro:"Java стандартты басқару құрылымдарын қолдайды: if-else, switch, for, while, do-while.",
+    s6_title:"Коллекциялар фреймворкі", s6_intro:"Java Collections Framework қуатты деректер құрылымдарын ұсынады: ArrayList, HashMap, HashSet.",
+    s7_title:"Ерекшеліктерді өңдеу", s7_intro:"Java ерекшеліктерді өңдеу үшін try-catch-finally блоктарын пайдаланады.",
+    s8_title:"🛠 Жоба: Банк шоты жүйесі", s8_intro:"Ақша салу, алу және балансты тексеру функциялары бар қарапайым банк жүйесін жасаңыз.",
+    challenge:"Жинақ шоттарына пайыздарды есептеуді қосыңыз. Шоттар арасында аударым жасауды жүзеге асырыңыз. Транзакциялар тарихын қосыңыз.",
+    footer_txt:"© 2026 Cody Tech — Java Курсы", prev_btn:"← PHP", next_btn:"Келесі: C++ →",
+  }
+};
+let lang='en';
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+}
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.body.classList.toggle('light',!dark);
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+});
+</script>
+</body>
+</html>

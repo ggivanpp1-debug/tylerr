@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#3572A5;
+  --accent2:#4b8bbe;
+  --bg:#080808;--bg2:#111;--bg3:#181818;--border:#222;
+  --text:#e8e8e8;--muted:#666;--code-bg:#0d0d0d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 32px;background:rgba(8,8,8,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);z-index:1000;}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{padding:4px 10px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}
+body.light .back-a{color:#888;}body.light .back-a:hover{color:#111;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+.hero-strip{margin-top:56px;padding:48px 32px 36px;background:linear-gradient(135deg,#020d18 0%,#061428 40%,#020a0d 100%);border-bottom:1px solid #0a1e30;display:flex;align-items:center;gap:24px;}
+.lang-badge{font-size:28px;width:88px;height:88px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 40px rgba(53,114,165,.35);font-family:'JetBrains Mono',monospace;font-weight:600;color:#fff;}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}
+.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(53,114,165,.15);border:1px solid rgba(53,114,165,.3);color:var(--accent2);}
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#666;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#151515;color:#ccc;}
+.sidebar-link.active{background:rgba(53,114,165,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+body.light .sidebar-link:hover{background:#e0e0e0;}
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+.code-block{background:var(--code-bg);border:1px solid #1e1e1e;border-left:3px solid var(--accent);border-radius:10px;padding:20px 22px;margin:16px 0;overflow-x:auto;position:relative;}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;color:#cdd6f4;white-space:pre;}
+.code-label{position:absolute;top:10px;right:14px;font-size:10px;color:#444;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;}
+.kw{color:#cba6f7;}.fn{color:#89b4fa;}.st{color:#a6e3a1;}.cm{color:#45475a;font-style:italic;}.nm{color:#fab387;}.op{color:#89dceb;}
+.cards-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:18px 0;}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.info-card h4{font-size:13px;font-weight:700;margin-bottom:6px;color:#fff;}
+body.light .info-card h4{color:#111;}
+.info-card p{font-size:12px;color:var(--muted);line-height:1.5;}
+.tip{background:rgba(53,114,165,.07);border:1px solid rgba(53,114,165,.2);border-radius:10px;padding:14px 16px;font-size:13px;color:#aaa;margin:14px 0;}
+.tip strong{color:var(--accent2);}
+.step-list{list-style:none;counter-reset:steps;margin:16px 0;}
+.step-list li{counter-increment:steps;display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.step-list li::before{content:counter(steps);min-width:26px;height:26px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-list li div strong{display:block;color:#fff;font-size:13px;margin-bottom:3px;}
+body.light .step-list li div strong{color:#111;}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg2);color:var(--muted);padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);}
+tr:hover td{background:var(--bg2);}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#1a1a1a;padding:1px 6px;border-radius:4px;color:var(--accent2);}
+body.light code{background:#e8e8e8;}
+.page-footer{display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid var(--border);background:var(--bg2);}
+.next-btn{padding:10px 20px;background:var(--accent);color:#fff;text-decoration:none;border-radius:8px;font-size:13px;font-weight:700;transition:opacity .2s;}
+.next-btn:hover{opacity:.85;}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">🐍</div>
+  <div class="hero-info">
+    <h1 data-i="title">Python — Programming for Everyone</h1>
+    <p data-i="hero_desc">Clean, readable, powerful. Python is the go-to language for data science, AI, automation, and web backends. Perfect for beginners and professionals alike.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Beginner Friendly</span>
+      <span class="badge" data-i="b2">Data Science</span>
+      <span class="badge" data-i="b3">AI / ML</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is Python?</a>
+      <a href="#syntax" class="sidebar-link" data-i="nav_syntax">Basic Syntax</a>
+      <a href="#datatypes" class="sidebar-link" data-i="nav_data">Data Types</a>
+      <a href="#control" class="sidebar-link" data-i="nav_control">Control Flow</a>
+      <a href="#functions" class="sidebar-link" data-i="nav_func">Functions</a>
+      <a href="#lists" class="sidebar-link" data-i="nav_lists">Lists & Dicts</a>
+      <a href="#oop" class="sidebar-link" data-i="nav_oop">OOP Classes</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Mini Project</a>
+    </div>
+  </nav>
+  <main class="content">
+
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is Python?</h2>
+      <p class="intro" data-i="s1_intro">Python is a high-level, interpreted programming language created by Guido van Rossum in 1991. It emphasizes code readability and simplicity, making it ideal for beginners while remaining powerful enough for experts.</p>
+      <div class="cards-row">
+        <div class="info-card"><h4 data-i="c1_t">🐍 Readable Code</h4><p data-i="c1_d">Python uses indentation instead of braces. Code looks almost like plain English, reducing the learning curve.</p></div>
+        <div class="info-card"><h4 data-i="c2_t">🔋 Batteries Included</h4><p data-i="c2_d">The standard library covers file I/O, networking, math, dates and much more — right out of the box.</p></div>
+        <div class="info-card"><h4 data-i="c3_t">🌍 Everywhere</h4><p data-i="c3_d">Web (Django, Flask), data (pandas, numpy), AI (TensorFlow, PyTorch), automation, scripting — Python does it all.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="syntax">
+      <h2 data-i="s2_title">Basic Syntax</h2>
+      <p class="intro" data-i="s2_intro">Python syntax is clean and minimal. No semicolons, no curly braces — just clean indentation to define code blocks.</p>
+      <div class="code-block">
+        <span class="code-label">basics.py</span>
+        <pre><span class="cm"># This is a comment</span>
+<span class="nm">name</span> = <span class="st">"Alice"</span>        <span class="cm"># string variable</span>
+<span class="nm">age</span>  = <span class="nm">25</span>             <span class="cm"># integer variable</span>
+<span class="nm">pi</span>   = <span class="nm">3.14</span>           <span class="cm"># float variable</span>
+<span class="nm">active</span> = <span class="kw">True</span>         <span class="cm"># boolean variable</span>
+
+<span class="cm"># Print to console</span>
+<span class="fn">print</span>(<span class="st">f"Hello, {name}! You are {age} years old."</span>)
+
+<span class="cm"># Input from user</span>
+<span class="nm">user</span> = <span class="fn">input</span>(<span class="st">"Enter your name: "</span>)
+<span class="fn">print</span>(<span class="st">"Welcome,"</span>, <span class="nm">user</span>)</pre>
+      </div>
+      <div class="tip"><strong>💡 Note:</strong> <span data-i="tip_indent">Indentation (4 spaces or 1 tab) is not optional in Python — it defines code blocks. Inconsistent indentation causes errors.</span></div>
+    </div>
+
+    <div class="learn-section" id="datatypes">
+      <h2 data-i="s3_title">Data Types</h2>
+      <p class="intro" data-i="s3_intro">Python has several built-in data types. Understanding them is fundamental to writing correct programs.</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Type</th><th>Example</th><th>Description</th></tr>
+          <tr><td><code>str</code></td><td><code>"hello"</code></td><td>Text / string of characters</td></tr>
+          <tr><td><code>int</code></td><td><code>42</code></td><td>Whole number</td></tr>
+          <tr><td><code>float</code></td><td><code>3.14</code></td><td>Decimal number</td></tr>
+          <tr><td><code>bool</code></td><td><code>True / False</code></td><td>Boolean (logical) value</td></tr>
+          <tr><td><code>list</code></td><td><code>[1, 2, 3]</code></td><td>Ordered mutable sequence</td></tr>
+          <tr><td><code>tuple</code></td><td><code>(1, 2, 3)</code></td><td>Ordered immutable sequence</td></tr>
+          <tr><td><code>dict</code></td><td><code>{"key": "val"}</code></td><td>Key-value pairs (map)</td></tr>
+          <tr><td><code>set</code></td><td><code>{1, 2, 3}</code></td><td>Unordered unique values</td></tr>
+        </table>
+      </div>
+      <div class="code-block">
+        <span class="code-label">type_check.py</span>
+        <pre><span class="nm">x</span> = <span class="nm">42</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="nm">x</span>))          <span class="cm"># &lt;class 'int'&gt;</span>
+
+<span class="cm"># Type conversion</span>
+<span class="nm">s</span> = <span class="fn">str</span>(<span class="nm">x</span>)              <span class="cm"># "42"</span>
+<span class="nm">f</span> = <span class="fn">float</span>(<span class="nm">x</span>)            <span class="cm"># 42.0</span>
+<span class="nm">b</span> = <span class="fn">bool</span>(<span class="nm">x</span>)             <span class="cm"># True (non-zero = True)</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="control">
+      <h2 data-i="s4_title">Control Flow</h2>
+      <p class="intro" data-i="s4_intro">Control flow lets your program make decisions and repeat actions. Python provides if/elif/else and two loop types.</p>
+      <div class="code-block">
+        <span class="code-label">conditions.py</span>
+        <pre><span class="nm">score</span> = <span class="nm">75</span>
+
+<span class="kw">if</span> <span class="nm">score</span> >= <span class="nm">90</span>:
+    <span class="fn">print</span>(<span class="st">"Grade: A"</span>)
+<span class="kw">elif</span> <span class="nm">score</span> >= <span class="nm">70</span>:
+    <span class="fn">print</span>(<span class="st">"Grade: B"</span>)
+<span class="kw">elif</span> <span class="nm">score</span> >= <span class="nm">50</span>:
+    <span class="fn">print</span>(<span class="st">"Grade: C"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"Grade: F"</span>)</pre>
+      </div>
+      <div class="code-block">
+        <span class="code-label">loops.py</span>
+        <pre><span class="cm"># for loop — iterate over a range</span>
+<span class="kw">for</span> <span class="nm">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">5</span>):
+    <span class="fn">print</span>(<span class="nm">i</span>)              <span class="cm"># 0, 1, 2, 3, 4</span>
+
+<span class="cm"># for loop — iterate over a list</span>
+<span class="nm">fruits</span> = [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"cherry"</span>]
+<span class="kw">for</span> <span class="nm">fruit</span> <span class="kw">in</span> <span class="nm">fruits</span>:
+    <span class="fn">print</span>(<span class="nm">fruit</span>)
+
+<span class="cm"># while loop</span>
+<span class="nm">count</span> = <span class="nm">0</span>
+<span class="kw">while</span> <span class="nm">count</span> < <span class="nm">3</span>:
+    <span class="fn">print</span>(<span class="st">"tick"</span>, <span class="nm">count</span>)
+    <span class="nm">count</span> += <span class="nm">1</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="functions">
+      <h2 data-i="s5_title">Functions</h2>
+      <p class="intro" data-i="s5_intro">Functions group reusable code. Use the <code>def</code> keyword to define them. Python also supports lambda functions and default arguments.</p>
+      <div class="code-block">
+        <span class="code-label">functions.py</span>
+        <pre><span class="cm"># Basic function</span>
+<span class="kw">def</span> <span class="fn">greet</span>(<span class="nm">name</span>, <span class="nm">greeting</span>=<span class="st">"Hello"</span>):
+    <span class="kw">return</span> <span class="st">f"{greeting}, {name}!"</span>
+
+<span class="fn">print</span>(<span class="fn">greet</span>(<span class="st">"Bob"</span>))             <span class="cm"># Hello, Bob!</span>
+<span class="fn">print</span>(<span class="fn">greet</span>(<span class="st">"Eve"</span>, <span class="st">"Hi"</span>))       <span class="cm"># Hi, Eve!</span>
+
+<span class="cm"># Lambda (anonymous) function</span>
+<span class="nm">square</span> = <span class="kw">lambda</span> <span class="nm">x</span>: <span class="nm">x</span> ** <span class="nm">2</span>
+<span class="fn">print</span>(<span class="fn">square</span>(<span class="nm">5</span>))                 <span class="cm"># 25</span>
+
+<span class="cm"># *args and **kwargs</span>
+<span class="kw">def</span> <span class="fn">add_all</span>(*<span class="nm">nums</span>):
+    <span class="kw">return</span> <span class="fn">sum</span>(<span class="nm">nums</span>)
+
+<span class="fn">print</span>(<span class="fn">add_all</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>))      <span class="cm"># 10</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="lists">
+      <h2 data-i="s6_title">Lists & Dictionaries</h2>
+      <p class="intro" data-i="s6_intro">Lists store ordered sequences, dictionaries store key-value pairs. These two data structures are used in almost every Python program.</p>
+      <div class="code-block">
+        <span class="code-label">lists.py</span>
+        <pre><span class="nm">colors</span> = [<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>]
+
+<span class="nm">colors</span>.<span class="fn">append</span>(<span class="st">"yellow"</span>)     <span class="cm"># add to end</span>
+<span class="nm">colors</span>.<span class="fn">remove</span>(<span class="st">"red"</span>)        <span class="cm"># remove by value</span>
+<span class="fn">print</span>(<span class="nm">colors</span>[<span class="nm">0</span>])            <span class="cm"># "green" (0-indexed)</span>
+<span class="fn">print</span>(<span class="nm">colors</span>[-<span class="nm">1</span>])           <span class="cm"># "yellow" (last item)</span>
+<span class="fn">print</span>(<span class="nm">colors</span>[<span class="nm">1</span>:<span class="nm">3</span>])          <span class="cm"># slice ["blue","yellow"]</span>
+
+<span class="cm"># List comprehension</span>
+<span class="nm">squares</span> = [<span class="nm">x</span>**<span class="nm">2</span> <span class="kw">for</span> <span class="nm">x</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">6</span>)]
+<span class="cm"># [1, 4, 9, 16, 25]</span></pre>
+      </div>
+      <div class="code-block">
+        <span class="code-label">dicts.py</span>
+        <pre><span class="nm">person</span> = {
+    <span class="st">"name"</span>: <span class="st">"Alice"</span>,
+    <span class="st">"age"</span>: <span class="nm">30</span>,
+    <span class="st">"city"</span>: <span class="st">"London"</span>
+}
+
+<span class="fn">print</span>(<span class="nm">person</span>[<span class="st">"name"</span>])        <span class="cm"># Alice</span>
+<span class="nm">person</span>[<span class="st">"email"</span>] = <span class="st">"a@x.com"</span>  <span class="cm"># add new key</span>
+<span class="kw">del</span> <span class="nm">person</span>[<span class="st">"city"</span>]           <span class="cm"># remove key</span>
+
+<span class="kw">for</span> <span class="nm">key</span>, <span class="nm">val</span> <span class="kw">in</span> <span class="nm">person</span>.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="nm">key</span>, <span class="st">"→"</span>, <span class="nm">val</span>)</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="oop">
+      <h2 data-i="s7_title">OOP — Classes & Objects</h2>
+      <p class="intro" data-i="s7_intro">Object-Oriented Programming organizes code into classes that bundle data and behaviour. Python supports full OOP with inheritance and special methods.</p>
+      <div class="code-block">
+        <span class="code-label">classes.py</span>
+        <pre><span class="kw">class</span> <span class="fn">Animal</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>, <span class="nm">name</span>, <span class="nm">sound</span>):
+        <span class="nm">self</span>.<span class="nm">name</span>  = <span class="nm">name</span>
+        <span class="nm">self</span>.<span class="nm">sound</span> = <span class="nm">sound</span>
+
+    <span class="kw">def</span> <span class="fn">speak</span>(<span class="nm">self</span>):
+        <span class="kw">return</span> <span class="st">f"{self.name} says {self.sound}!"</span>
+
+<span class="kw">class</span> <span class="fn">Dog</span>(<span class="fn">Animal</span>):               <span class="cm"># inheritance</span>
+    <span class="kw">def</span> <span class="fn">fetch</span>(<span class="nm">self</span>):
+        <span class="kw">return</span> <span class="st">f"{self.name} fetches the ball!"</span>
+
+<span class="nm">dog</span> = <span class="fn">Dog</span>(<span class="st">"Rex"</span>, <span class="st">"Woof"</span>)
+<span class="fn">print</span>(<span class="nm">dog</span>.<span class="fn">speak</span>())              <span class="cm"># Rex says Woof!</span>
+<span class="fn">print</span>(<span class="nm">dog</span>.<span class="fn">fetch</span>())              <span class="cm"># Rex fetches the ball!</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 Mini Project: Number Guessing Game</h2>
+      <p class="intro" data-i="s8_intro">Put it all together — variables, loops, conditions, functions. Build a small but complete interactive game.</p>
+      <div class="code-block">
+        <span class="code-label">guessing_game.py</span>
+        <pre><span class="kw">import</span> <span class="nm">random</span>
+
+<span class="kw">def</span> <span class="fn">play_game</span>():
+    <span class="nm">secret</span>   = <span class="nm">random</span>.<span class="fn">randint</span>(<span class="nm">1</span>, <span class="nm">100</span>)
+    <span class="nm">attempts</span> = <span class="nm">0</span>
+    <span class="fn">print</span>(<span class="st">"Guess a number between 1 and 100!"</span>)
+
+    <span class="kw">while</span> <span class="kw">True</span>:
+        <span class="nm">guess</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="st">"Your guess: "</span>))
+        <span class="nm">attempts</span> += <span class="nm">1</span>
+
+        <span class="kw">if</span>   <span class="nm">guess</span> < <span class="nm">secret</span>: <span class="fn">print</span>(<span class="st">"Too low!"</span>)
+        <span class="kw">elif</span> <span class="nm">guess</span> > <span class="nm">secret</span>: <span class="fn">print</span>(<span class="st">"Too high!"</span>)
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(<span class="st">f"🎉 Correct in {attempts} attempts!"</span>)
+            <span class="kw">break</span>
+
+<span class="fn">play_game</span>()</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add a difficulty setting (easy=20 attempts, hard=5 attempts). If the player runs out of attempts, reveal the secret number and ask to play again.</span></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — Python Course</span>
+  <a href="learn-php.html" class="next-btn" data-i="next_btn">Next: PHP →</a>
+</div>
+
+<script>
+const T={
+  en:{back:"Back to Courses",title:"Python — Programming for Everyone",hero_desc:"Clean, readable, powerful. Python is the go-to language for data science, AI, automation, and web backends. Perfect for beginners and professionals alike.",b1:"Beginner Friendly",b2:"Data Science",b3:"AI / ML",nav_label:"Topics",nav_intro:"What is Python?",nav_syntax:"Basic Syntax",nav_data:"Data Types",nav_control:"Control Flow",nav_func:"Functions",nav_lists:"Lists & Dicts",nav_oop:"OOP Classes",nav_practice:"Mini Project",s1_title:"What is Python?",s1_intro:"Python is a high-level, interpreted programming language created by Guido van Rossum in 1991. It emphasizes code readability and simplicity, making it ideal for beginners while remaining powerful enough for experts.",c1_t:"🐍 Readable Code",c1_d:"Python uses indentation instead of braces. Code looks almost like plain English, reducing the learning curve.",c2_t:"🔋 Batteries Included",c2_d:"The standard library covers file I/O, networking, math, dates and much more — right out of the box.",c3_t:"🌍 Everywhere",c3_d:"Web (Django, Flask), data (pandas, numpy), AI (TensorFlow, PyTorch), automation, scripting — Python does it all.",s2_title:"Basic Syntax",s2_intro:"Python syntax is clean and minimal. No semicolons, no curly braces — just clean indentation to define code blocks.",tip_indent:"Indentation (4 spaces or 1 tab) is not optional in Python — it defines code blocks. Inconsistent indentation causes errors.",s3_title:"Data Types",s3_intro:"Python has several built-in data types. Understanding them is fundamental to writing correct programs.",s4_title:"Control Flow",s4_intro:"Control flow lets your program make decisions and repeat actions. Python provides if/elif/else and two loop types.",s5_title:"Functions",s5_intro:"Functions group reusable code. Use the def keyword to define them. Python also supports lambda functions and default arguments.",s6_title:"Lists & Dictionaries",s6_intro:"Lists store ordered sequences, dictionaries store key-value pairs. These two data structures are used in almost every Python program.",s7_title:"OOP — Classes & Objects",s7_intro:"Object-Oriented Programming organizes code into classes that bundle data and behaviour. Python supports full OOP with inheritance and special methods.",s8_title:"🛠 Mini Project: Number Guessing Game",s8_intro:"Put it all together — variables, loops, conditions, functions. Build a small but complete interactive game.",challenge:"Add a difficulty setting (easy=20 attempts, hard=5 attempts). If the player runs out of attempts, reveal the secret number and ask to play again.",footer_txt:"© 2026 Cody Tech — Python Course",next_btn:"Next: PHP →"},
+  ru:{back:"Назад к курсам",title:"Python — программирование для всех",hero_desc:"Чистый, читаемый, мощный. Python — основной язык для науки о данных, ИИ, автоматизации и веб-бэкенда.",b1:"Для начинающих",b2:"Наука о данных",b3:"ИИ / МО",nav_label:"Темы",nav_intro:"Что такое Python?",nav_syntax:"Базовый синтаксис",nav_data:"Типы данных",nav_control:"Управление потоком",nav_func:"Функции",nav_lists:"Списки и словари",nav_oop:"ООП классы",nav_practice:"Мини-проект",s1_title:"Что такое Python?",s1_intro:"Python — высокоуровневый интерпретируемый язык, созданный Гвидо ван Россумом в 1991 году. Делает упор на читаемость кода.",c1_t:"🐍 Читаемый код",c1_d:"Python использует отступы вместо скобок. Код похож на обычный английский текст.",c2_t:"🔋 Всё включено",c2_d:"Стандартная библиотека покрывает файлы, сеть, математику, даты и многое другое.",c3_t:"🌍 Везде",c3_d:"Веб (Django, Flask), данные (pandas), ИИ (TensorFlow), автоматизация — Python всё это умеет.",s2_title:"Базовый синтаксис",s2_intro:"Синтаксис Python чистый и минимальный. Без точек с запятой и фигурных скобок.",tip_indent:"Отступы (4 пробела или 1 таб) в Python обязательны — они определяют блоки кода.",s3_title:"Типы данных",s3_intro:"В Python несколько встроенных типов данных. Понимание их фундаментально для написания программ.",s4_title:"Управление потоком",s4_intro:"Условия и циклы позволяют программе принимать решения и повторять действия.",s5_title:"Функции",s5_intro:"Функции группируют многократно используемый код. Используйте def для их определения.",s6_title:"Списки и словари",s6_intro:"Списки хранят упорядоченные последовательности, словари — пары ключ-значение.",s7_title:"ООП — Классы и объекты",s7_intro:"ООП организует код в классы. Python поддерживает полное ООП с наследованием.",s8_title:"🛠 Мини-проект: Угадай число",s8_intro:"Соберите всё вместе — переменные, циклы, условия, функции. Создайте небольшую игру.",challenge:"Добавьте уровень сложности (лёгкий=20 попыток, сложный=5). При исчерпании попыток — показать число.",footer_txt:"© 2026 Cody Tech — Курс Python",next_btn:"Далее: PHP →"},
+  kz:{back:"Курстарға оралу",title:"Python — барша үшін бағдарламалау",hero_desc:"Таза, оқылатын, қуатты. Python — деректер ғылымы, жасанды интеллект, автоматтандыру үшін негізгі тіл.",b1:"Жаңадайлар үшін",b2:"Деректер ғылымы",b3:"ЖИ / МО",nav_label:"Тақырыптар",nav_intro:"Python дегеніміз не?",nav_syntax:"Негізгі синтаксис",nav_data:"Деректер түрлері",nav_control:"Басқару ағыны",nav_func:"Функциялар",nav_lists:"Тізімдер мен сөздіктер",nav_oop:"ООП кластар",nav_practice:"Мини жоба",s1_title:"Python дегеніміз не?",s1_intro:"Python — 1991 жылы Гвидо ван Россум жасаған жоғары деңгейлі интерпретацияланатын тіл.",c1_t:"🐍 Оқылатын код",c1_d:"Python жақшалардың орнына шегіністер қолданады. Код ағылшын мәтіне ұқсайды.",c2_t:"🔋 Толық жиынтық",c2_d:"Стандартты кітапхана файлдарды, желіні, математиканы жабады.",c3_t:"🌍 Барлық жерде",c3_d:"Веб (Django), деректер (pandas), ЖИ (TensorFlow), автоматтандыру.",s2_title:"Негізгі синтаксис",s2_intro:"Python синтаксисі таза және минималды. Нүктелі үтір мен жиырмалы жақша жоқ.",tip_indent:"Python-да шегіністер (4 бос орын немесе 1 tab) міндетті — олар код блоктарын анықтайды.",s3_title:"Деректер түрлері",s3_intro:"Python-да бірнеше кірістірілген деректер түрлері бар.",s4_title:"Басқару ағыны",s4_intro:"Шарттар мен циклдер бағдарламаға шешім қабылдауға және әрекеттерді қайталауға мүмкіндік береді.",s5_title:"Функциялар",s5_intro:"Функциялар қайта пайдаланылатын кодты топтастырады. def кілт сөзін пайдаланыңыз.",s6_title:"Тізімдер мен сөздіктер",s6_intro:"Тізімдер реттелген тізбектерді, сөздіктер кілт-мән жұптарын сақтайды.",s7_title:"ООП — Кластар мен объектілер",s7_intro:"Объектілі-бағытталған бағдарламалау кодты кластарға ұйымдастырады.",s8_title:"🛠 Мини жоба: Санды тап",s8_intro:"Бәрін біріктіріңіз — айнымалылар, циклдер, шарттар, функциялар.",challenge:"Қиындық деңгейін қосыңыз (оңай=20 әрекет, қиын=5). Әрекеттер бітсе — санды ашып, қайта ойнауды ұсыныңыз.",footer_txt:"© 2026 Cody Tech — Python Курсы",next_btn:"Келесі: PHP →"}
+};
+let lang='en';
+function setLang(l,btn){lang=l;document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const t=T[l];document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(t[k]!==undefined)el.textContent=t[k];});}
+let dark=true;
+function toggleTheme(){dark=!dark;document.body.classList.toggle('light',!dark);document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';}
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});});
+</script>
+</body>
+</html>

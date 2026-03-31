@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Learning — Cody Tech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body.light { background:#f4f4f4; color:#111; }
+        body.light .top-bar { background:rgba(255,255,255,0.95); border-bottom:1px solid #ddd; }
+        body.light .top-bar a, body.light .logo-txt { color:#111; }
+        body.light .filter-bar { background:#e8e8e8; }
+        body.light .filter-btn { background:#ddd; color:#333; border-color:#ccc; }
+        body.light .filter-btn.active { background:#1100ff; color:#fff; border-color:#1100ff; }
+        body.light .ref-card { background:#fff; border-color:#ddd; color:#111; }
+        body.light .ref-card p { color:#444; }
+        body.light .chip { background:#eee; border-color:#ccc; color:#333; }
+        body.light .page-title p { color:#666; }
+        body.light .page-title h1 { color:#111; }
+        body.light .diff-label { color:#666; }
+        body.light footer { background:#e0e0e0; color:#888; }
+
+        .top-bar {
+            position:fixed; top:0; left:0; right:0;
+            display:flex; justify-content:space-between; align-items:center;
+            padding:12px 28px;
+            background:rgba(10,10,10,0.95);
+            backdrop-filter:blur(8px);
+            z-index:1000;
+            border-bottom:1px solid #1e1e1e;
+        }
+        .logo-txt { font-weight:bold; font-size:17px; color:#fff; letter-spacing:2px; }
+        .top-left { display:flex; align-items:center; gap:22px; }
+        .top-bar a { color:#aaa; text-decoration:none; font-size:13px; transition:color 0.2s; }
+        .top-bar a:hover { color:#fff; }
+        body.light .top-bar a:hover { color:#000; }
+        .top-right { display:flex; gap:7px; align-items:center; }
+
+        .ctrl-btn {
+            padding:5px 11px; border-radius:7px;
+            border:1px solid #333; background:transparent;
+            color:#888; cursor:pointer; font-size:12px; transition:all 0.2s;
+        }
+        .ctrl-btn:hover, .ctrl-btn.active { background:#1100ff; border-color:#1100ff; color:#fff; }
+        body.light .ctrl-btn { border-color:#ccc; color:#555; }
+        body.light .ctrl-btn:hover, body.light .ctrl-btn.active { background:#1100ff; border-color:#1100ff; color:#fff; }
+
+        .theme-btn {
+            padding:5px 9px; border-radius:7px;
+            border:1px solid #333; background:transparent;
+            cursor:pointer; font-size:15px; transition:border-color 0.2s;
+        }
+        body.light .theme-btn { border-color:#ccc; }
+
+        .page-wrapper { padding-top:66px; }
+
+        .page-title { text-align:center; padding:36px 20px 16px; }
+        .page-title h1 { font-size:28px; color:#fff; margin-bottom:6px; }
+        .page-title p { color:#777; font-size:14px; }
+
+        .filter-bar {
+            display:flex; flex-wrap:wrap; justify-content:center;
+            gap:7px; padding:14px 20px;
+            background:#111;
+        }
+        .filter-btn {
+            padding:6px 15px; border-radius:18px;
+            border:1px solid #2e2e2e; background:transparent;
+            color:#888; cursor:pointer; font-size:12px; transition:all 0.2s;
+        }
+        .filter-btn.active { background:#1100ff; border-color:#1100ff; color:#fff; }
+        .filter-btn:hover { border-color:#555; color:#ddd; }
+
+        .lang-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill, minmax(265px,1fr));
+            gap:18px;
+            padding:26px 28px 60px;
+            max-width:1150px;
+            margin:0 auto;
+        }
+        .ref-card {
+            background:#181818; border:1px solid #252525;
+            border-top:3px solid var(--c);
+            border-radius:11px; padding:20px;
+            transition:transform 0.2s, box-shadow 0.2s;
+        }
+        .ref-card:hover { transform:translateY(-4px); box-shadow:0 6px 18px rgba(0,0,0,0.35); }
+        .ref-card.hidden { display:none; }
+
+        .card-top { display:flex; align-items:center; gap:11px; margin-bottom:11px; }
+        .c-icon {
+            font-size:24px; width:42px; height:42px;
+            display:flex; align-items:center; justify-content:center;
+            background:#222; border-radius:9px; flex-shrink:0;
+        }
+        body.light .c-icon { background:#f0f0f0; }
+        .c-name { font-size:17px; font-weight:bold; color:var(--c); }
+        .ref-card p { font-size:13px; color:#999; line-height:1.6; margin-bottom:12px; }
+        .chips { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:11px; }
+        .chip {
+            font-size:11px; padding:2px 8px;
+            background:#222; border:1px solid #2e2e2e;
+            border-radius:5px; color:#bbb;
+        }
+        .diff-row { display:flex; align-items:center; gap:7px; }
+        .d-dots { display:flex; gap:3px; }
+        .d-dot { width:7px; height:7px; border-radius:50%; background:#2e2e2e; }
+        .d-dot.on { background:var(--c); }
+        .diff-label { font-size:11px; color:#555; }
+
+        footer { padding:22px; text-align:center; background:#080808; color:#444; font-size:12px; }
+        body.light footer { background:#e0e0e0; color:#888; }
+
+        /* LEARN BUTTON */
+        .learn-btn {
+            display:inline-block; margin-top:14px;
+            padding:7px 16px; border-radius:7px;
+            background:var(--c); color:#000;
+            text-decoration:none; font-size:12px; font-weight:700;
+            transition:opacity 0.2s, transform 0.2s;
+            opacity:0.85;
+        }
+        .learn-btn:hover { opacity:1; transform:translateY(-1px); }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-left">
+        <span class="logo-txt">CODY</span>
+        <a href="index.html">← <span data-i="back">Back</span></a>
+        <a href="login.html" data-i="login">Login</a>
+    </div>
+    <div class="top-right">
+        <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+        <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    </div>
+</div>
+
+<div class="page-wrapper">
+    <div class="page-title">
+        <h1 data-i="title">Language Reference</h1>
+        <p data-i="subtitle">A quick guide to popular programming languages</p>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" onclick="doFilter('all',this)" data-i="f_all">All</button>
+        <button class="filter-btn" onclick="doFilter('web',this)">Web</button>
+        <button class="filter-btn" onclick="doFilter('backend',this)">Backend</button>
+        <button class="filter-btn" onclick="doFilter('data',this)">Data / AI</button>
+        <button class="filter-btn" onclick="doFilter('mobile',this)">Mobile</button>
+        <button class="filter-btn" onclick="doFilter('systems',this)">Systems</button>
+    </div>
+
+    <div class="lang-grid">
+
+        <div class="ref-card" data-cat="web" style="--c:#e34c26">
+            <div class="card-top"><div class="c-icon">🌐</div><div class="c-name">HTML</div></div>
+            <p data-i="d_html">The skeleton of every webpage. Defines structure: headings, paragraphs, images, links. It's a markup language, not a programming language.</p>
+            <div class="chips"><span class="chip" data-i="c_webpages">Web pages</span><span class="chip" data-i="c_static">Static sites</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv1">Beginner</span>
+            </div>
+            <a href="learn-html.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="web" style="--c:#264de4">
+            <div class="card-top"><div class="c-icon">🎨</div><div class="c-name">CSS</div></div>
+            <p data-i="d_css">The design layer of the web. Controls colors, fonts, layouts and animations. Works alongside HTML to make pages look good.</p>
+            <div class="chips"><span class="chip" data-i="c_styling">Styling</span><span class="chip" data-i="c_anim">Animations</span><span class="chip" data-i="c_resp">Responsive</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv2">Easy</span>
+            </div>
+            <a href="learn-css.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="web backend" style="--c:#f7df1e">
+            <div class="card-top"><div class="c-icon">⚡</div><div class="c-name">JavaScript</div></div>
+            <p data-i="d_js">The language of the web. Makes pages interactive. With Node.js it runs on servers too. The most widely used language in the world.</p>
+            <div class="chips"><span class="chip">Frontend</span><span class="chip">Node.js</span><span class="chip">APIs</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv3">Moderate</span>
+            </div>
+            <a href="learn-js.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="backend data" style="--c:#3572A5">
+            <div class="card-top"><div class="c-icon">🐍</div><div class="c-name">Python</div></div>
+            <p data-i="d_py">Clean and readable. Go-to language for data science, machine learning and automation. Also great for web backends with Django or Flask.</p>
+            <div class="chips"><span class="chip">ML / AI</span><span class="chip" data-i="c_data">Data Analysis</span><span class="chip">Django</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv1">Beginner</span>
+            </div>
+            <a href="learn-python.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="backend web" style="--c:#777BB4">
+            <div class="card-top"><div class="c-icon">🐘</div><div class="c-name">PHP</div></div>
+            <p data-i="d_php">Server-side language that powers a huge part of the web, including WordPress. Generates HTML dynamically on the server.</p>
+            <div class="chips"><span class="chip">WordPress</span><span class="chip">CMS</span><span class="chip">Web apps</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv2">Easy</span>
+            </div>
+            <a href="learn-php.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="backend mobile" style="--c:#b07219">
+            <div class="card-top"><div class="c-icon">☕</div><div class="c-name">Java</div></div>
+            <p data-i="d_java">Robust, object-oriented. Used in enterprise apps and Android. Write once, run anywhere — runs on the JVM cross-platform.</p>
+            <div class="chips"><span class="chip">Android</span><span class="chip">Enterprise</span><span class="chip">Big Data</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv3">Moderate</span>
+            </div>
+            <a href="learn-java.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="systems" style="--c:#f34b7d">
+            <div class="card-top"><div class="c-icon">⚙️</div><div class="c-name">C++</div></div>
+            <p data-i="d_cpp">High-performance language used where speed matters. Powers game engines, operating systems and real-time applications.</p>
+            <div class="chips"><span class="chip" data-i="c_games">Game engines</span><span class="chip">OS</span><span class="chip">Embedded</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv4">Advanced</span>
+            </div>
+            <a href="learn-c++.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="data backend" style="--c:#00aeff">
+            <div class="card-top"><div class="c-icon">🗄️</div><div class="c-name">SQL</div></div>
+            <p data-i="d_sql">Standard language for databases. Used to create, read, update and delete data. Every developer should know the basics.</p>
+            <div class="chips"><span class="chip">Databases</span><span class="chip" data-i="c_report">Reporting</span><span class="chip">Backend</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv2">Easy</span>
+            </div>
+            <a href="learn-sql.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="mobile" style="--c:#A97BFF">
+            <div class="card-top"><div class="c-icon">📱</div><div class="c-name">Kotlin</div></div>
+            <p data-i="d_kotlin">Modern language for Android. More concise and safer than Java. Officially endorsed by Google for Android development.</p>
+            <div class="chips"><span class="chip">Android</span><span class="chip">Cross-platform</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv3">Moderate</span>
+            </div>
+            <a href="learn-kotlin.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="mobile" style="--c:#F05138">
+            <div class="card-top"><div class="c-icon">🍎</div><div class="c-name">Swift</div></div>
+            <p data-i="d_swift">Apple's language for iOS and macOS. Fast, safe and modern. Replaced Objective-C as the main Apple platform language.</p>
+            <div class="chips"><span class="chip">iOS</span><span class="chip">macOS</span><span class="chip">watchOS</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv3">Moderate</span>
+            </div>
+            <a href="learn-swift.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="systems" style="--c:#dea584">
+            <div class="card-top"><div class="c-icon">🦀</div><div class="c-name">Rust</div></div>
+            <p data-i="d_rust">Systems language focused on safety and performance. Prevents memory bugs at compile time. Used in critical systems.</p>
+            <div class="chips"><span class="chip">WebAssembly</span><span class="chip">Systems</span><span class="chip">CLI</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div></div>
+                <span class="diff-label" data-i="lv5">Expert</span>
+            </div>
+            <a href="learn-rust.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+        <div class="ref-card" data-cat="web backend" style="--c:#2b7489">
+            <div class="card-top"><div class="c-icon">🔷</div><div class="c-name">TypeScript</div></div>
+            <p data-i="d_ts">JavaScript with static typing. Catches bugs before they run. Used in large projects and modern frameworks like Angular and Next.js.</p>
+            <div class="chips"><span class="chip">React</span><span class="chip">Angular</span><span class="chip">Node.js</span></div>
+            <div class="diff-row">
+                <div class="d-dots"><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot on"></div><div class="d-dot"></div><div class="d-dot"></div></div>
+                <span class="diff-label" data-i="lv3">Moderate</span>
+            </div>
+            <a href="learn-typescript.html" class="learn-btn" data-i="btn_learn">Start Learning →</a>
+        </div>
+
+    </div>
+</div>
+
+<footer>© 2026 Cody Tech.</footer>
+
+<script>
+const LANG = {
+    en:{
+        title:"Language Reference", subtitle:"A quick guide to popular programming languages",
+        back:"Back", login:"Login", f_all:"All",
+        lv1:"Beginner", lv2:"Easy", lv3:"Moderate", lv4:"Advanced", lv5:"Expert",
+        d_html:"The skeleton of every webpage. Defines structure: headings, paragraphs, images, links. It's a markup language, not a programming language.",
+        d_css:"The design layer of the web. Controls colors, fonts, layouts and animations. Works alongside HTML to make pages look good.",
+        d_js:"The language of the web. Makes pages interactive. With Node.js it runs on servers too. The most widely used language in the world.",
+        d_py:"Clean and readable. Go-to language for data science, machine learning and automation. Also great for web backends with Django or Flask.",
+        d_php:"Server-side language that powers a huge part of the web, including WordPress. Generates HTML dynamically on the server.",
+        d_java:"Robust, object-oriented. Used in enterprise apps and Android. Write once, run anywhere — runs on the JVM cross-platform.",
+        d_cpp:"High-performance language used where speed matters. Powers game engines, operating systems and real-time applications.",
+        d_sql:"Standard language for databases. Used to create, read, update and delete data. Every developer should know the basics.",
+        d_kotlin:"Modern language for Android. More concise and safer than Java. Officially endorsed by Google for Android development.",
+        d_swift:"Apple's language for iOS and macOS. Fast, safe and modern. Replaced Objective-C as the main Apple platform language.",
+        d_rust:"Systems language focused on safety and performance. Prevents memory bugs at compile time. Used in critical systems.",
+        d_ts:"JavaScript with static typing. Catches bugs before they run. Used in large projects and modern frameworks like Angular and Next.js.",
+        c_webpages:"Web pages", c_static:"Static sites", c_styling:"Styling", c_anim:"Animations",
+        c_resp:"Responsive", c_data:"Data Analysis", c_games:"Game engines", c_report:"Reporting",
+        btn_learn:"Start Learning →",
+    },
+    ru:{
+        title:"Справочник языков", subtitle:"Краткое руководство по популярным языкам программирования",
+        back:"Назад", login:"Войти", f_all:"Все",
+        lv1:"Начинающий", lv2:"Легко", lv3:"Средний", lv4:"Продвинутый", lv5:"Эксперт",
+        d_html:"Скелет каждой веб-страницы. Определяет структуру: заголовки, абзацы, изображения, ссылки. Язык разметки, не программирования.",
+        d_css:"Слой дизайна веба. Управляет цветами, шрифтами, макетами и анимациями. Работает совместно с HTML.",
+        d_js:"Язык веба. Делает страницы интерактивными. С Node.js работает и на серверах. Самый популярный язык в мире.",
+        d_py:"Чистый и читаемый. Основной язык для науки о данных, машинного обучения и автоматизации. Отлично для бэкенда.",
+        d_php:"Серверный язык, на котором работает большая часть веба, включая WordPress. Генерирует HTML на сервере.",
+        d_java:"Надёжный и объектно-ориентированный. Используется в корпоративном ПО и Android. Работает на JVM.",
+        d_cpp:"Высокопроизводительный язык для задач, где важна скорость. Игровые движки, ОС, встраиваемые системы.",
+        d_sql:"Стандартный язык для баз данных. Создание, чтение, обновление и удаление данных. Must-know для каждого.",
+        d_kotlin:"Современный язык для Android. Лаконичнее и безопаснее Java. Официально рекомендован Google.",
+        d_swift:"Язык Apple для iOS и macOS. Быстрый, безопасный и современный. Заменил Objective-C.",
+        d_rust:"Системный язык с фокусом на безопасность. Предотвращает ошибки памяти на этапе компиляции.",
+        d_ts:"JavaScript со статической типизацией. Ловит ошибки до запуска. Для крупных проектов и фреймворков.",
+        c_webpages:"Веб-страницы", c_static:"Статические сайты", c_styling:"Оформление", c_anim:"Анимации",
+        c_resp:"Адаптивность", c_data:"Анализ данных", c_games:"Игровые движки", c_report:"Отчёты",
+        btn_learn:"Начать обучение →",
+    },
+    kz:{
+        title:"Тіл анықтамалығы", subtitle:"Танымал бағдарламалау тілдеріне қысқаша нұсқаулық",
+        back:"Артқа", login:"Кіру", f_all:"Барлығы",
+        lv1:"Бастаушы", lv2:"Оңай", lv3:"Орташа", lv4:"Жоғары", lv5:"Эксперт",
+        d_html:"Әр веб-беттің қаңқасы. Құрылымды анықтайды: тақырыптар, абзацтар, суреттер, сілтемелер. Бағдарламалау емес — белгілеу тілі.",
+        d_css:"Веб-тің дизайн қабаты. Түстерді, қаріптерді, макеттерді басқарады. HTML-мен бірге жұмыс істейді.",
+        d_js:"Веб тілі. Беттерді интерактивті етеді. Node.js арқылы серверлерде де жұмыс істейді.",
+        d_py:"Таза және оқылатын. Деректер ғылымы, машиналық оқыту және автоматтандыру үшін негізгі тіл.",
+        d_php:"WordPress-ті қосқанда вебтің үлкен бөлігін қуаттандыратын серверлік тіл.",
+        d_java:"Сенімді және объектілі-бағытталған. Кәсіпорын ПЖ мен Android қосымшаларында қолданылады.",
+        d_cpp:"Жылдамдық маңызды болғанда қолданылатын жоғары өнімді тіл. Ойын қозғалтқыштары мен ОЖ.",
+        d_sql:"Дерекқорлар үшін стандартты тіл. Деректерді жасау, оқу, жаңарту және жою.",
+        d_kotlin:"Android үшін заманауи тіл. Java-дан қысқа және қауіпсіз. Google ресми ұсынады.",
+        d_swift:"iOS және macOS үшін Apple тілі. Жылдам, қауіпсіз және заманауи.",
+        d_rust:"Қауіпсіздік пен өнімділікке бағытталған жүйелік тіл. Жад қателерін болдырмайды.",
+        d_ts:"Статикалық типтеуі бар JavaScript. Қателерді іске қосылғанға дейін анықтайды.",
+        c_webpages:"Веб-беттер", c_static:"Статикалық сайттар", c_styling:"Безендіру", c_anim:"Анимациялар",
+        c_resp:"Адаптивтілік", c_data:"Деректер талдауы", c_games:"Ойын қозғалтқыштары", c_report:"Есептілік",
+        btn_learn:"Оқуды бастау →",
+    }
+};
+let lang='en';
+function setLang(l,btn){
+    lang=l;
+    document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const t=LANG[l];
+    document.querySelectorAll('[data-i]').forEach(el=>{
+        const k=el.getAttribute('data-i');
+        if(t[k]) el.textContent=t[k];
+    });
+}
+function doFilter(cat,btn){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.ref-card').forEach(c=>{
+        c.classList.toggle('hidden', cat!=='all' && !c.dataset.cat.includes(cat));
+    });
+}
+let dark=true;
+function toggleTheme(){
+    dark=!dark;
+    document.body.classList.toggle('light',!dark);
+    document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+</script>
+</body>
+</html>

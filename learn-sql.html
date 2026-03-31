@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#00aeff;
+  --accent2:#3bc0ff;
+  --bg:#080808;
+  --bg2:#111;
+  --bg3:#181818;
+  --border:#222;
+  --text:#e8e8e8;
+  --muted:#666;
+  --code-bg:#0d0d0d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(8,8,8,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a2a;background:transparent;
+  color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}
+body.light .back-a{color:#888;}
+body.light .back-a:hover{color:#111;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .sidebar-link{color:#555;}
+body.light .sidebar-link:hover,.body.light .sidebar-link.active{color:var(--accent);}
+
+.hero-strip{
+  margin-top:56px;
+  padding:48px 32px 36px;
+  background:linear-gradient(135deg,#001a2a 0%,#002a4a 40%,#000a1a 100%);
+  border-bottom:1px solid #0055aa;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  font-size:64px;width:88px;height:88px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(0,174,255,.35);
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:28px;color:#fff;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}
+.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{
+  padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;
+  background:rgba(0,174,255,.15);border:1px solid rgba(0,174,255,.3);color:var(--accent2);
+}
+
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#666;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#151515;color:#ccc;}
+.sidebar-link.active{background:rgba(0,174,255,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+.code-block{
+  background:var(--code-bg);
+  border:1px solid #1e1e1e;
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:16px 0;
+  overflow-x:auto;
+}
+.code-block pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.75;color:#c9d1d9;
+}
+.code-label{
+  font-size:10px;color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:10px;display:block;
+}
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.concept-card h4{font-size:14px;color:var(--accent2);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+.tip{background:rgba(0,174,255,.06);border:1px solid rgba(0,174,255,.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13px;color:#aaa;}
+.tip strong{color:var(--accent2);}
+.page-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1180px;margin:0 auto;font-size:12px;color:#444;}
+.nav-btns{display:flex;gap:10px;}
+.next-btn{padding:10px 20px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;}
+.next-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.prev-btn{padding:10px 20px;background:transparent;border:1px solid #2a2a2a;border-radius:8px;color:#888;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;text-decoration:none;transition:all .2s;}
+.prev-btn:hover{border-color:var(--accent);color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">SQL</div>
+  <div class="hero-info">
+    <h1 data-i="title">SQL — Structured Query Language</h1>
+    <p data-i="hero_desc">SQL is the standard language for managing and querying relational databases. Every developer needs to know how to retrieve, insert, update, and delete data efficiently.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Database Management</span>
+      <span class="badge" data-i="b2">Data Analysis</span>
+      <span class="badge" data-i="b3">Essential Skill</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is SQL?</a>
+      <a href="#select" class="sidebar-link" data-i="nav_select">SELECT Queries</a>
+      <a href="#filter" class="sidebar-link" data-i="nav_filter">Filtering & Sorting</a>
+      <a href="#join" class="sidebar-link" data-i="nav_join">JOINs</a>
+      <a href="#aggregate" class="sidebar-link" data-i="nav_aggregate">Aggregate Functions</a>
+      <a href="#insert" class="sidebar-link" data-i="nav_insert">INSERT, UPDATE, DELETE</a>
+      <a href="#schema" class="sidebar-link" data-i="nav_schema">Schema Design</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Project: Library DB</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is SQL?</h2>
+      <p class="intro" data-i="s1_intro">SQL (Structured Query Language) is used to communicate with databases. It allows you to query, manipulate, and define data. Most modern applications use SQL databases like MySQL, PostgreSQL, SQLite, or Microsoft SQL Server.</p>
+      <div class="concept-grid">
+        <div class="concept-card"><h4 data-i="c1_t">🗄️ Relational Databases</h4><p data-i="c1_d">Data is stored in tables with rows and columns, connected by relationships.</p></div>
+        <div class="concept-card"><h4 data-i="c2_t">📊 CRUD Operations</h4><p data-i="c2_d">Create, Read, Update, Delete — the four basic operations on data.</p></div>
+        <div class="concept-card"><h4 data-i="c3_t">🔍 Query Power</h4><p data-i="c3_d">Filter, sort, join, and aggregate data with powerful query capabilities.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="select">
+      <h2 data-i="s2_title">SELECT Queries</h2>
+      <p class="intro" data-i="s2_intro">The SELECT statement retrieves data from one or more tables.</p>
+      <div class="code-block">
+        <span class="code-label">basic SELECT</span>
+        <pre><span class="com">-- Select all columns from a table</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users;
+
+<span class="com">-- Select specific columns</span>
+<span class="kw">SELECT</span> first_name, last_name, email <span class="kw">FROM</span> users;
+
+<span class="com">-- Select with alias</span>
+<span class="kw">SELECT</span> first_name <span class="kw">AS</span> "First Name", age <span class="kw">AS</span> "Years" <span class="kw">FROM</span> users;
+
+<span class="com">-- Select distinct values (remove duplicates)</span>
+<span class="kw">SELECT DISTINCT</span> city <span class="kw">FROM</span> users;
+
+<span class="com">-- Limit results</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> products <span class="kw">LIMIT</span> <span class="num">10</span>;
+
+<span class="com">-- Example database: e-commerce</span>
+<span class="kw">CREATE TABLE</span> users (
+    id <span class="kw">INT PRIMARY KEY AUTO_INCREMENT</span>,
+    first_name <span class="kw">VARCHAR</span>(<span class="num">50</span>),
+    last_name <span class="kw">VARCHAR</span>(<span class="num">50</span>),
+    email <span class="kw">VARCHAR</span>(<span class="num">100</span>) <span class="kw">UNIQUE</span>,
+    age <span class="kw">INT</span>,
+    city <span class="kw">VARCHAR</span>(<span class="num">50</span>),
+    created_at <span class="kw">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>
+);</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="filter">
+      <h2 data-i="s3_title">Filtering & Sorting</h2>
+      <p class="intro" data-i="s3_intro">Use WHERE to filter rows, ORDER BY to sort, and operators for conditions.</p>
+      <div class="code-block">
+        <span class="code-label">WHERE clause</span>
+        <pre><span class="com">-- Basic comparison operators</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> age >= <span class="num">18</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> city = <span class="str">'New York'</span>;
+
+<span class="com">-- Text pattern matching (LIKE)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> email <span class="kw">LIKE</span> <span class="str">'%@gmail.com'</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> first_name <span class="kw">LIKE</span> <span class="str">'J%'</span>;  <span class="com">-- Starts with J</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> last_name <span class="kw">LIKE</span> <span class="str">'%son'</span>; <span class="com">-- Ends with son</span>
+
+<span class="com">-- Logical operators (AND, OR, NOT)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> age <span class="kw">BETWEEN</span> <span class="num">25</span> <span class="kw">AND</span> <span class="num">35</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> city <span class="kw">IN</span> (<span class="str">'New York'</span>, <span class="str">'Los Angeles'</span>, <span class="str">'Chicago'</span>);
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> city <span class="kw">NOT IN</span> (<span class="str">'New York'</span>, <span class="str">'LA'</span>);
+
+<span class="com">-- Sorting results</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>;  <span class="com">-- Newest first</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">ORDER BY</span> last_name <span class="kw">ASC</span>, first_name <span class="kw">ASC</span>;</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="join">
+      <h2 data-i="s4_title">JOINs — Combining Tables</h2>
+      <p class="intro" data-i="s4_intro">JOINs combine data from multiple tables based on relationships.</p>
+      <div class="code-block">
+        <span class="code-label">JOIN examples</span>
+        <pre><span class="com">-- Create related tables</span>
+<span class="kw">CREATE TABLE</span> orders (
+    id <span class="kw">INT PRIMARY KEY</span>,
+    user_id <span class="kw">INT</span>,
+    product <span class="kw">VARCHAR</span>(<span class="num">100</span>),
+    amount <span class="kw">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>),
+    <span class="kw">FOREIGN KEY</span> (user_id) <span class="kw">REFERENCES</span> users(id)
+);
+
+<span class="com">-- INNER JOIN (only matching rows)</span>
+<span class="kw">SELECT</span> users.first_name, users.last_name, orders.product, orders.amount
+<span class="kw">FROM</span> users
+<span class="kw">INNER JOIN</span> orders <span class="kw">ON</span> users.id = orders.user_id;
+
+<span class="com">-- LEFT JOIN (all users, even without orders)</span>
+<span class="kw">SELECT</span> users.first_name, users.last_name, <span class="kw">COALESCE</span>(orders.product, <span class="str">'No orders'</span>) <span class="kw">AS</span> product
+<span class="kw">FROM</span> users
+<span class="kw">LEFT JOIN</span> orders <span class="kw">ON</span> users.id = orders.user_id;
+
+<span class="com">-- Multiple JOINs</span>
+<span class="kw">SELECT</span> u.first_name, o.product, o.amount, p.category
+<span class="kw">FROM</span> users u
+<span class="kw">JOIN</span> orders o <span class="kw">ON</span> u.id = o.user_id
+<span class="kw">JOIN</span> products p <span class="kw">ON</span> o.product_id = p.id;
+
+<span class="com">-- Self JOIN (employee-manager relationship)</span>
+<span class="kw">SELECT</span> e.name <span class="kw">AS</span> employee, m.name <span class="kw">AS</span> manager
+<span class="kw">FROM</span> employees e
+<span class="kw">LEFT JOIN</span> employees m <span class="kw">ON</span> e.manager_id = m.id;</pre>
+      </div>
+      <div class="tip"><strong>💡 JOIN Types:</strong> <span data-i="tip_join">INNER JOIN (matches only), LEFT JOIN (all left table), RIGHT JOIN (all right table), FULL OUTER JOIN (all from both), CROSS JOIN (Cartesian product).</span></div>
+    </div>
+
+    <div class="learn-section" id="aggregate">
+      <h2 data-i="s5_title">Aggregate Functions & Grouping</h2>
+      <p class="intro" data-i="s5_intro">Aggregate functions perform calculations on sets of rows. GROUP BY groups rows for aggregation.</p>
+      <div class="code-block">
+        <span class="code-label">aggregates</span>
+        <pre><span class="com">-- Common aggregate functions</span>
+<span class="kw">SELECT</span> <span class="kw">COUNT</span>(*) <span class="kw">FROM</span> users;                    <span class="com">-- Total users</span>
+<span class="kw">SELECT</span> <span class="kw">AVG</span>(age) <span class="kw">FROM</span> users;                    <span class="com">-- Average age</span>
+<span class="kw">SELECT</span> <span class="kw">SUM</span>(amount) <span class="kw">FROM</span> orders;                <span class="com">-- Total sales</span>
+<span class="kw">SELECT</span> <span class="kw">MAX</span>(amount) <span class="kw">FROM</span> orders;                <span class="com">-- Highest order</span>
+<span class="kw">SELECT</span> <span class="kw">MIN</span>(amount) <span class="kw">FROM</span> orders;                <span class="com">-- Lowest order</span>
+
+<span class="com">-- GROUP BY</span>
+<span class="kw">SELECT</span> city, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> user_count
+<span class="kw">FROM</span> users
+<span class="kw">GROUP BY</span> city
+<span class="kw">ORDER BY</span> user_count <span class="kw">DESC</span>;
+
+<span class="com">-- GROUP BY with multiple columns</span>
+<span class="kw">SELECT</span> city, age, <span class="kw">COUNT</span>(*)
+<span class="kw">FROM</span> users
+<span class="kw">GROUP BY</span> city, age;
+
+<span class="com">-- HAVING (filter after GROUP BY)</span>
+<span class="kw">SELECT</span> city, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> user_count
+<span class="kw">FROM</span> users
+<span class="kw">GROUP BY</span> city
+<span class="kw">HAVING</span> <span class="kw">COUNT</span>(*) > <span class="num">5</span>;
+
+<span class="com">-- Complex example: monthly sales</span>
+<span class="kw">SELECT</span> 
+    <span class="kw">DATE_FORMAT</span>(order_date, <span class="str">'%Y-%m'</span>) <span class="kw">AS</span> month,
+    <span class="kw">COUNT</span>(*) <span class="kw">AS</span> total_orders,
+    <span class="kw">SUM</span>(amount) <span class="kw">AS</span> revenue,
+    <span class="kw">AVG</span>(amount) <span class="kw">AS</span> avg_order_value
+<span class="kw">FROM</span> orders
+<span class="kw">WHERE</span> order_date >= <span class="str">'2024-01-01'</span>
+<span class="kw">GROUP BY</span> month
+<span class="kw">ORDER BY</span> month <span class="kw">DESC</span>;</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="insert">
+      <h2 data-i="s6_title">INSERT, UPDATE, DELETE</h2>
+      <p class="intro" data-i="s6_intro">Modify data with INSERT (add), UPDATE (modify), and DELETE (remove).</p>
+      <div class="code-block">
+        <span class="code-label">data modification</span>
+        <pre><span class="com">-- INSERT single row</span>
+<span class="kw">INSERT INTO</span> users (first_name, last_name, email, age, city)
+<span class="kw">VALUES</span> (<span class="str">'John'</span>, <span class="str">'Doe'</span>, <span class="str">'john@example.com'</span>, <span class="num">30</span>, <span class="str">'Boston'</span>);
+
+<span class="com">-- INSERT multiple rows</span>
+<span class="kw">INSERT INTO</span> users (first_name, last_name, email, age, city)
+<span class="kw">VALUES</span>
+    (<span class="str">'Jane'</span>, <span class="str">'Smith'</span>, <span class="str">'jane@example.com'</span>, <span class="num">25</span>, <span class="str">'Boston'</span>),
+    (<span class="str">'Bob'</span>, <span class="str">'Johnson'</span>, <span class="str">'bob@example.com'</span>, <span class="num">35</span>, <span class="str">'Chicago'</span>);
+
+<span class="com">-- UPDATE (always use WHERE!)</span>
+<span class="kw">UPDATE</span> users
+<span class="kw">SET</span> city = <span class="str">'New York'</span>, age = <span class="num">31</span>
+<span class="kw">WHERE</span> id = <span class="num">1</span>;
+
+<span class="com">-- UPDATE with calculation</span>
+<span class="kw">UPDATE</span> orders
+<span class="kw">SET</span> amount = amount * <span class="num">1.1</span>  <span class="com">-- 10% increase</span>
+<span class="kw">WHERE</span> order_date >= <span class="str">'2024-01-01'</span>;
+
+<span class="com">-- DELETE (always use WHERE!)</span>
+<span class="kw">DELETE FROM</span> users <span class="kw">WHERE</span> id = <span class="num">5</span>;
+
+<span class="com">-- Delete all rows (be careful!)</span>
+<span class="kw">DELETE FROM</span> temporary_data;  <span class="com">-- removes all rows</span>
+<span class="kw">TRUNCATE TABLE</span> temporary_data;  <span class="com">-- faster, resets auto-increment</span>
+
+<span class="com">-- Safe practice: SELECT before DELETE</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users <span class="kw">WHERE</span> last_login < <span class="str">'2023-01-01'</span>;  <span class="com">-- Check first</span>
+<span class="kw">DELETE FROM</span> users <span class="kw">WHERE</span> last_login < <span class="str">'2023-01-01'</span>;     <span class="com">-- Then delete</span></pre>
+      </div>
+      <div class="tip"><strong>⚠️ Warning:</strong> <span data-i="tip_modify">Always use WHERE with UPDATE and DELETE statements! Without WHERE, you'll update or delete ALL rows. Test with SELECT first.</span></div>
+    </div>
+
+    <div class="learn-section" id="schema">
+      <h2 data-i="s7_title">Schema Design & Constraints</h2>
+      <p class="intro" data-i="s7_intro">Good database design includes proper normalization, primary keys, foreign keys, and constraints.</p>
+      <div class="code-block">
+        <span class="code-label">table creation with constraints</span>
+        <pre><span class="com">-- Comprehensive table creation</span>
+<span class="kw">CREATE TABLE</span> products (
+    id <span class="kw">INT PRIMARY KEY AUTO_INCREMENT</span>,
+    name <span class="kw">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+    sku <span class="kw">VARCHAR</span>(<span class="num">50</span>) <span class="kw">UNIQUE NOT NULL</span>,
+    price <span class="kw">DECIMAL</span>(<span class="num">10</span>,<span class="num">2</span>) <span class="kw">CHECK</span> (price >= <span class="num">0</span>),
+    category_id <span class="kw">INT</span>,
+    in_stock <span class="kw">BOOLEAN DEFAULT TRUE</span>,
+    created_at <span class="kw">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    <span class="kw">FOREIGN KEY</span> (category_id) <span class="kw">REFERENCES</span> categories(id) <span class="kw">ON DELETE SET NULL</span>
+);
+
+<span class="com">-- Add index for performance</span>
+<span class="kw">CREATE INDEX</span> idx_products_name <span class="kw">ON</span> products(name);
+
+<span class="com">-- Add constraint after creation</span>
+<span class="kw">ALTER TABLE</span> products <span class="kw">ADD CONSTRAINT</span> chk_price <span class="kw">CHECK</span> (price >= <span class="num">0</span>);
+
+<span class="com">-- Create a view (virtual table)</span>
+<span class="kw">CREATE VIEW</span> active_users <span class="kw">AS</span>
+<span class="kw">SELECT</span> id, first_name, last_name, email
+<span class="kw">FROM</span> users
+<span class="kw">WHERE</span> last_login > <span class="kw">DATE_SUB</span>(<span class="kw">NOW</span>(), <span class="kw">INTERVAL</span> <span class="num">30</span> <span class="kw">DAY</span>);
+
+<span class="com">-- Use the view like a table</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> active_users;
+
+<span class="com">-- Normalization example: separate tables</span>
+<span class="kw">-- Instead of storing addresses in users table, normalize:</span>
+<span class="kw">CREATE TABLE</span> addresses (
+    id <span class="kw">INT PRIMARY KEY</span>,
+    user_id <span class="kw">INT</span>,
+    street <span class="kw">VARCHAR</span>(<span class="num">255</span>),
+    city <span class="kw">VARCHAR</span>(<span class="num">100</span>),
+    country <span class="kw">VARCHAR</span>(<span class="num">100</span>),
+    <span class="kw">FOREIGN KEY</span> (user_id) <span class="kw">REFERENCES</span> users(id)
+);</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 Project: Library Database System</h2>
+      <p class="intro" data-i="s8_intro">Build a complete library management system with books, members, and loans.</p>
+      <div class="code-block">
+        <span class="code-label">library_database.sql</span>
+        <pre><span class="com">-- Create database schema</span>
+<span class="kw">CREATE DATABASE</span> library;
+<span class="kw">USE</span> library;
+
+<span class="com">-- Books table</span>
+<span class="kw">CREATE TABLE</span> books (
+    id <span class="kw">INT PRIMARY KEY AUTO_INCREMENT</span>,
+    isbn <span class="kw">VARCHAR</span>(<span class="num">20</span>) <span class="kw">UNIQUE NOT NULL</span>,
+    title <span class="kw">VARCHAR</span>(<span class="num">255</span>) <span class="kw">NOT NULL</span>,
+    author <span class="kw">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+    year_published <span class="kw">INT</span>,
+    genre <span class="kw">VARCHAR</span>(<span class="num">50</span>),
+    available_copies <span class="kw">INT DEFAULT</span> <span class="num">1</span>,
+    total_copies <span class="kw">INT DEFAULT</span> <span class="num">1</span>
+);
+
+<span class="com">-- Members table</span>
+<span class="kw">CREATE TABLE</span> members (
+    id <span class="kw">INT PRIMARY KEY AUTO_INCREMENT</span>,
+    member_number <span class="kw">VARCHAR</span>(<span class="num">20</span>) <span class="kw">UNIQUE NOT NULL</span>,
+    first_name <span class="kw">VARCHAR</span>(<span class="num">50</span>) <span class="kw">NOT NULL</span>,
+    last_name <span class="kw">VARCHAR</span>(<span class="num">50</span>) <span class="kw">NOT NULL</span>,
+    email <span class="kw">VARCHAR</span>(<span class="num">100</span>) <span class="kw">UNIQUE</span>,
+    phone <span class="kw">VARCHAR</span>(<span class="num">20</span>),
+    join_date <span class="kw">DATE DEFAULT CURRENT_DATE</span>
+);
+
+<span class="com">-- Loans table</span>
+<span class="kw">CREATE TABLE</span> loans (
+    id <span class="kw">INT PRIMARY KEY AUTO_INCREMENT</span>,
+    book_id <span class="kw">INT NOT NULL</span>,
+    member_id <span class="kw">INT NOT NULL</span>,
+    loan_date <span class="kw">DATE NOT NULL</span>,
+    due_date <span class="kw">DATE NOT NULL</span>,
+    return_date <span class="kw">DATE</span>,
+    <span class="kw">FOREIGN KEY</span> (book_id) <span class="kw">REFERENCES</span> books(id),
+    <span class="kw">FOREIGN KEY</span> (member_id) <span class="kw">REFERENCES</span> members(id)
+);
+
+<span class="com">-- Insert sample data</span>
+<span class="kw">INSERT INTO</span> books (isbn, title, author, year_published, genre, total_copies, available_copies)
+<span class="kw">VALUES</span>
+    (<span class="str">'978-0132350884'</span>, <span class="str">'Clean Code'</span>, <span class="str">'Robert C. Martin'</span>, <span class="num">2008</span>, <span class="str">'Programming'</span>, <span class="num">3</span>, <span class="num">3</span>),
+    (<span class="str">'978-0201616224'</span>, <span class="str">'The Pragmatic Programmer'</span>, <span class="str">'Andrew Hunt'</span>, <span class="num">1999</span>, <span class="str">'Programming'</span>, <span class="num">2</span>, <span class="num">2</span>),
+    (<span class="str">'978-0596007126'</span>, <span class="str">'Head First SQL'</span>, <span class="str">'Lynn Beighley'</span>, <span class="num">2007</span>, <span class="str">'Database'</span>, <span class="num">1</span>, <span class="num">1</span>);
+
+<span class="kw">INSERT INTO</span> members (member_number, first_name, last_name, email, phone)
+<span class="kw">VALUES</span>
+    (<span class="str">'LIB001'</span>, <span class="str">'John'</span>, <span class="str">'Smith'</span>, <span class="str">'john@email.com'</span>, <span class="str">'555-0101'</span>),
+    (<span class="str">'LIB002'</span>, <span class="str">'Sarah'</span>, <span class="str">'Johnson'</span>, <span class="str">'sarah@email.com'</span>, <span class="str">'555-0102'</span>);
+
+<span class="com">-- Borrow a book (procedure)</span>
+<span class="kw">DELIMITER $$</span>
+<span class="kw">CREATE PROCEDURE</span> borrow_book(
+    <span class="kw">IN</span> p_member_number <span class="kw">VARCHAR</span>(<span class="num">20</span>),
+    <span class="kw">IN</span> p_isbn <span class="kw">VARCHAR</span>(<span class="num">20</span>)
+)
+<span class="kw">BEGIN</span>
+    <span class="kw">DECLARE</span> v_book_id <span class="kw">INT</span>;
+    <span class="kw">DECLARE</span> v_member_id <span class="kw">INT</span>;
+    <span class="kw">DECLARE</span> v_available <span class="kw">INT</span>;
+    
+    <span class="com">-- Get book info</span>
+    <span class="kw">SELECT</span> id, available_copies <span class="kw">INTO</span> v_book_id, v_available
+    <span class="kw">FROM</span> books <span class="kw">WHERE</span> isbn = p_isbn;
+    
+    <span class="com">-- Get member info</span>
+    <span class="kw">SELECT</span> id <span class="kw">INTO</span> v_member_id
+    <span class="kw">FROM</span> members <span class="kw">WHERE</span> member_number = p_member_number;
+    
+    <span class="com">-- Check availability</span>
+    <span class="kw">IF</span> v_available > <span class="num">0</span> <span class="kw">THEN</span>
+        <span class="com">-- Create loan record</span>
+        <span class="kw">INSERT INTO</span> loans (book_id, member_id, loan_date, due_date)
+        <span class="kw">VALUES</span> (v_book_id, v_member_id, <span class="kw">CURDATE</span>(), <span class="kw">DATE_ADD</span>(<span class="kw">CURDATE</span>(), <span class="kw">INTERVAL</span> <span class="num">14</span> <span class="kw">DAY</span>));
+        
+        <span class="com">-- Decrease available copies</span>
+        <span class="kw">UPDATE</span> books <span class="kw">SET</span> available_copies = available_copies - <span class="num">1</span>
+        <span class="kw">WHERE</span> id = v_book_id;
+        
+        <span class="kw">SELECT</span> <span class="str">'Book borrowed successfully!'</span> <span class="kw">AS</span> message;
+    <span class="kw">ELSE</span>
+        <span class="kw">SELECT</span> <span class="str">'No copies available!'</span> <span class="kw">AS</span> message;
+    <span class="kw">END IF</span>;
+<span class="kw">END$$</span>
+<span class="kw">DELIMITER ;</span>
+
+<span class="com">-- Query: Books currently on loan</span>
+<span class="kw">SELECT</span> 
+    m.first_name, m.last_name,
+    b.title, b.author,
+    l.loan_date, l.due_date,
+    <span class="kw">DATEDIFF</span>(<span class="kw">CURDATE</span>(), l.due_date) <span class="kw">AS</span> days_overdue
+<span class="kw">FROM</span> loans l
+<span class="kw">JOIN</span> books b <span class="kw">ON</span> l.book_id = b.id
+<span class="kw">JOIN</span> members m <span class="kw">ON</span> l.member_id = m.id
+<span class="kw">WHERE</span> l.return_date <span class="kw">IS NULL</span>
+<span class="kw">ORDER BY</span> l.due_date;
+
+<span class="com">-- Query: Most borrowed books</span>
+<span class="kw">SELECT</span> 
+    b.title,
+    b.author,
+    <span class="kw">COUNT</span>(l.id) <span class="kw">AS</span> borrow_count
+<span class="kw">FROM</span> books b
+<span class="kw">LEFT JOIN</span> loans l <span class="kw">ON</span> b.id = l.book_id
+<span class="kw">GROUP BY</span> b.id
+<span class="kw">ORDER BY</span> borrow_count <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add fine calculation for overdue books. Create triggers to automatically update available_copies. Implement search functionality for books by title, author, or genre.</span></div>
+    </div>
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — SQL Course</span>
+  <div class="nav-btns">
+    <a href="learn-cpp.html" class="prev-btn" data-i="prev_btn">← C++</a>
+    <a href="learn-kotlin.html" class="next-btn" data-i="next_btn">Next: Kotlin →</a>
+  </div>
+</div>
+
+<script>
+const T = {
+  en:{
+    back:"Back to Courses", title:"SQL — Structured Query Language",
+    hero_desc:"SQL is the standard language for managing and querying relational databases. Every developer needs to know how to retrieve, insert, update, and delete data efficiently.",
+    b1:"Database Management", b2:"Data Analysis", b3:"Essential Skill",
+    nav_label:"Topics", nav_intro:"What is SQL?", nav_select:"SELECT Queries",
+    nav_filter:"Filtering & Sorting", nav_join:"JOINs", nav_aggregate:"Aggregate Functions",
+    nav_insert:"INSERT, UPDATE, DELETE", nav_schema:"Schema Design", nav_practice:"Project: Library DB",
+    s1_title:"What is SQL?", s1_intro:"SQL (Structured Query Language) is used to communicate with databases. It allows you to query, manipulate, and define data.",
+    c1_t:"🗄️ Relational Databases", c1_d:"Data is stored in tables with rows and columns, connected by relationships.",
+    c2_t:"📊 CRUD Operations", c2_d:"Create, Read, Update, Delete — the four basic operations on data.",
+    c3_t:"🔍 Query Power", c3_d:"Filter, sort, join, and aggregate data with powerful query capabilities.",
+    s2_title:"SELECT Queries", s2_intro:"The SELECT statement retrieves data from one or more tables.",
+    s3_title:"Filtering & Sorting", s3_intro:"Use WHERE to filter rows, ORDER BY to sort, and operators for conditions.",
+    s4_title:"JOINs — Combining Tables", s4_intro:"JOINs combine data from multiple tables based on relationships.",
+    tip_join:"INNER JOIN (matches only), LEFT JOIN (all left table), RIGHT JOIN (all right table), FULL OUTER JOIN (all from both), CROSS JOIN (Cartesian product).",
+    s5_title:"Aggregate Functions & Grouping", s5_intro:"Aggregate functions perform calculations on sets of rows. GROUP BY groups rows for aggregation.",
+    s6_title:"INSERT, UPDATE, DELETE", s6_intro:"Modify data with INSERT (add), UPDATE (modify), and DELETE (remove).",
+    tip_modify:"Always use WHERE with UPDATE and DELETE statements! Without WHERE, you'll update or delete ALL rows. Test with SELECT first.",
+    s7_title:"Schema Design & Constraints", s7_intro:"Good database design includes proper normalization, primary keys, foreign keys, and constraints.",
+    s8_title:"🛠 Project: Library Database System", s8_intro:"Build a complete library management system with books, members, and loans.",
+    challenge:"Add fine calculation for overdue books. Create triggers to automatically update available_copies. Implement search functionality.",
+    footer_txt:"© 2026 Cody Tech — SQL Course", prev_btn:"← C++", next_btn:"Next: Kotlin →",
+  },
+  ru:{
+    back:"Назад к курсам", title:"SQL — Структурированный язык запросов",
+    hero_desc:"SQL — стандартный язык для управления и запросов к реляционным базам данных. Каждый разработчик должен уметь эффективно извлекать, вставлять, обновлять и удалять данные.",
+    b1:"Управление БД", b2:"Анализ данных", b3:"Обязательный навык",
+    nav_label:"Темы", nav_intro:"Что такое SQL?", nav_select:"SELECT запросы",
+    nav_filter:"Фильтрация и сортировка", nav_join:"JOIN", nav_aggregate:"Агрегатные функции",
+    nav_insert:"INSERT, UPDATE, DELETE", nav_schema:"Проектирование схем", nav_practice:"Проект: Библиотека",
+    s1_title:"Что такое SQL?", s1_intro:"SQL — язык для взаимодействия с базами данных. Позволяет выполнять запросы, изменять и определять данные.",
+    c1_t:"🗄️ Реляционные БД", c1_d:"Данные хранятся в таблицах со строками и столбцами, связанных отношениями.",
+    c2_t:"📊 CRUD операции", c2_d:"Создание, чтение, обновление, удаление — четыре базовые операции с данными.",
+    c3_t:"🔍 Мощные запросы", c3_d:"Фильтрация, сортировка, объединение и агрегация данных.",
+    s2_title:"SELECT запросы", s2_intro:"Оператор SELECT извлекает данные из одной или нескольких таблиц.",
+    s3_title:"Фильтрация и сортировка", s3_intro:"WHERE фильтрует строки, ORDER BY сортирует.",
+    s4_title:"JOIN — объединение таблиц", s4_intro:"JOIN объединяют данные из нескольких таблиц на основе связей.",
+    tip_join:"INNER JOIN (только совпадения), LEFT JOIN (все из левой), RIGHT JOIN (все из правой), FULL OUTER JOIN (все из обеих).",
+    s5_title:"Агрегатные функции и группировка", s5_intro:"Агрегатные функции выполняют вычисления над наборами строк. GROUP BY группирует строки.",
+    s6_title:"INSERT, UPDATE, DELETE", s6_intro:"Модификация данных: INSERT (добавление), UPDATE (изменение), DELETE (удаление).",
+    tip_modify:"Всегда используйте WHERE с UPDATE и DELETE! Без WHERE вы обновите или удалите ВСЕ строки.",
+    s7_title:"Проектирование схемы и ограничения", s7_intro:"Хороший дизайн БД включает нормализацию, первичные ключи, внешние ключи и ограничения.",
+    s8_title:"🛠 Проект: Библиотечная система", s8_intro:"Создайте систему управления библиотекой с книгами, читателями и выдачами.",
+    challenge:"Добавьте расчет штрафов за просрочку. Создайте триггеры для автоматического обновления доступных копий. Реализуйте поиск.",
+    footer_txt:"© 2026 Cody Tech — Курс SQL", prev_btn:"← C++", next_btn:"Далее: Kotlin →",
+  },
+  kz:{
+    back:"Курстарға оралу", title:"SQL — Құрылымдық сұраулар тілі",
+    hero_desc:"SQL — реляциялық дерекқорларды басқаруға арналған стандартты тіл. Әрбір әзірлеуші деректерді тиімді іздеуді, енгізуді, жаңартуды және жоюды білуі керек.",
+    b1:"Дерекқор басқару", b2:"Деректерді талдау", b3:"Міндетті дағды",
+    nav_label:"Тақырыптар", nav_intro:"SQL дегеніміз не?", nav_select:"SELECT сұраулары",
+    nav_filter:"Сүзгілеу және сұрыптау", nav_join:"JOIN", nav_aggregate:"Агрегаттық функциялар",
+    nav_insert:"INSERT, UPDATE, DELETE", nav_schema:"Схеманы жобалау", nav_practice:"Жоба: Кітапхана",
+    s1_title:"SQL дегеніміз не?", s1_intro:"SQL — дерекқорлармен байланысуға арналған тіл. Сұрауларды орындауға, деректерді өзгертуге және анықтауға мүмкіндік береді.",
+    c1_t:"🗄️ Реляциялық ДҚ", c1_d:"Деректер байланысқан жолдар мен бағандардан тұратын кестелерде сақталады.",
+    c2_t:"📊 CRUD операциялары", c2_d:"Жасау, оқу, жаңарту, жою — деректермен төрт негізгі операция.",
+    c3_t:"🔍 Сұрау қуаты", c3_d:"Сүзгілеу, сұрыптау, біріктіру және агрегациялау мүмкіндіктері.",
+    s2_title:"SELECT сұраулары", s2_intro:"SELECT операторы бір немесе бірнеше кестеден деректерді алады.",
+    s3_title:"Сүзгілеу және сұрыптау", s3_intro:"WHERE жолдарды сүзгілейді, ORDER BY сұрыптайды.",
+    s4_title:"JOIN — кестелерді біріктіру", s4_intro:"JOIN байланыстар негізінде бірнеше кестеден деректерді біріктіреді.",
+    tip_join:"INNER JOIN (тек сәйкестіктер), LEFT JOIN (сол кестеден барлығы), RIGHT JOIN (оң кестеден барлығы).",
+    s5_title:"Агрегаттық функциялар және топтау", s5_intro:"Агрегаттық функциялар жолдар жиыны бойынша есептеулер жүргізеді. GROUP BY жолдарды топтайды.",
+    s6_title:"INSERT, UPDATE, DELETE", s6_intro:"Деректерді өзгерту: INSERT (қосу), UPDATE (өзгерту), DELETE (жою).",
+    tip_modify:"UPDATE және DELETE операторларында әрқашан WHERE қолданыңыз! WHERE-сіз БАРЛЫҚ жолдар өзгереді/жойылады.",
+    s7_title:"Схеманы жобалау және шектеулер", s7_intro:"Жақсы дерекқор дизайны нормализацияны, бастапқы кілттерді, сыртқы кілттерді және шектеулерді қамтиды.",
+    s8_title:"🛠 Жоба: Кітапхана жүйесі", s8_intro:"Кітаптар, оқырмандар және кітап берулері бар кітапхана басқару жүйесін жасаңыз.",
+    challenge:"Кешіктірілген кітаптар үшін айыппұлды есептеуді қосыңыз. Қолжетімді көшірмелерді автоматты жаңарту үшін триггерлер жасаңыз. Іздеу функциясын қосыңыз.",
+    footer_txt:"© 2026 Cody Tech — SQL Курсы", prev_btn:"← C++", next_btn:"Келесі: Kotlin →",
+  }
+};
+let lang='en';
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+}
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.body.classList.toggle('light',!dark);
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+});
+</script>
+</body>
+</html>

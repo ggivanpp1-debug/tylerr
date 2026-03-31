@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#777BB4;--accent2:#9a9dcc;--bg:#080808;--bg2:#111;--bg3:#181818;--border:#222;--text:#e8e8e8;--muted:#666;--code-bg:#0d0d0d;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 32px;background:rgba(8,8,8,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);z-index:1000;}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{padding:4px 10px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}body.light .back-a{color:#888;}body.light .back-a:hover{color:#111;}body.light .ctrl-btn{border-color:#ccc;color:#666;}
+.hero-strip{margin-top:56px;padding:48px 32px 36px;background:linear-gradient(135deg,#0a0a14 0%,#12122a 40%,#08080f 100%);border-bottom:1px solid #1a1a30;display:flex;align-items:center;gap:24px;}
+.lang-badge{font-size:28px;width:88px;height:88px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 40px rgba(119,123,180,.35);font-weight:600;color:#fff;}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}.badge{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(119,123,180,.15);border:1px solid rgba(119,123,180,.3);color:var(--accent2);}
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#666;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#151515;color:#ccc;}.sidebar-link.active{background:rgba(119,123,180,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+body.light .sidebar-link:hover{background:#e0e0e0;}
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+.code-block{background:var(--code-bg);border:1px solid #1e1e1e;border-left:3px solid var(--accent);border-radius:10px;padding:20px 22px;margin:16px 0;overflow-x:auto;position:relative;}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;color:#cdd6f4;white-space:pre;}
+.code-label{position:absolute;top:10px;right:14px;font-size:10px;color:#444;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;}
+.kw{color:#cba6f7;}.fn{color:#89b4fa;}.st{color:#a6e3a1;}.cm{color:#45475a;font-style:italic;}.nm{color:#fab387;}.op{color:#89dceb;}.tg{color:#f38ba8;}
+.cards-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:18px 0;}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.info-card h4{font-size:13px;font-weight:700;margin-bottom:6px;color:#fff;}body.light .info-card h4{color:#111;}
+.info-card p{font-size:12px;color:var(--muted);line-height:1.5;}
+.tip{background:rgba(119,123,180,.07);border:1px solid rgba(119,123,180,.2);border-radius:10px;padding:14px 16px;font-size:13px;color:#aaa;margin:14px 0;}
+.tip strong{color:var(--accent2);}
+.table-wrap{overflow-x:auto;margin:16px 0;}table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg2);color:var(--muted);padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);}tr:hover td{background:var(--bg2);}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#1a1a1a;padding:1px 6px;border-radius:4px;color:var(--accent2);}body.light code{background:#e8e8e8;}
+.page-footer{display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid var(--border);background:var(--bg2);}
+.next-btn{padding:10px 20px;background:var(--accent);color:#fff;text-decoration:none;border-radius:8px;font-size:13px;font-weight:700;transition:opacity .2s;}.next-btn:hover{opacity:.85;}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="top-left"><span class="logo-txt">CODY</span><a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a></div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">🐘</div>
+  <div class="hero-info">
+    <h1 data-i="title">PHP — Server-Side Web Language</h1>
+    <p data-i="hero_desc">PHP powers over 75% of the web, including WordPress. It runs on the server to generate dynamic HTML, process forms, and connect to databases.</p>
+    <div class="badges"><span class="badge" data-i="b1">Web Backend</span><span class="badge" data-i="b2">WordPress</span><span class="badge" data-i="b3">MySQL</span></div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is PHP?</a>
+      <a href="#syntax" class="sidebar-link" data-i="nav_syntax">Syntax & Variables</a>
+      <a href="#control" class="sidebar-link" data-i="nav_control">Control Flow</a>
+      <a href="#functions" class="sidebar-link" data-i="nav_func">Functions</a>
+      <a href="#arrays" class="sidebar-link" data-i="nav_arrays">Arrays</a>
+      <a href="#forms" class="sidebar-link" data-i="nav_forms">Forms & HTTP</a>
+      <a href="#pdo" class="sidebar-link" data-i="nav_pdo">PDO & MySQL</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Mini Project</a>
+    </div>
+  </nav>
+  <main class="content">
+
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is PHP?</h2>
+      <p class="intro" data-i="s1_intro">PHP (Hypertext Preprocessor) is a server-side scripting language designed for web development. PHP code runs on a web server and the result (HTML) is sent to the client's browser. It's embedded directly into HTML files.</p>
+      <div class="cards-row">
+        <div class="info-card"><h4 data-i="c1_t">🌐 Server-Side</h4><p data-i="c1_d">PHP runs on the server before HTML is sent to the browser. The user never sees PHP code.</p></div>
+        <div class="info-card"><h4 data-i="c2_t">🗄️ Database Ready</h4><p data-i="c2_d">Built-in support for MySQL, PostgreSQL, SQLite. Connecting to databases is simple and well-documented.</p></div>
+        <div class="info-card"><h4 data-i="c3_t">📦 Powers WordPress</h4><p data-i="c3_d">WordPress, Drupal and Joomla are all built with PHP. Knowing PHP means being able to customize any of them.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="syntax">
+      <h2 data-i="s2_title">Syntax & Variables</h2>
+      <p class="intro" data-i="s2_intro">PHP code is written inside <code>&lt;?php ... ?&gt;</code> tags. Variables start with a <code>$</code> sign. PHP is loosely typed — no need to declare variable types.</p>
+      <div class="code-block">
+        <span class="code-label">basics.php</span>
+        <pre><span class="tg">&lt;?php</span>
+<span class="cm">// Variables start with $</span>
+<span class="nm">$name</span>    = <span class="st">"Alice"</span>;
+<span class="nm">$age</span>     = <span class="nm">25</span>;
+<span class="nm">$price</span>   = <span class="nm">9.99</span>;
+<span class="nm">$active</span>  = <span class="kw">true</span>;
+
+<span class="cm">// String concatenation with .</span>
+<span class="kw">echo</span> <span class="st">"Hello, "</span> . <span class="nm">$name</span> . <span class="st">"!"</span>;
+
+<span class="cm">// Or use double-quoted string interpolation</span>
+<span class="kw">echo</span> <span class="st">"Hello, {$name}! You are {$age} years old."</span>;
+
+<span class="cm">// var_dump shows type and value</span>
+<span class="fn">var_dump</span>(<span class="nm">$age</span>);     <span class="cm">// int(25)</span>
+<span class="fn">var_dump</span>(<span class="nm">$active</span>);  <span class="cm">// bool(true)</span>
+<span class="tg">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="control">
+      <h2 data-i="s3_title">Control Flow</h2>
+      <p class="intro" data-i="s3_intro">PHP uses the same control structures as C — if/elseif/else, for, while, foreach, and switch.</p>
+      <div class="code-block">
+        <span class="code-label">control.php</span>
+        <pre><span class="tg">&lt;?php</span>
+<span class="nm">$hour</span> = <span class="nm">14</span>;
+
+<span class="kw">if</span> (<span class="nm">$hour</span> < <span class="nm">12</span>) {
+    <span class="kw">echo</span> <span class="st">"Good morning!"</span>;
+} <span class="kw">elseif</span> (<span class="nm">$hour</span> < <span class="nm">18</span>) {
+    <span class="kw">echo</span> <span class="st">"Good afternoon!"</span>;
+} <span class="kw">else</span> {
+    <span class="kw">echo</span> <span class="st">"Good evening!"</span>;
+}
+
+<span class="cm">// foreach loop (most common in PHP)</span>
+<span class="nm">$langs</span> = [<span class="st">"PHP"</span>, <span class="st">"Python"</span>, <span class="st">"JS"</span>];
+<span class="kw">foreach</span> (<span class="nm">$langs</span> <span class="kw">as</span> <span class="nm">$lang</span>) {
+    <span class="kw">echo</span> <span class="nm">$lang</span> . <span class="st">"\n"</span>;
+}
+
+<span class="cm">// for loop</span>
+<span class="kw">for</span> (<span class="nm">$i</span> = <span class="nm">0</span>; <span class="nm">$i</span> < <span class="nm">5</span>; <span class="nm">$i</span>++) {
+    <span class="kw">echo</span> <span class="nm">$i</span>;
+}
+<span class="tg">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="functions">
+      <h2 data-i="s4_title">Functions</h2>
+      <p class="intro" data-i="s4_intro">Functions in PHP are defined with the <code>function</code> keyword. PHP 8+ added named arguments and union types for cleaner code.</p>
+      <div class="code-block">
+        <span class="code-label">functions.php</span>
+        <pre><span class="tg">&lt;?php</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="kw">string</span> <span class="nm">$name</span>, <span class="kw">string</span> <span class="nm">$lang</span> = <span class="st">"en"</span>): <span class="kw">string</span> {
+    <span class="kw">return</span> <span class="nm">$lang</span> === <span class="st">"ru"</span> ? <span class="st">"Привет, {$name}!"</span> : <span class="st">"Hello, {$name}!"</span>;
+}
+
+<span class="kw">echo</span> <span class="fn">greet</span>(<span class="st">"Bob"</span>);            <span class="cm">// Hello, Bob!</span>
+<span class="kw">echo</span> <span class="fn">greet</span>(<span class="st">"Алиса"</span>, <span class="st">"ru"</span>);   <span class="cm">// Привет, Алиса!</span>
+
+<span class="cm">// Arrow function (PHP 7.4+)</span>
+<span class="nm">$double</span> = <span class="kw">fn</span>(<span class="nm">$x</span>) => <span class="nm">$x</span> * <span class="nm">2</span>;
+<span class="kw">echo</span> <span class="nm">$double</span>(<span class="nm">7</span>);               <span class="cm">// 14</span>
+<span class="tg">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="arrays">
+      <h2 data-i="s5_title">Arrays</h2>
+      <p class="intro" data-i="s5_intro">PHP arrays are powerful and versatile — they can act as lists, maps (associative arrays), or multidimensional structures.</p>
+      <div class="code-block">
+        <span class="code-label">arrays.php</span>
+        <pre><span class="tg">&lt;?php</span>
+<span class="cm">// Indexed array</span>
+<span class="nm">$colors</span> = [<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>];
+<span class="kw">echo</span> <span class="nm">$colors</span>[<span class="nm">0</span>];       <span class="cm">// red</span>
+
+<span class="cm">// Associative array (key => value)</span>
+<span class="nm">$user</span> = [
+    <span class="st">"name"</span> => <span class="st">"Alice"</span>,
+    <span class="st">"age"</span>  => <span class="nm">30</span>,
+    <span class="st">"role"</span> => <span class="st">"admin"</span>
+];
+<span class="kw">echo</span> <span class="nm">$user</span>[<span class="st">"name"</span>];    <span class="cm">// Alice</span>
+
+<span class="cm">// Useful array functions</span>
+<span class="fn">array_push</span>(<span class="nm">$colors</span>, <span class="st">"yellow"</span>);
+<span class="fn">sort</span>(<span class="nm">$colors</span>);
+<span class="nm">$count</span> = <span class="fn">count</span>(<span class="nm">$colors</span>);  <span class="cm">// 4</span>
+<span class="nm">$found</span> = <span class="fn">in_array</span>(<span class="st">"red"</span>, <span class="nm">$colors</span>);  <span class="cm">// true</span>
+<span class="tg">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="forms">
+      <h2 data-i="s6_title">Forms & HTTP</h2>
+      <p class="intro" data-i="s6_intro">PHP processes HTML form data via the superglobals <code>$_GET</code>, <code>$_POST</code>, and <code>$_REQUEST</code>. Always sanitize input to prevent security issues.</p>
+      <div class="code-block">
+        <span class="code-label">form.html + process.php</span>
+        <pre><span class="cm">&lt;!-- form.html --&gt;</span>
+<span class="tg">&lt;form</span> <span class="op">action</span>=<span class="st">"process.php"</span> <span class="op">method</span>=<span class="st">"POST"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;input</span> <span class="op">type</span>=<span class="st">"text"</span> <span class="op">name</span>=<span class="st">"username"</span> <span class="op">required</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;button</span> <span class="op">type</span>=<span class="st">"submit"</span><span class="tg">&gt;</span>Submit<span class="tg">&lt;/button&gt;</span>
+<span class="tg">&lt;/form&gt;</span>
+
+<span class="cm">&lt;?php // process.php</span>
+<span class="kw">if</span> (<span class="nm">$_SERVER</span>[<span class="st">"REQUEST_METHOD"</span>] === <span class="st">"POST"</span>) {
+    <span class="nm">$username</span> = <span class="fn">htmlspecialchars</span>(<span class="nm">$_POST</span>[<span class="st">"username"</span>]);
+    <span class="kw">echo</span> <span class="st">"Welcome, {$username}!"</span>;
+}
+<span class="tg">?&gt;</span></pre>
+      </div>
+      <div class="tip"><strong>🔒 Security:</strong> <span data-i="tip_security">Always use htmlspecialchars() to escape output. Never trust raw user input — it can contain malicious scripts (XSS attacks).</span></div>
+    </div>
+
+    <div class="learn-section" id="pdo">
+      <h2 data-i="s7_title">PDO & MySQL</h2>
+      <p class="intro" data-i="s7_intro">PDO (PHP Data Objects) is the modern way to connect PHP to a database. It supports prepared statements which prevent SQL injection attacks.</p>
+      <div class="code-block">
+        <span class="code-label">database.php</span>
+        <pre><span class="tg">&lt;?php</span>
+<span class="nm">$dsn</span> = <span class="st">"mysql:host=localhost;dbname=myapp;charset=utf8"</span>;
+<span class="nm">$pdo</span> = <span class="kw">new</span> <span class="fn">PDO</span>(<span class="nm">$dsn</span>, <span class="st">"root"</span>, <span class="st">"password"</span>);
+<span class="nm">$pdo</span>-><span class="fn">setAttribute</span>(<span class="nm">PDO</span>::<span class="nm">ATTR_ERRMODE</span>, <span class="nm">PDO</span>::<span class="nm">ERRMODE_EXCEPTION</span>);
+
+<span class="cm">// Prepared statement — prevents SQL injection</span>
+<span class="nm">$stmt</span> = <span class="nm">$pdo</span>-><span class="fn">prepare</span>(<span class="st">"SELECT * FROM users WHERE email = ?"</span>);
+<span class="nm">$stmt</span>-><span class="fn">execute</span>([<span class="nm">$_POST</span>[<span class="st">"email"</span>]]);
+<span class="nm">$user</span> = <span class="nm">$stmt</span>-><span class="fn">fetch</span>(<span class="nm">PDO</span>::<span class="nm">FETCH_ASSOC</span>);
+
+<span class="kw">if</span> (<span class="nm">$user</span>) {
+    <span class="kw">echo</span> <span class="st">"Found: "</span> . <span class="nm">$user</span>[<span class="st">"name"</span>];
+}
+<span class="tg">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 Mini Project: Contact Form</h2>
+      <p class="intro" data-i="s8_intro">Build a complete contact form that validates input on the server side and stores messages in a text file (no database needed).</p>
+      <div class="code-block">
+        <span class="code-label">contact.php</span>
+        <pre><span class="tg">&lt;?php</span>
+<span class="nm">$errors</span> = [];
+<span class="nm">$success</span> = <span class="kw">false</span>;
+
+<span class="kw">if</span> (<span class="nm">$_SERVER</span>[<span class="st">"REQUEST_METHOD"</span>] === <span class="st">"POST"</span>) {
+    <span class="nm">$name</span>    = <span class="fn">trim</span>(<span class="nm">$_POST</span>[<span class="st">"name"</span>]  ?? <span class="st">""</span>);
+    <span class="nm">$email</span>   = <span class="fn">trim</span>(<span class="nm">$_POST</span>[<span class="st">"email"</span>] ?? <span class="st">""</span>);
+    <span class="nm">$message</span> = <span class="fn">trim</span>(<span class="nm">$_POST</span>[<span class="st">"msg"</span>]   ?? <span class="st">""</span>);
+
+    <span class="kw">if</span> (!<span class="nm">$name</span>)                          <span class="nm">$errors</span>[] = <span class="st">"Name required"</span>;
+    <span class="kw">if</span> (!<span class="fn">filter_var</span>(<span class="nm">$email</span>, <span class="nm">FILTER_VALIDATE_EMAIL</span>)) <span class="nm">$errors</span>[] = <span class="st">"Valid email required"</span>;
+    <span class="kw">if</span> (<span class="fn">strlen</span>(<span class="nm">$message</span>) < <span class="nm">10</span>)          <span class="nm">$errors</span>[] = <span class="st">"Message too short"</span>;
+
+    <span class="kw">if</span> (<span class="fn">empty</span>(<span class="nm">$errors</span>)) {
+        <span class="nm">$line</span> = <span class="fn">date</span>(<span class="st">"Y-m-d H:i"</span>) . <span class="st">" | {$name} | {$email} | {$message}\n"</span>;
+        <span class="fn">file_put_contents</span>(<span class="st">"messages.txt"</span>, <span class="nm">$line</span>, <span class="nm">FILE_APPEND</span>);
+        <span class="nm">$success</span> = <span class="kw">true</span>;
+    }
+}
+<span class="tg">?&gt;</span></pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add email sending with PHP's mail() function. Then upgrade to storing messages in a SQLite database using PDO instead of a text file.</span></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — PHP Course</span>
+  <a href="learn-java.html" class="next-btn" data-i="next_btn">Next: Java →</a>
+</div>
+
+<script>
+const T={en:{back:"Back to Courses",title:"PHP — Server-Side Web Language",hero_desc:"PHP powers over 75% of the web, including WordPress. It runs on the server to generate dynamic HTML, process forms, and connect to databases.",b1:"Web Backend",b2:"WordPress",b3:"MySQL",nav_label:"Topics",nav_intro:"What is PHP?",nav_syntax:"Syntax & Variables",nav_control:"Control Flow",nav_func:"Functions",nav_arrays:"Arrays",nav_forms:"Forms & HTTP",nav_pdo:"PDO & MySQL",nav_practice:"Mini Project",s1_title:"What is PHP?",s1_intro:"PHP (Hypertext Preprocessor) is a server-side scripting language designed for web development. PHP code runs on a web server and the result (HTML) is sent to the client's browser.",c1_t:"🌐 Server-Side",c1_d:"PHP runs on the server before HTML is sent to the browser. The user never sees PHP code.",c2_t:"🗄️ Database Ready",c2_d:"Built-in support for MySQL, PostgreSQL, SQLite. Connecting to databases is simple and well-documented.",c3_t:"📦 Powers WordPress",c3_d:"WordPress, Drupal and Joomla are all built with PHP. Knowing PHP means being able to customize any of them.",s2_title:"Syntax & Variables",s2_intro:"PHP code is written inside <?php ... ?> tags. Variables start with a $ sign. PHP is loosely typed.",tip_security:"Always use htmlspecialchars() to escape output. Never trust raw user input — it can contain malicious scripts (XSS attacks).",s3_title:"Control Flow",s3_intro:"PHP uses the same control structures as C — if/elseif/else, for, while, foreach, and switch.",s4_title:"Functions",s4_intro:"Functions in PHP are defined with the function keyword. PHP 8+ added named arguments and union types.",s5_title:"Arrays",s5_intro:"PHP arrays are powerful — they can act as lists, maps (associative arrays), or multidimensional structures.",s6_title:"Forms & HTTP",s6_intro:"PHP processes HTML form data via the superglobals $_GET, $_POST, and $_REQUEST. Always sanitize input.",s7_title:"PDO & MySQL",s7_intro:"PDO (PHP Data Objects) is the modern way to connect PHP to a database. It supports prepared statements which prevent SQL injection.",s8_title:"🛠 Mini Project: Contact Form",s8_intro:"Build a complete contact form that validates input on the server side and stores messages in a text file.",challenge:"Add email sending with PHP's mail() function. Then upgrade to storing messages in a SQLite database using PDO instead of a text file.",footer_txt:"© 2026 Cody Tech — PHP Course",next_btn:"Next: Java →"},
+ru:{back:"Назад к курсам",title:"PHP — Серверный язык для веба",hero_desc:"PHP обеспечивает работу более 75% веба, включая WordPress. Выполняется на сервере для генерации HTML и обработки форм.",b1:"Бэкенд",b2:"WordPress",b3:"MySQL",nav_label:"Темы",nav_intro:"Что такое PHP?",nav_syntax:"Синтаксис и переменные",nav_control:"Управление потоком",nav_func:"Функции",nav_arrays:"Массивы",nav_forms:"Формы и HTTP",nav_pdo:"PDO и MySQL",nav_practice:"Мини-проект",s1_title:"Что такое PHP?",s1_intro:"PHP — серверный язык сценариев для веб-разработки. Код PHP выполняется на веб-сервере, а результат (HTML) отправляется в браузер.",c1_t:"🌐 Серверная сторона",c1_d:"PHP выполняется на сервере до отправки HTML в браузер. Пользователь никогда не видит PHP-код.",c2_t:"🗄️ Работа с БД",c2_d:"Встроенная поддержка MySQL, PostgreSQL, SQLite.",c3_t:"📦 Движок WordPress",c3_d:"WordPress, Drupal и Joomla построены на PHP.",s2_title:"Синтаксис и переменные",s2_intro:"PHP-код пишется внутри тегов <?php ... ?>. Переменные начинаются со знака $.",tip_security:"Всегда используйте htmlspecialchars() для экранирования. Никогда не доверяйте сырым данным от пользователя.",s3_title:"Управление потоком",s3_intro:"PHP использует те же управляющие структуры, что и C.",s4_title:"Функции",s4_intro:"Функции в PHP определяются с помощью ключевого слова function.",s5_title:"Массивы",s5_intro:"Массивы PHP мощные — они могут быть списками, картами или многомерными структурами.",s6_title:"Формы и HTTP",s6_intro:"PHP обрабатывает данные форм через суперглобальные $_GET, $_POST и $_REQUEST.",s7_title:"PDO и MySQL",s7_intro:"PDO — современный способ подключения PHP к базе данных с защитой от SQL-инъекций.",s8_title:"🛠 Мини-проект: Форма обратной связи",s8_intro:"Создайте полноценную форму обратной связи с серверной валидацией.",challenge:"Добавьте отправку email через mail(). Затем замените текстовый файл на базу данных SQLite через PDO.",footer_txt:"© 2026 Cody Tech — Курс PHP",next_btn:"Далее: Java →"},
+kz:{back:"Курстарға оралу",title:"PHP — Серверлік веб тілі",hero_desc:"PHP вебтің 75%-дан астамын қуаттандырады, оның ішінде WordPress. Серверде жұмыс істеп HTML генерациялайды.",b1:"Бэкенд",b2:"WordPress",b3:"MySQL",nav_label:"Тақырыптар",nav_intro:"PHP дегеніміз не?",nav_syntax:"Синтаксис пен айнымалылар",nav_control:"Басқару ағыны",nav_func:"Функциялар",nav_arrays:"Массивтер",nav_forms:"Формалар мен HTTP",nav_pdo:"PDO және MySQL",nav_practice:"Мини жоба",s1_title:"PHP дегеніміз не?",s1_intro:"PHP — веб-әзірлеуге арналған серверлік сценарий тілі. PHP коды веб-серверде орындалады.",c1_t:"🌐 Серверлік жақ",c1_d:"PHP браузерге HTML жіберілмес бұрын серверде орындалады.",c2_t:"🗄️ Деректер қоры",c2_d:"MySQL, PostgreSQL, SQLite кірістірілген қолдауы бар.",c3_t:"📦 WordPress негізі",c3_d:"WordPress, Drupal және Joomla PHP-да жазылған.",s2_title:"Синтаксис пен айнымалылар",s2_intro:"PHP коды <?php ... ?> тегтері ішінде жазылады. Айнымалылар $ белгісінен басталады.",tip_security:"Шығысты экрандау үшін htmlspecialchars() қолданыңыз. Пайдаланушы деректеріне сенбеңіз.",s3_title:"Басқару ағыны",s3_intro:"PHP C тіліндегідей басқару құрылымдарын қолданады.",s4_title:"Функциялар",s4_intro:"PHP функциялары function кілт сөзімен анықталады.",s5_title:"Массивтер",s5_intro:"PHP массивтері тізімдер, карталар немесе көп өлшемді құрылымдар ретінде қызмет ете алады.",s6_title:"Формалар мен HTTP",s6_intro:"PHP форма деректерін $_GET, $_POST суперглобалдары арқылы өңдейді.",s7_title:"PDO және MySQL",s7_intro:"PDO — PHP-ды деректер қорына қосудың заманауи тәсілі.",s8_title:"🛠 Мини жоба: Байланыс формасы",s8_intro:"Серверлік тексеруі бар толық байланыс формасын жасаңыз.",challenge:"mail() арқылы email жіберуді қосыңыз. Содан кейін мәтін файлын PDO арқылы SQLite-ке ауыстырыңыз.",footer_txt:"© 2026 Cody Tech — PHP Курсы",next_btn:"Келесі: Java →"}
+};
+let lang='en';
+function setLang(l,btn){lang=l;document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const t=T[l];document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(t[k]!==undefined)el.textContent=t[k];});}
+let dark=true;
+function toggleTheme(){dark=!dark;document.body.classList.toggle('light',!dark);document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';}
+const secs=document.querySelectorAll('.learn-section');const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id;});links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});});
+</script>
+</body>
+</html>

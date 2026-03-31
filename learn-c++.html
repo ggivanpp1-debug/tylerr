@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#f34b7d;
+  --accent2:#ff6b9d;
+  --bg:#080808;
+  --bg2:#111;
+  --bg3:#181818;
+  --border:#222;
+  --text:#e8e8e8;
+  --muted:#666;
+  --code-bg:#0d0d0d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(8,8,8,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a2a;background:transparent;
+  color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}
+body.light .back-a{color:#888;}
+body.light .back-a:hover{color:#111;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .sidebar-link{color:#555;}
+body.light .sidebar-link:hover,.body.light .sidebar-link.active{color:var(--accent);}
+
+.hero-strip{
+  margin-top:56px;
+  padding:48px 32px 36px;
+  background:linear-gradient(135deg,#2a0a1a 0%,#3a1a2a 40%,#1a0a0a 100%);
+  border-bottom:1px solid #6a2a4a;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  font-size:64px;width:88px;height:88px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(243,75,125,.35);
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:28px;color:#fff;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}
+.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{
+  padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;
+  background:rgba(243,75,125,.15);border:1px solid rgba(243,75,125,.3);color:var(--accent2);
+}
+
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#666;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#151515;color:#ccc;}
+.sidebar-link.active{background:rgba(243,75,125,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+.code-block{
+  background:var(--code-bg);
+  border:1px solid #1e1e1e;
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:16px 0;
+  overflow-x:auto;
+}
+.code-block pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.75;color:#c9d1d9;
+}
+.code-label{
+  font-size:10px;color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:10px;display:block;
+}
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.concept-card h4{font-size:14px;color:var(--accent2);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+.tip{background:rgba(243,75,125,.06);border:1px solid rgba(243,75,125,.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13px;color:#aaa;}
+.tip strong{color:var(--accent2);}
+.page-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1180px;margin:0 auto;font-size:12px;color:#444;}
+.nav-btns{display:flex;gap:10px;}
+.next-btn{padding:10px 20px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;}
+.next-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.prev-btn{padding:10px 20px;background:transparent;border:1px solid #2a2a2a;border-radius:8px;color:#888;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;text-decoration:none;transition:all .2s;}
+.prev-btn:hover{border-color:var(--accent);color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">C++</div>
+  <div class="hero-info">
+    <h1 data-i="title">C++ — High Performance Programming</h1>
+    <p data-i="hero_desc">C++ is a powerful, high-performance language used for system software, game engines, real-time simulations, and performance-critical applications. It gives you fine-grained control over hardware resources.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Systems Programming</span>
+      <span class="badge" data-i="b2">Game Development</span>
+      <span class="badge" data-i="b3">Performance Critical</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is C++?</a>
+      <a href="#syntax" class="sidebar-link" data-i="nav_syntax">Basic Syntax</a>
+      <a href="#pointers" class="sidebar-link" data-i="nav_pointers">Pointers & Memory</a>
+      <a href="#classes" class="sidebar-link" data-i="nav_classes">Classes & OOP</a>
+      <a href="#templates" class="sidebar-link" data-i="nav_templates">Templates</a>
+      <a href="#stl" class="sidebar-link" data-i="nav_stl">STL Containers</a>
+      <a href="#smart" class="sidebar-link" data-i="nav_smart">Smart Pointers</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Project: Game Engine</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is C++?</h2>
+      <p class="intro" data-i="s1_intro">C++ is a cross-platform language that can be used to create high-performance applications. Developed by Bjarne Stroustrup as an extension of C, C++ gives programmers a high level of control over system resources and memory.</p>
+      <div class="concept-grid">
+        <div class="concept-card"><h4 data-i="c1_t">⚡ Performance</h4><p data-i="c1_d">C++ compiles directly to machine code, making it one of the fastest languages available.</p></div>
+        <div class="concept-card"><h4 data-i="c2_t">🎮 Game Development</h4><p data-i="c2_d">Unreal Engine, Unity (C# with C++ core), and most AAA games are built with C++.</p></div>
+        <div class="concept-card"><h4 data-i="c3_t">🖥️ System Programming</h4><p data-i="c3_d">Operating systems, embedded systems, and real-time applications rely on C++.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="syntax">
+      <h2 data-i="s2_title">Basic Syntax</h2>
+      <p class="intro" data-i="s2_intro">C++ syntax is similar to C with added features like classes, namespaces, and streams.</p>
+      <div class="code-block">
+        <span class="code-label">hello world</span>
+        <pre><span class="com">#include &lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="com">// Main function - entry point</span>
+<span class="kw">int main</span>() {
+    <span class="com">// Output to console</span>
+    cout &lt;&lt; <span class="str">"Hello, World!"</span> &lt;&lt; endl;
+    
+    <span class="com">// Variables</span>
+    <span class="kw">int</span> age = <span class="num">25</span>;
+    <span class="kw">string</span> name = <span class="str">"Alice"</span>;
+    <span class="kw">bool</span> isActive = <span class="kw">true</span>;
+    <span class="kw">double</span> pi = <span class="num">3.14159</span>;
+    
+    <span class="com">// Input</span>
+    cout &lt;&lt; <span class="str">"Enter your name: "</span>;
+    cin &gt;&gt; name;
+    
+    <span class="com">// Output with variables</span>
+    cout &lt;&lt; <span class="str">"Hello, "</span> &lt;&lt; name &lt;&lt; <span class="str">"! You are "</span> &lt;&lt; age &lt;&lt; <span class="str">" years old."</span> &lt;&lt; endl;
+    
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="pointers">
+      <h2 data-i="s3_title">Pointers & Memory Management</h2>
+      <p class="intro" data-i="s3_intro">C++ gives direct access to memory through pointers and allows dynamic memory allocation.</p>
+      <div class="code-block">
+        <span class="code-label">pointers and memory</span>
+        <pre><span class="com">#include &lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int main</span>() {
+    <span class="com">// Basic pointer</span>
+    <span class="kw">int</span> value = <span class="num">42</span>;
+    <span class="kw">int</span>* ptr = &amp;value;  <span class="com">// ptr holds address of value</span>
+    cout &lt;&lt; <span class="str">"Value: "</span> &lt;&lt; *ptr &lt;&lt; endl;  <span class="com">// Dereference - prints 42</span>
+    *ptr = <span class="num">100</span>;  <span class="com">// Change value through pointer</span>
+    
+    <span class="com">// Dynamic memory allocation</span>
+    <span class="kw">int</span>* arr = <span class="kw">new int</span>[<span class="num">5</span>];  <span class="com">// Allocate array on heap</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i < <span class="num">5</span>; i++) {
+        arr[i] = i * <span class="num">10</span>;
+    }
+    
+    <span class="com">// Must free memory!</span>
+    <span class="kw">delete[]</span> arr;  <span class="com">// Free array</span>
+    
+    <span class="com">// Null pointer check</span>
+    <span class="kw">int</span>* ptr2 = <span class="kw">nullptr</span>;
+    <span class="kw">if</span> (ptr2 != <span class="kw">nullptr</span>) {
+        cout &lt;&lt; *ptr2 &lt;&lt; endl;
+    }
+    
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+      <div class="tip"><strong>💡 Warning:</strong> <span data-i="tip_memory">Always free dynamically allocated memory with `delete` to prevent memory leaks. Use `nullptr` instead of NULL in modern C++.</span></div>
+    </div>
+
+    <div class="learn-section" id="classes">
+      <h2 data-i="s4_title">Classes & Object-Oriented Programming</h2>
+      <p class="intro" data-i="s4_intro">C++ supports OOP with classes, inheritance, polymorphism, encapsulation, and abstraction.</p>
+      <div class="code-block">
+        <span class="code-label">class example</span>
+        <pre><span class="com">#include &lt;iostream&gt;</span>
+<span class="kw">#include &lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">class</span> <span class="at">Animal</span> {
+<span class="kw">private</span>:
+    <span class="kw">string</span> name;
+    <span class="kw">int</span> age;
+    
+<span class="kw">public</span>:
+    <span class="com">// Constructor with initializer list</span>
+    <span class="at">Animal</span>(<span class="kw">string</span> n, <span class="kw">int</span> a) : name(n), age(a) {}
+    
+    <span class="com">// Virtual method for polymorphism</span>
+    <span class="kw">virtual</span> <span class="kw">void</span> <span class="at">makeSound</span>() {
+        cout &lt;&lt; name &lt;&lt; <span class="str">" makes a sound"</span> &lt;&lt; endl;
+    }
+    
+    <span class="kw">void</span> <span class="at">display</span>() {
+        cout &lt;&lt; <span class="str">"Name: "</span> &lt;&lt; name &lt;&lt; <span class="str">", Age: "</span> &lt;&lt; age &lt;&lt; endl;
+    }
+    
+    <span class="com">// Getter</span>
+    <span class="kw">string</span> <span class="at">getName</span>() { <span class="kw">return</span> name; }
+};
+
+<span class="com">// Inheritance</span>
+<span class="kw">class</span> <span class="at">Dog</span> : <span class="kw">public</span> <span class="at">Animal</span> {
+<span class="kw">private</span>:
+    <span class="kw">string</span> breed;
+    
+<span class="kw">public</span>:
+    <span class="at">Dog</span>(<span class="kw">string</span> n, <span class="kw">int</span> a, <span class="kw">string</span> b) : <span class="at">Animal</span>(n, a), breed(b) {}
+    
+    <span class="com">// Override (polymorphism)</span>
+    <span class="kw">void</span> <span class="at">makeSound</span>() <span class="kw">override</span> {
+        cout &lt;&lt; getName() &lt;&lt; <span class="str">" barks: Woof! Woof!"</span> &lt;&lt; endl;
+    }
+    
+    <span class="kw">void</span> <span class="at">fetch</span>() {
+        cout &lt;&lt; getName() &lt;&lt; <span class="str">" is fetching the ball!"</span> &lt;&lt; endl;
+    }
+};
+
+<span class="kw">int main</span>() {
+    <span class="at">Dog</span> myDog(<span class="str">"Buddy"</span>, <span class="num">3</span>, <span class="str">"Golden Retriever"</span>);
+    myDog.display();
+    myDog.makeSound();  <span class="com">// Polymorphic call</span>
+    myDog.fetch();
+    
+    <span class="com">// Polymorphism with base class pointer</span>
+    <span class="at">Animal</span>* animalPtr = &amp;myDog;
+    animalPtr->makeSound();  <span class="com">// Calls Dog's makeSound()</span>
+    
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="templates">
+      <h2 data-i="s5_title">Templates (Generic Programming)</h2>
+      <p class="intro" data-i="s5_intro">Templates allow writing code that works with any data type, enabling generic programming.</p>
+      <div class="code-block">
+        <span class="code-label">function & class templates</span>
+        <pre><span class="com">#include &lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="com">// Function template</span>
+<span class="kw">template</span> &lt;<span class="kw">typename</span> T&gt;
+T <span class="at">max</span>(T a, T b) {
+    <span class="kw">return</span> (a > b) ? a : b;
+}
+
+<span class="com">// Class template</span>
+<span class="kw">template</span> &lt;<span class="kw">typename</span> T&gt;
+<span class="kw">class</span> <span class="at">Box</span> {
+<span class="kw">private</span>:
+    T content;
+    
+<span class="kw">public</span>:
+    <span class="at">Box</span>(T c) : content(c) {}
+    
+    <span class="kw">void</span> <span class="at">setContent</span>(T c) { content = c; }
+    T <span class="at">getContent</span>() { <span class="kw">return</span> content; }
+    <span class="kw">void</span> <span class="at">display</span>() { cout &lt;&lt; <span class="str">"Content: "</span> &lt;&lt; content &lt;&lt; endl; }
+};
+
+<span class="kw">int main</span>() {
+    <span class="com">// Using function template</span>
+    cout &lt;&lt; max(<span class="num">10</span>, <span class="num">20</span>) &lt;&lt; endl;        <span class="com">// int version</span>
+    cout &lt;&lt; max(<span class="num">3.14</span>, <span class="num">2.71</span>) &lt;&lt; endl;   <span class="com">// double version</span>
+    cout &lt;&lt; max(<span class="str">'A'</span>, <span class="str">'Z'</span>) &lt;&lt; endl;        <span class="com">// char version</span>
+    
+    <span class="com">// Using class template</span>
+    <span class="at">Box</span>&lt;<span class="kw">int</span>&gt; intBox(<span class="num">42</span>);
+    intBox.display();
+    
+    <span class="at">Box</span>&lt;<span class="kw">string</span>&gt; strBox(<span class="str">"Hello Templates!"</span>);
+    strBox.display();
+    
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="stl">
+      <h2 data-i="s6_title">STL Containers</h2>
+      <p class="intro" data-i="s6_intro">The Standard Template Library (STL) provides powerful container classes.</p>
+      <div class="code-block">
+        <span class="code-label">STL containers</span>
+        <pre><span class="com">#include &lt;iostream&gt;</span>
+<span class="kw">#include &lt;vector&gt;</span>
+<span class="kw">#include &lt;map&gt;</span>
+<span class="kw">#include &lt;set&gt;</span>
+<span class="kw">#include &lt;algorithm&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int main</span>() {
+    <span class="com">// Vector (dynamic array)</span>
+    <span class="at">vector</span>&lt;<span class="kw">int</span>&gt; numbers = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>};
+    numbers.<span class="at">push_back</span>(<span class="num">6</span>);
+    numbers.<span class="at">pop_back</span>();
+    
+    <span class="kw">for</span> (<span class="kw">int</span> n : numbers) {
+        cout &lt;&lt; n &lt;&lt; <span class="str">" "</span>;
+    }
+    cout &lt;&lt; endl;
+    
+    <span class="com">// Map (key-value pairs)</span>
+    <span class="at">map</span>&lt;<span class="kw">string</span>, <span class="kw">int</span>&gt; scores;
+    scores[<span class="str">"Alice"</span>] = <span class="num">95</span>;
+    scores[<span class="str">"Bob"</span>] = <span class="num">87</span>;
+    scores[<span class="str">"Charlie"</span>] = <span class="num">92</span>;
+    
+    <span class="kw">for</span> (<span class="kw">auto</span>& pair : scores) {
+        cout &lt;&lt; pair.first &lt;&lt; <span class="str">": "</span> &lt;&lt; pair.second &lt;&lt; endl;
+    }
+    
+    <span class="com">// Set (unique elements)</span>
+    <span class="at">set</span>&lt;<span class="kw">int</span>&gt; uniqueNumbers = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>, <span class="num">4</span>};
+    cout &lt;&lt; <span class="str">"Unique count: "</span> &lt;&lt; uniqueNumbers.<span class="at">size</span>() &lt;&lt; endl;
+    
+    <span class="com">// Algorithm: sort, find, etc.</span>
+    <span class="at">vector</span>&lt;<span class="kw">int</span>&gt; nums = {<span class="num">5</span>, <span class="num">2</span>, <span class="num">8</span>, <span class="num">1</span>, <span class="num">9</span>};
+    <span class="kw">sort</span>(nums.<span class="at">begin</span>(), nums.<span class="at">end</span>());
+    
+    <span class="kw">auto</span> it = <span class="kw">find</span>(nums.<span class="at">begin</span>(), nums.<span class="at">end</span>(), <span class="num">8</span>);
+    <span class="kw">if</span> (it != nums.<span class="at">end</span>()) {
+        cout &lt;&lt; <span class="str">"Found 8 at position: "</span> &lt;&lt; (it - nums.<span class="at">begin</span>()) &lt;&lt; endl;
+    }
+    
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="smart">
+      <h2 data-i="s7_title">Smart Pointers (Modern C++)</h2>
+      <p class="intro" data-i="s7_intro">Modern C++ provides smart pointers that automatically manage memory, preventing leaks.</p>
+      <div class="code-block">
+        <span class="code-label">smart pointers</span>
+        <pre><span class="com">#include &lt;iostream&gt;</span>
+<span class="kw">#include &lt;memory&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">class</span> <span class="at">Resource</span> {
+<span class="kw">public</span>:
+    <span class="at">Resource</span>() { cout &lt;&lt; <span class="str">"Resource acquired"</span> &lt;&lt; endl; }
+    ~<span class="at">Resource</span>() { cout &lt;&lt; <span class="str">"Resource released"</span> &lt;&lt; endl; }
+    <span class="kw">void</span> <span class="at">doWork</span>() { cout &lt;&lt; <span class="str">"Working..."</span> &lt;&lt; endl; }
+};
+
+<span class="kw">int main</span>() {
+    <span class="com">// unique_ptr - exclusive ownership</span>
+    <span class="at">unique_ptr</span>&lt;<span class="at">Resource</span>&gt; ptr1 = <span class="kw">make_unique</span>&lt;<span class="at">Resource</span>&gt;();
+    ptr1->doWork();
+    <span class="com">// Cannot copy unique_ptr, only move</span>
+    <span class="at">unique_ptr</span>&lt;<span class="at">Resource</span>&gt; ptr2 = <span class="kw">move</span>(ptr1);  <span class="com">// ptr1 is now null</span>
+    
+    <span class="com">// shared_ptr - shared ownership (reference counted)</span>
+    <span class="at">shared_ptr</span>&lt;<span class="at">Resource</span>&gt; shared1 = <span class="kw">make_shared</span>&lt;<span class="at">Resource</span>&gt;();
+    {
+        <span class="at">shared_ptr</span>&lt;<span class="at">Resource</span>&gt; shared2 = shared1;  <span class="com">// Reference count = 2</span>
+        shared2->doWork();
+        cout &lt;&lt; <span class="str">"Use count: "</span> &lt;&lt; shared1.<span class="at">use_count</span>() &lt;&lt; endl;
+    }  <span class="com">// shared2 destroyed, count = 1</span>
+    
+    cout &lt;&lt; <span class="str">"Use count after: "</span> &lt;&lt; shared1.<span class="at">use_count</span>() &lt;&lt; endl;
+    <span class="com">// Resource automatically released when last shared_ptr destroyed</span>
+    
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+      <div class="tip"><strong>✅ Modern C++ Best Practice:</strong> <span data-i="tip_smart">Always prefer smart pointers (`unique_ptr`, `shared_ptr`) over raw pointers for dynamic memory. Use `make_unique` and `make_shared` for exception safety.</span></div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 Project: Simple Game Engine (Text-Based)</h2>
+      <p class="intro" data-i="s8_intro">Create a simple text-based game with player stats, enemies, and combat.</p>
+      <div class="code-block">
+        <span class="code-label">Game.h / Game.cpp</span>
+        <pre><span class="com">#include &lt;iostream&gt;</span>
+<span class="kw">#include &lt;string&gt;</span>
+<span class="kw">#include &lt;vector&gt;</span>
+<span class="kw">#include &lt;cstdlib&gt;</span>
+<span class="kw">#include &lt;ctime&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">class</span> <span class="at">Character</span> {
+<span class="kw">protected</span>:
+    <span class="kw">string</span> name;
+    <span class="kw">int</span> health;
+    <span class="kw">int</span> strength;
+    
+<span class="kw">public</span>:
+    <span class="at">Character</span>(<span class="kw">string</span> n, <span class="kw">int</span> h, <span class="kw">int</span> s) : name(n), health(h), strength(s) {}
+    
+    <span class="kw">bool</span> <span class="at">isAlive</span>() { <span class="kw">return</span> health > <span class="num">0</span>; }
+    
+    <span class="kw">void</span> <span class="at">takeDamage</span>(<span class="kw">int</span> damage) {
+        health -= damage;
+        <span class="kw">if</span> (health < <span class="num">0</span>) health = <span class="num">0</span>;
+        cout &lt;&lt; name &lt;&lt; <span class="str">" takes "</span> &lt;&lt; damage &lt;&lt; <span class="str">" damage! Health: "</span> &lt;&lt; health &lt;&lt; endl;
+    }
+    
+    <span class="kw">int</span> <span class="at">attack</span>() {
+        <span class="kw">int</span> damage = (<span class="kw">rand</span>() % strength) + <span class="num">5</span>;
+        cout &lt;&lt; name &lt;&lt; <span class="str">" attacks for "</span> &lt;&lt; damage &lt;&lt; <span class="str">" damage!"</span> &lt;&lt; endl;
+        <span class="kw">return</span> damage;
+    }
+    
+    <span class="kw">void</span> <span class="at">display</span>() {
+        cout &lt;&lt; <span class="str">"=== "</span> &lt;&lt; name &lt;&lt; <span class="str">" ===\nHealth: "</span> &lt;&lt; health &lt;&lt; <span class="str">"\nStrength: "</span> &lt;&lt; strength &lt;&lt; endl;
+    }
+    
+    <span class="kw">string</span> <span class="at">getName</span>() { <span class="kw">return</span> name; }
+};
+
+<span class="kw">class</span> <span class="at">Player</span> : <span class="kw">public</span> <span class="at">Character</span> {
+<span class="kw">private</span>:
+    <span class="kw">int</span> experience;
+    <span class="kw">int</span> level;
+    
+<span class="kw">public</span>:
+    <span class="at">Player</span>(<span class="kw">string</span> n) : <span class="at">Character</span>(n, <span class="num">100</span>, <span class="num">15</span>), experience(<span class="num">0</span>), level(<span class="num">1</span>) {}
+    
+    <span class="kw">void</span> <span class="at">gainExperience</span>(<span class="kw">int</span> exp) {
+        experience += exp;
+        <span class="kw">if</span> (experience >= level * <span class="num">100</span>) {
+            level++;
+            health += <span class="num">20</span>;
+            strength += <span class="num">5</span>;
+            cout &lt;&lt; <span class="str">"*** LEVEL UP! Now level "</span> &lt;&lt; level &lt;&lt; <span class="str">" ***"</span> &lt;&lt; endl;
+        }
+    }
+    
+    <span class="kw">void</span> <span class="at">heal</span>() {
+        health = <span class="num">100</span> + (level - <span class="num">1</span>) * <span class="num">20</span>;
+        cout &lt;&lt; name &lt;&lt; <span class="str">" is fully healed!"</span> &lt;&lt; endl;
+    }
+    
+    <span class="kw">void</span> <span class="at">display</span>() {
+        <span class="at">Character</span>::display();
+        cout &lt;&lt; <span class="str">"Level: "</span> &lt;&lt; level &lt;&lt; <span class="str">"\nExperience: "</span> &lt;&lt; experience &lt;&lt; <span class="str">"/"</span> &lt;&lt; level * <span class="num">100</span> &lt;&lt; endl;
+    }
+};
+
+<span class="kw">class</span> <span class="at">Enemy</span> : <span class="kw">public</span> <span class="at">Character</span> {
+<span class="kw">public</span>:
+    <span class="at">Enemy</span>(<span class="kw">string</span> n, <span class="kw">int</span> h, <span class="kw">int</span> s) : <span class="at">Character</span>(n, h, s) {}
+};
+
+<span class="kw">int main</span>() {
+    <span class="kw">srand</span>(<span class="kw">time</span>(<span class="kw">nullptr</span>));
+    
+    <span class="kw">string</span> playerName;
+    cout &lt;&lt; <span class="str">"Enter your hero's name: "</span>;
+    cin &gt;&gt; playerName;
+    
+    <span class="at">Player</span> hero(playerName);
+    <span class="at">vector</span>&lt;<span class="at">Enemy</span>&gt; enemies = {
+        <span class="at">Enemy</span>(<span class="str">"Goblin"</span>, <span class="num">30</span>, <span class="num">8</span>),
+        <span class="at">Enemy</span>(<span class="str">"Orc"</span>, <span class="num">50</span>, <span class="num">12</span>),
+        <span class="at">Enemy</span>(<span class="str">"Dragon"</span>, <span class="num">80</span>, <span class="num">20</span>)
+    };
+    
+    cout &lt;&lt; <span class="str">"\n=== Welcome to the Arena! ===\n"</span> &lt;&lt; endl;
+    
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i < enemies.<span class="at">size</span>() && hero.<span class="at">isAlive</span>(); i++) {
+        <span class="at">Enemy</span>& currentEnemy = enemies[i];
+        cout &lt;&lt; <span class="str">"\n--- Battle "</span> &lt;&lt; i + <span class="num">1</span> &lt;&lt; <span class="str">": Fight "</span> &lt;&lt; currentEnemy.<span class="at">getName</span>() &lt;&lt; <span class="str">"! ---\n"</span> &lt;&lt; endl;
+        
+        <span class="kw">while</span> (hero.<span class="at">isAlive</span>() && currentEnemy.<span class="at">isAlive</span>()) {
+            hero.display();
+            currentEnemy.display();
+            
+            cout &lt;&lt; <span class="str">"\n1. Attack\n2. Heal\nChoose action: "</span>;
+            <span class="kw">int</span> choice;
+            cin &gt;&gt; choice;
+            
+            <span class="kw">if</span> (choice == <span class="num">1</span>) {
+                <span class="kw">int</span> damage = hero.<span class="at">attack</span>();
+                currentEnemy.<span class="at">takeDamage</span>(damage);
+                
+                <span class="kw">if</span> (currentEnemy.<span class="at">isAlive</span>()) {
+                    damage = currentEnemy.<span class="at">attack</span>();
+                    hero.<span class="at">takeDamage</span>(damage);
+                }
+            } <span class="kw">else</span> <span class="kw">if</span> (choice == <span class="num">2</span>) {
+                hero.<span class="at">heal</span>();
+            }
+        }
+        
+        <span class="kw">if</span> (!currentEnemy.<span class="at">isAlive</span>()) {
+            <span class="kw">int</span> exp = <span class="num">50</span> * (i + <span class="num">1</span>);
+            hero.<span class="at">gainExperience</span>(exp);
+            cout &lt;&lt; <span class="str">"Victory! Gained "</span> &lt;&lt; exp &lt;&lt; <span class="str">" experience!\n"</span> &lt;&lt; endl;
+        }
+    }
+    
+    <span class="kw">if</span> (hero.<span class="at">isAlive</span>()) {
+        cout &lt;&lt; <span class="str">"\n🎉 Congratulations! You defeated all enemies! 🎉\n"</span>;
+    } <span class="kw">else</span> {
+        cout &lt;&lt; <span class="str">"\n💀 Game Over! Better luck next time! 💀\n"</span>;
+    }
+    
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add more enemy types, special abilities, and inventory system. Implement critical hits and potions. Add save/load functionality using file I/O.</span></div>
+    </div>
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — C++ Course</span>
+  <div class="nav-btns">
+    <a href="learn-java.html" class="prev-btn" data-i="prev_btn">← Java</a>
+    <a href="learn-sql.html" class="next-btn" data-i="next_btn">Next: SQL →</a>
+  </div>
+</div>
+
+<script>
+const T = {
+  en:{
+    back:"Back to Courses", title:"C++ — High Performance Programming",
+    hero_desc:"C++ is a powerful, high-performance language used for system software, game engines, real-time simulations, and performance-critical applications.",
+    b1:"Systems Programming", b2:"Game Development", b3:"Performance Critical",
+    nav_label:"Topics", nav_intro:"What is C++?", nav_syntax:"Basic Syntax",
+    nav_pointers:"Pointers & Memory", nav_classes:"Classes & OOP", nav_templates:"Templates",
+    nav_stl:"STL Containers", nav_smart:"Smart Pointers", nav_practice:"Project: Game Engine",
+    s1_title:"What is C++?", s1_intro:"C++ is a cross-platform language that can be used to create high-performance applications. Developed by Bjarne Stroustrup as an extension of C.",
+    c1_t:"⚡ Performance", c1_d:"C++ compiles directly to machine code, making it one of the fastest languages available.",
+    c2_t:"🎮 Game Development", c2_d:"Unreal Engine and most AAA games are built with C++.",
+    c3_t:"🖥️ System Programming", c3_d:"Operating systems, embedded systems, and real-time applications rely on C++.",
+    s2_title:"Basic Syntax", s2_intro:"C++ syntax is similar to C with added features like classes, namespaces, and streams.",
+    s3_title:"Pointers & Memory Management", s3_intro:"C++ gives direct access to memory through pointers and allows dynamic memory allocation.",
+    tip_memory:"Always free dynamically allocated memory with `delete` to prevent memory leaks. Use `nullptr` instead of NULL in modern C++.",
+    s4_title:"Classes & Object-Oriented Programming", s4_intro:"C++ supports OOP with classes, inheritance, polymorphism, encapsulation, and abstraction.",
+    s5_title:"Templates (Generic Programming)", s5_intro:"Templates allow writing code that works with any data type, enabling generic programming.",
+    s6_title:"STL Containers", s6_intro:"The Standard Template Library (STL) provides powerful container classes.",
+    s7_title:"Smart Pointers (Modern C++)", s7_intro:"Modern C++ provides smart pointers that automatically manage memory, preventing leaks.",
+    tip_smart:"Always prefer smart pointers (`unique_ptr`, `shared_ptr`) over raw pointers for dynamic memory. Use `make_unique` and `make_shared` for exception safety.",
+    s8_title:"🛠 Project: Simple Game Engine", s8_intro:"Create a simple text-based game with player stats, enemies, and combat.",
+    challenge:"Add more enemy types, special abilities, and inventory system. Implement critical hits and potions. Add save/load functionality.",
+    footer_txt:"© 2026 Cody Tech — C++ Course", prev_btn:"← Java", next_btn:"Next: SQL →",
+  },
+  ru:{
+    back:"Назад к курсам", title:"C++ — Высокопроизводительное программирование",
+    hero_desc:"C++ — мощный высокопроизводительный язык, используемый для системного ПО, игровых движков и приложений, критичных к производительности.",
+    b1:"Системное программирование", b2:"Разработка игр", b3:"Критичная производительность",
+    nav_label:"Темы", nav_intro:"Что такое C++?", nav_syntax:"Синтаксис",
+    nav_pointers:"Указатели и память", nav_classes:"Классы и ООП", nav_templates:"Шаблоны",
+    nav_stl:"STL контейнеры", nav_smart:"Умные указатели", nav_practice:"Проект: Игровой движок",
+    s1_title:"Что такое C++?", s1_intro:"C++ — кроссплатформенный язык для высокопроизводительных приложений. Разработан Бьярном Страуструпом как расширение C.",
+    c1_t:"⚡ Производительность", c1_d:"C++ компилируется в машинный код, что делает его одним из самых быстрых языков.",
+    c2_t:"🎮 Разработка игр", c2_d:"Unreal Engine и большинство AAA-игр созданы на C++.",
+    c3_t:"🖥️ Системное программирование", c3_d:"Операционные системы и встраиваемые системы используют C++.",
+    s2_title:"Базовый синтаксис", s2_intro:"Синтаксис C++ похож на C с добавленными возможностями: классы, пространства имен, потоки.",
+    s3_title:"Указатели и управление памятью", s3_intro:"C++ предоставляет прямой доступ к памяти через указатели и динамическое выделение памяти.",
+    tip_memory:"Всегда освобождайте динамически выделенную память с помощью `delete` для предотвращения утечек. Используйте `nullptr` вместо NULL.",
+    s4_title:"Классы и ООП", s4_intro:"C++ поддерживает ООП с классами, наследованием, полиморфизмом, инкапсуляцией и абстракцией.",
+    s5_title:"Шаблоны (обобщенное программирование)", s5_intro:"Шаблоны позволяют писать код, работающий с любыми типами данных.",
+    s6_title:"STL контейнеры", s6_intro:"Стандартная библиотека шаблонов (STL) предоставляет мощные контейнерные классы.",
+    s7_title:"Умные указатели (Modern C++)", s7_intro:"Современный C++ предоставляет умные указатели, автоматически управляющие памятью.",
+    tip_smart:"Всегда предпочитайте умные указатели (`unique_ptr`, `shared_ptr`) обычным для динамической памяти. Используйте `make_unique` и `make_shared`.",
+    s8_title:"🛠 Проект: Простой игровой движок", s8_intro:"Создайте текстовую игру с характеристиками игрока, врагами и боями.",
+    challenge:"Добавьте типы врагов, специальные способности, инвентарь, критические удары, зелья и сохранение/загрузку.",
+    footer_txt:"© 2026 Cody Tech — Курс C++", prev_btn:"← Java", next_btn:"Далее: SQL →",
+  },
+  kz:{
+    back:"Курстарға оралу", title:"C++ — Жоғары өнімділіктегі бағдарламалау",
+    hero_desc:"C++ — жүйелік бағдарламалық жасақтама, ойын қозғалтқыштары және өнімділікке қатысты қосымшалар үшін қолданылатын қуатты тіл.",
+    b1:"Жүйелік бағдарламалау", b2:"Ойын әзірлемесі", b3:"Өнімділікке бағытталған",
+    nav_label:"Тақырыптар", nav_intro:"C++ дегеніміз не?", nav_syntax:"Синтаксис",
+    nav_pointers:"Көрсеткіштер мен жад", nav_classes:"Класстар және ОББ", nav_templates:"Шаблондар",
+    nav_stl:"STL контейнерлері", nav_smart:"Ақылды көрсеткіштер", nav_practice:"Жоба: Ойын қозғалтқышы",
+    s1_title:"C++ дегеніміз не?", s1_intro:"C++ — Бьярне Страуструп әзірлеген, C тілінің кеңейтілген нұсқасы. Жоғары өнімділіктегі қосымшалар жасауға арналған.",
+    c1_t:"⚡ Өнімділік", c1_d:"C++ тікелей машиналық кодқа компиляцияланып, ең жылдам тілдердің біріне айналады.",
+    c2_t:"🎮 Ойын әзірлемесі", c2_d:"Unreal Engine және AAA-ойындардың көпшілігі C++ тілінде жазылған.",
+    c3_t:"🖥️ Жүйелік бағдарламалау", c3_d:"Операциялық жүйелер мен кірістірілген жүйелер C++ пайдаланады.",
+    s2_title:"Негізгі синтаксис", s2_intro:"C++ синтаксисі C-ге ұқсас, бірақ класстар, namespace, ағындар сияқты мүмкіндіктері бар.",
+    s3_title:"Көрсеткіштер және жады менеджменті", s3_intro:"C++ көрсеткіштер арқылы жадыға тікелей қол жеткізуге мүмкіндік береді.",
+    tip_memory:"Жад ағып кетуін болдырмау үшін динамикалық бөлінген жадыны `delete` арқылы босатыңыз. NULL орнына `nullptr` қолданыңыз.",
+    s4_title:"Класстар және ОББ", s4_intro:"C++ класстар, мұрагерлік, полиморфизм, инкапсуляция және абстракция арқылы ОББ қолдайды.",
+    s5_title:"Шаблондар (жалпыланған бағдарламалау)", s5_intro:"Шаблондар кез келген деректер түрімен жұмыс істейтін код жазуға мүмкіндік береді.",
+    s6_title:"STL контейнерлері", s6_intro:"Стандартты шаблондар кітапханасы (STL) қуатты контейнер класстарын ұсынады.",
+    s7_title:"Ақылды көрсеткіштер", s7_intro:"Қазіргі C++ жадыны автоматты басқаратын ақылды көрсеткіштерді ұсынады.",
+    tip_smart:"Динамикалық жад үшін әрқашан ақылды көрсеткіштерді (`unique_ptr`, `shared_ptr`) қолданыңыз.",
+    s8_title:"🛠 Жоба: Қарапайым ойын қозғалтқышы", s8_intro:"Ойыншы сипаттамалары, жаулар және шайқасы бар мәтіндік ойын жасаңыз.",
+    challenge:"Жаулардың түрлерін, арнайы қабілеттерді, инвентарьды, критикалық соққыларды және сақтау/жүктеу функциясын қосыңыз.",
+    footer_txt:"© 2026 Cody Tech — C++ Курсы", prev_btn:"← Java", next_btn:"Келесі: SQL →",
+  }
+};
+let lang='en';
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+}
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.body.classList.toggle('light',!dark);
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+});
+</script>
+</body>
+</html>

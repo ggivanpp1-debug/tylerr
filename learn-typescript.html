@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeScript — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#3178c6;
+  --accent2:#2b6eaf;
+  --bg:#0a0a12;
+  --bg2:#12121a;
+  --bg3:#1a1a24;
+  --border:#252530;
+  --text:#e8e8f0;
+  --muted:#6a6a7a;
+  --code-bg:#0e0e14;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(10,10,18,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#6a6a7a;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:var(--accent);}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a34;background:transparent;
+  color:#6a6a7a;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a34;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5fa;--bg2:#ebebf2;--bg3:#e0e0e8;--border:#dddde8;--text:#111116;--muted:#888896;--code-bg:#1a1a22;}
+body.light .top-bar{background:rgba(245,245,250,0.97);}
+body.light .back-a{color:#888;}body.light .back-a:hover{color:#3178c6;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .ctrl-btn:hover,body.light .ctrl-btn.active{color:#fff;}
+
+.hero-strip{
+  margin-top:56px;padding:48px 32px 36px;
+  background:linear-gradient(135deg,#0a0a18 0%,#121a2a 40%,#080810 100%);
+  border-bottom:1px solid #2a3a50;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  width:88px;height:88px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(49,120,198,.3);
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;color:#fff;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;color:#fff;}
+.hero-info p{color:#8899bb;font-size:14px;max-width:560px;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(49,120,198,.12);border:1px solid rgba(49,120,198,.25);color:var(--accent);}
+
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444455;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+body.light .sidebar-label{color:#aaa;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#777788;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#1a1a28;color:#88aaff;}
+body.light .sidebar-link:hover{background:#e0e0e8;color:#111;}
+.sidebar-link.active{background:rgba(49,120,198,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+.code-block{
+  background:var(--code-bg);
+  border:1px solid #2a2a34;
+  border-left:3px solid var(--accent);
+  border-radius:10px;padding:20px 22px;margin:16px 0;overflow-x:auto;
+}
+body.light .code-block{background:#1a1a22;}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;color:#d0d0e0;}
+.code-label{font-size:10px;color:var(--accent);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:block;}
+.kw{color:#c792ea;}.type{color:#82aaff;}.fn{color:#89ddff;}.str{color:#c3e88d;}.num{color:#f78c6c;}.com{color:#6a6a7a;font-style:italic;}.interface{color:#ffcb6b;}
+
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.concept-card h4{font-size:14px;color:var(--accent);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+.tip{background:rgba(49,120,198,.06);border:1px solid rgba(49,120,198,.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13px;color:#aaaacc;}
+.tip strong{color:var(--accent);}
+
+.table-style{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px;}
+.table-style th{text-align:left;padding:10px 14px;background:#0e0e16;color:#6a6a7a;font-size:11px;text-transform:uppercase;border-bottom:1px solid var(--border);}
+body.light .table-style th{background:#e8e8f0;color:#888;}
+.table-style td{padding:10px 14px;border-bottom:1px solid #1e1e28;color:#c0c0d0;}
+body.light .table-style td{color:#333;border-bottom:1px solid #ddd;}
+.table-style tr:hover td{background:#14141e;}
+body.light .table-style tr:hover td{background:#e8e8f0;}
+.t-name{color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:600;}
+
+.demo-area{
+  background:var(--code-bg);border:1px solid #2a2a34;
+  border-radius:12px;overflow:hidden;margin:16px 0;
+}
+.demo-header{
+  padding:10px 16px;background:#14141c;
+  border-bottom:1px solid #2a2a34;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.demo-header span{font-size:11px;color:#6a6a7a;font-family:'JetBrains Mono',monospace;}
+.run-btn{
+  padding:5px 14px;background:var(--accent);border:none;border-radius:6px;
+  color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  transition:all .2s;
+}
+.run-btn:hover{background:var(--accent2);transform:scale(1.05);}
+.demo-code{padding:16px 22px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;color:#d0d0e0;white-space:pre;}
+.demo-output{
+  padding:12px 16px;background:#0a0a12;
+  border-top:1px solid #2a2a34;
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:#89ddff;min-height:40px;
+  display:none;
+}
+.demo-output.show{display:block;}
+
+.page-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1180px;margin:0 auto;font-size:12px;color:#6a6a7a;}
+.nav-btns{display:flex;gap:10px;}
+.next-btn{padding:10px 20px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-decoration:none;transition:all .2s;}
+.next-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.prev-btn{padding:10px 20px;background:transparent;border:1px solid #2a2a34;border-radius:8px;color:#888;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;text-decoration:none;transition:all .2s;}
+.prev-btn:hover{border-color:var(--accent);color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">TS</div>
+  <div class="hero-info">
+    <h1 data-i="title">TypeScript — JavaScript with Types</h1>
+    <p data-i="hero_desc">TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. It adds static typing, interfaces, and modern features to catch errors early.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Static Typing</span>
+      <span class="badge" data-i="b2">Better Tooling</span>
+      <span class="badge" data-i="b3">Modern JS</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is TypeScript?</a>
+      <a href="#types" class="sidebar-link" data-i="nav_types">Basic Types</a>
+      <a href="#interfaces" class="sidebar-link" data-i="nav_interfaces">Interfaces</a>
+      <a href="#functions" class="sidebar-link" data-i="nav_functions">Functions & Types</a>
+      <a href="#classes" class="sidebar-link" data-i="nav_classes">Classes</a>
+      <a href="#generics" class="sidebar-link" data-i="nav_generics">Generics</a>
+      <a href="#utility" class="sidebar-link" data-i="nav_utility">Utility Types</a>
+      <a href="#config" class="sidebar-link" data-i="nav_config">Configuration</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Project: Todo App</a>
+    </div>
+  </nav>
+
+  <main class="content">
+
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is TypeScript?</h2>
+      <p class="intro" data-i="s1_intro">TypeScript adds static types to JavaScript, catching errors at compile time instead of runtime. It's used by millions of developers for large-scale applications.</p>
+      <div class="code-block">
+        <span class="code-label">typescript vs javascript</span>
+        <pre><span class="com">// JavaScript — runtime error</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name) {
+  <span class="kw">return</span> <span class="str">"Hello "</span> + name;
+}
+<span class="fn">greet</span>(<span class="num">42</span>);  <span class="com">// Works, but "Hello 42" — unintended!</span>
+
+<span class="com">// TypeScript — compile-time error</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name: <span class="type">string</span>): <span class="type">string</span> {
+  <span class="kw">return</span> <span class="str">`Hello <span class="op">${name}</span>`</span>;
+}
+<span class="fn">greet</span>(<span class="num">42</span>);  <span class="com">// ❌ Argument of type 'number' is not assignable to parameter of type 'string'</span></pre>
+      </div>
+      <div class="concept-grid">
+        <div class="concept-card"><h4 data-i="c1_t">🔒 Type Safety</h4><p data-i="c1_d">Catch type-related bugs before your code runs. No more "undefined is not a function" in production.</p></div>
+        <div class="concept-card"><h4 data-i="c2_t">💡 Better IDE Support</h4><p data-i="c2_d">Autocomplete, refactoring, and navigation work perfectly with typed code.</p></div>
+        <div class="concept-card"><h4 data-i="c3_t">🔄 Compiles to JS</h4><p data-i="c3_d">TypeScript code compiles to plain JavaScript that runs anywhere JS runs — browsers, Node.js, Deno.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="types">
+      <h2 data-i="s2_title">Basic Types</h2>
+      <p class="intro" data-i="s2_intro">TypeScript provides a rich set of primitive and complex types to describe your data.</p>
+      <table class="table-style">
+        <thead>
+          <tr><th data-i="th_type">Type</th><th data-i="th_ex">Example</th><th data-i="th_desc">Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="t-name">string</td><td><code>"hello"</code></td><td data-i="desc_string">Text values</td></tr>
+          <tr><td class="t-name">number</td><td><code>42, 3.14</code></td><td data-i="desc_number">All numbers (integers and floats)</td></tr>
+          <tr><td class="t-name">boolean</td><td><code>true / false</code></td><td data-i="desc_boolean">True/false values</td></tr>
+          <tr><td class="t-name">array</td><td><code>number[]</code> or <code>Array&lt;string&gt;</code></td><td data-i="desc_array">List of values</td></tr>
+          <tr><td class="t-name">tuple</td><td><code>[string, number]</code></td><td data-i="desc_tuple">Fixed-length array with specific types</td></tr>
+          <tr><td class="t-name">enum</td><td><code>enum Color { Red, Green }</code></td><td data-i="desc_enum">Named constants</td></tr>
+          <tr><td class="t-name">any</td><td><code>let data: any</code></td><td data-i="desc_any">Opt-out of type checking (use sparingly)</td></tr>
+          <tr><td class="t-name">unknown</td><td><code>let data: unknown</code></td><td data-i="desc_unknown">Type-safe alternative to any</td></tr>
+          <tr><td class="t-name">void</td><td><code>function log(): void</code></td><td data-i="desc_void">No return value</td></tr>
+          <tr><td class="t-name">null / undefined</td><td><code>let x: null</code></td><td data-i="desc_null">Empty or uninitialized values</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <span class="code-label">type annotations</span>
+        <pre><span class="kw">let</span> name: <span class="type">string</span> = <span class="str">"Alice"</span>;
+<span class="kw">let</span> age: <span class="type">number</span> = <span class="num">30</span>;
+<span class="kw">let</span> isStudent: <span class="type">boolean</span> = <span class="kw">false</span>;
+<span class="kw">let</span> hobbies: <span class="type">string[]</span> = [<span class="str">"coding"</span>, <span class="str">"reading"</span>];
+
+<span class="com">// Tuple</span>
+<span class="kw">let</span> user: [<span class="type">string</span>, <span class="type">number</span>] = [<span class="str">"Alice"</span>, <span class="num">30</span>];
+
+<span class="com">// Union types</span>
+<span class="kw">let</span> id: <span class="type">string</span> | <span class="type">number</span> = <span class="str">"abc123"</span>;
+id = <span class="num">456</span>;  <span class="com">// also valid</span>
+
+<span class="com">// Type alias</span>
+<span class="kw">type</span> <span class="interface">UserId</span> = <span class="type">string</span> | <span class="type">number</span>;</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="interfaces">
+      <h2 data-i="s3_title">Interfaces</h2>
+      <p class="intro" data-i="s3_intro">Interfaces define the shape of objects. They're a powerful way to describe contracts in your code.</p>
+      <div class="code-block">
+        <span class="code-label">defining interfaces</span>
+        <pre><span class="kw">interface</span> <span class="interface">User</span> {
+  <span class="fn">id</span>: <span class="type">number</span>;
+  <span class="fn">name</span>: <span class="type">string</span>;
+  <span class="fn">email</span>?: <span class="type">string</span>;  <span class="com">// optional property</span>
+  <span class="fn">readonly</span> <span class="fn">createdAt</span>: <span class="type">Date</span>;  <span class="com">// cannot be changed after creation</span>
+  <span class="fn">greet</span>(): <span class="type">string</span>;
+}
+
+<span class="kw">const</span> alice: <span class="interface">User</span> = {
+  <span class="fn">id</span>: <span class="num">1</span>,
+  <span class="fn">name</span>: <span class="str">"Alice"</span>,
+  <span class="fn">createdAt</span>: <span class="kw">new</span> <span class="fn">Date</span>(),
+  <span class="fn">greet</span>() {
+    <span class="kw">return</span> <span class="str">`Hello, I'm <span class="op">${this.name}</span>`</span>;
+  }
+};
+
+<span class="com">// Extending interfaces</span>
+<span class="kw">interface</span> <span class="interface">Admin</span> <span class="kw">extends</span> <span class="interface">User</span> {
+  <span class="fn">permissions</span>: <span class="type">string[]</span>;
+  <span class="fn">isSuperAdmin</span>: <span class="type">boolean</span>;
+}</pre>
+      </div>
+      <div class="tip"><strong>💡 Interface vs Type:</strong> <span data-i="tip_interface">Use interfaces for objects that can be extended (open). Use type aliases for unions, tuples, and complex types. Both are powerful — choose what fits.</span></div>
+    </div>
+
+    <div class="learn-section" id="functions">
+      <h2 data-i="s4_title">Functions & Types</h2>
+      <p class="intro" data-i="s4_intro">TypeScript lets you define function parameters and return types. You can also create function overloads for multiple call signatures.</p>
+      <div class="code-block">
+        <span class="code-label">typed functions</span>
+        <pre><span class="com">// Basic function with types</span>
+<span class="kw">function</span> <span class="fn">add</span>(a: <span class="type">number</span>, b: <span class="type">number</span>): <span class="type">number</span> {
+  <span class="kw">return</span> a + b;
+}
+
+<span class="com">// Arrow function with type</span>
+<span class="kw">const</span> <span class="fn">multiply</span> = (a: <span class="type">number</span>, b: <span class="type">number</span>): <span class="type">number</span> => a * b;
+
+<span class="com">// Function type alias</span>
+<span class="kw">type</span> <span class="interface">MathOperation</span> = (a: <span class="type">number</span>, b: <span class="type">number</span>) => <span class="type">number</span>;
+
+<span class="kw">const</span> <span class="fn">divide</span>: <span class="interface">MathOperation</span> = (x, y) => x / y;
+
+<span class="com">// Optional parameters</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name: <span class="type">string</span>, title?: <span class="type">string</span>): <span class="type">string</span> {
+  <span class="kw">return</span> title ? <span class="str">`Hello, <span class="op">${title}</span> <span class="op">${name}</span>`</span> : <span class="str">`Hello, <span class="op">${name}</span>`</span>;
+}
+
+<span class="com">// Default parameters</span>
+<span class="kw">function</span> <span class="fn">createUser</span>(name: <span class="type">string</span>, age: <span class="type">number</span> = <span class="num">18</span>): <span class="interface">User</span> {
+  <span class="kw">return</span> { id: <span class="num">1</span>, name, age };
+}</pre>
+      </div>
+
+      <div class="demo-area">
+        <div class="demo-header">
+          <span>▶ INTERACTIVE — TypeScript Demo</span>
+          <button class="run-btn" onclick="runTypeScriptDemo()">▶ Run</button>
+        </div>
+        <div class="demo-code"><span class="com">// This simulates TypeScript type checking</span>
+<span class="kw">interface</span> <span class="interface">Person</span> {
+  name: <span class="type">string</span>;
+  age: <span class="type">number</span>;
+}
+
+<span class="kw">function</span> <span class="fn">describe</span>(p: <span class="interface">Person</span>): <span class="type">string</span> {
+  <span class="kw">return</span> <span class="str">`<span class="op">${p.name}</span> is <span class="op">${p.age}</span> years old`</span>;
+}
+
+<span class="kw">const</span> alice: <span class="interface">Person</span> = { name: <span class="str">"Alice"</span>, age: <span class="num">30</span> };
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">describe</span>(alice));</div>
+        <div class="demo-output" id="demoOutput"></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="classes">
+      <h2 data-i="s5_title">Classes & Access Modifiers</h2>
+      <p class="intro" data-i="s5_intro">TypeScript adds object-oriented features like public, private, protected, and abstract classes.</p>
+      <div class="code-block">
+        <span class="code-label">classes in typescript</span>
+        <pre><span class="kw">class</span> <span class="interface">Animal</span> {
+  <span class="kw">private</span> <span class="fn">secret</span>: <span class="type">string</span>;  <span class="com">// only accessible within class</span>
+  <span class="kw">protected</span> <span class="fn">species</span>: <span class="type">string</span>;  <span class="com">// accessible in subclasses</span>
+  <span class="kw">public</span> <span class="fn">name</span>: <span class="type">string</span>;  <span class="com">// accessible everywhere</span>
+
+  <span class="kw">constructor</span>(name: <span class="type">string</span>, species: <span class="type">string</span>) {
+    <span class="kw">this</span>.name = name;
+    <span class="kw">this</span>.species = species;
+    <span class="kw">this</span>.secret = <span class="str">"hidden"</span>;
+  }
+
+  <span class="kw">public</span> <span class="fn">makeSound</span>(): <span class="type">void</span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`<span class="op">${this.name}</span> makes a sound`</span>);
+  }
+}
+
+<span class="kw">class</span> <span class="interface">Dog</span> <span class="kw">extends</span> <span class="interface">Animal</span> {
+  <span class="kw">constructor</span>(name: <span class="type">string</span>) {
+    <span class="kw">super</span>(name, <span class="str">"canine"</span>);
+  }
+  
+  <span class="fn">bark</span>(): <span class="type">void</span> {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`<span class="op">${this.name}</span> barks!`</span>);
+    <span class="com">// console.log(this.secret); ❌ private — error</span>
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="kw">this</span>.species);  <span class="com">// ✅ protected — ok</span>
+  }
+}
+
+<span class="kw">const</span> buddy = <span class="kw">new</span> <span class="fn">Dog</span>(<span class="str">"Buddy"</span>);
+buddy.<span class="fn">bark</span>();</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="generics">
+      <h2 data-i="s6_title">Generics</h2>
+      <p class="intro" data-i="s6_intro">Generics allow you to create reusable components that work with any type while maintaining type safety.</p>
+      <div class="code-block">
+        <span class="code-label">generic functions</span>
+        <pre><span class="com">// Generic identity function</span>
+<span class="kw">function</span> <span class="fn">identity</span>&lt;T&gt;(arg: T): T {
+  <span class="kw">return</span> arg;
+}
+
+<span class="kw">const</span> num = <span class="fn">identity</span>&lt;<span class="type">number</span>&gt;(<span class="num">42</span>);
+<span class="kw">const</span> str = <span class="fn">identity</span>(<span class="str">"hello"</span>);  <span class="com">// type inference</span>
+
+<span class="com">// Generic interface</span>
+<span class="kw">interface</span> <span class="interface">Box</span>&lt;T&gt; {
+  <span class="fn">value</span>: T;
+  <span class="fn">unwrap</span>(): T;
+}
+
+<span class="kw">const</span> stringBox: <span class="interface">Box</span>&lt;<span class="type">string</span>&gt; = {
+  <span class="fn">value</span>: <span class="str">"secret"</span>,
+  <span class="fn">unwrap</span>() { <span class="kw">return</span> <span class="kw">this</span>.value; }
+};
+
+<span class="com">// Generic constraints</span>
+<span class="kw">interface</span> <span class="interface">Lengthwise</span> {
+  <span class="fn">length</span>: <span class="type">number</span>;
+}
+
+<span class="kw">function</span> <span class="fn">logLength</span>&lt;T <span class="kw">extends</span> <span class="interface">Lengthwise</span>&gt;(arg: T): T {
+  <span class="fn">console</span>.<span class="fn">log</span>(arg.length);
+  <span class="kw">return</span> arg;
+}
+
+<span class="fn">logLength</span>(<span class="str">"hello"</span>);  <span class="com">// works</span>
+<span class="fn">logLength</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]);  <span class="com">// works</span>
+<span class="com">// logLength(42); ❌ number doesn't have .length</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="utility">
+      <h2 data-i="s7_title">Utility Types</h2>
+      <p class="intro" data-i="s7_intro">TypeScript provides built-in utility types to transform existing types — saving you from writing repetitive code.</p>
+      <div class="code-block">
+        <span class="code-label">common utility types</span>
+        <pre><span class="kw">interface</span> <span class="interface">User</span> {
+  <span class="fn">id</span>: <span class="type">number</span>;
+  <span class="fn">name</span>: <span class="type">string</span>;
+  <span class="fn">email</span>: <span class="type">string</span>;
+  <span class="fn">password</span>: <span class="type">string</span>;
+}
+
+<span class="com">// Partial — all properties optional</span>
+<span class="kw">type</span> <span class="interface">PartialUser</span> = <span class="fn">Partial</span>&lt;<span class="interface">User</span>&gt;;
+<span class="com">// { id?: number; name?: string; ... }</span>
+
+<span class="com">// Pick — select specific properties</span>
+<span class="kw">type</span> <span class="interface">UserPreview</span> = <span class="fn">Pick</span>&lt;<span class="interface">User</span>, <span class="str">"id"</span> | <span class="str">"name"</span>&gt;;
+
+<span class="com">// Omit — exclude properties</span>
+<span class="kw">type</span> <span class="interface">PublicUser</span> = <span class="fn">Omit</span>&lt;<span class="interface">User</span>, <span class="str">"password"</span>&gt;;
+
+<span class="com">// Readonly — make all properties immutable</span>
+<span class="kw">type</span> <span class="interface">ReadonlyUser</span> = <span class="fn">Readonly</span>&lt;<span class="interface">User</span>&gt;;
+
+<span class="com">// Record — create a typed object map</span>
+<span class="kw">type</span> <span class="interface">RoleMap</span> = <span class="fn">Record</span>&lt;<span class="type">string</span>, <span class="type">string[]</span>&gt;;
+<span class="kw">const</span> permissions: <span class="interface">RoleMap</span> = {
+  <span class="fn">admin</span>: [<span class="str">"read"</span>, <span class="str">"write"</span>, <span class="str">"delete"</span>],
+  <span class="fn">user</span>: [<span class="str">"read"</span>]
+};</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="config">
+      <h2 data-i="s8_title">Configuration (tsconfig.json)</h2>
+      <p class="intro" data-i="s8_intro">The tsconfig.json file controls how TypeScript compiles your code. Here are the most important options.</p>
+      <div class="code-block">
+        <span class="code-label">tsconfig.json</span>
+        <pre>{
+  <span class="str">"compilerOptions"</span>: {
+    <span class="com">/* Language and Environment */</span>
+    <span class="str">"target"</span>: <span class="str">"ES2020"</span>,           <span class="com">// Output JavaScript version</span>
+    <span class="str">"module"</span>: <span class="str">"commonjs"</span>,          <span class="com">// Module system</span>
+    <span class="str">"lib"</span>: [<span class="str">"ES2020"</span>, <span class="str">"DOM"</span>],    <span class="com">// Available libraries</span>
+    
+    <span class="com">/* Type Checking */</span>
+    <span class="str">"strict"</span>: <span class="kw">true</span>,                <span class="com">// Enable all strict checks</span>
+    <span class="str">"noImplicitAny"</span>: <span class="kw">true</span>,        <span class="com">// Error on implicit any</span>
+    <span class="str">"strictNullChecks"</span>: <span class="kw">true</span>,    <span class="com">// null and undefined are separate</span>
+    
+    <span class="com">/* Modules */</span>
+    <span class="str">"rootDir"</span>: <span class="str">"./src"</span>,           <span class="com">// Source directory</span>
+    <span class="str">"outDir"</span>: <span class="str">"./dist"</span>,           <span class="com">// Output directory</span>
+    
+    <span class="com">/* Emit */</span>
+    <span class="str">"sourceMap"</span>: <span class="kw">true</span>,             <span class="com">// Generate source maps for debugging</span>
+    <span class="str">"removeComments"</span>: <span class="kw">true</span>        <span class="com">// Remove comments from output</span>
+  },
+  <span class="str">"include"</span>: [<span class="str">"src/**/*"</span>],
+  <span class="str">"exclude"</span>: [<span class="str">"node_modules"</span>, <span class="str">"dist"</span>]
+}</pre>
+      </div>
+      <div class="tip"><strong>🚀 Pro Tip:</strong> <span data-i="tip_config">Start with <code>"strict": true</code> — it enables the most useful type checks and will save you from many bugs.</span></div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s9_title">🛠 Project: Type-safe Todo App</h2>
+      <p class="intro" data-i="s9_intro">Build a simple todo application with TypeScript. This project combines interfaces, types, and DOM manipulation with full type safety.</p>
+      <div class="code-block">
+        <span class="code-label">todo.ts</span>
+        <pre><span class="com">// Define types</span>
+<span class="kw">interface</span> <span class="interface">Todo</span> {
+  <span class="fn">id</span>: <span class="type">number</span>;
+  <span class="fn">text</span>: <span class="type">string</span>;
+  <span class="fn">completed</span>: <span class="type">boolean</span>;
+  <span class="fn">createdAt</span>: <span class="type">Date</span>;
+}
+
+<span class="kw">type</span> <span class="interface">FilterType</span> = <span class="str">"all"</span> | <span class="str">"active"</span> | <span class="str">"completed"</span>;
+
+<span class="kw">class</span> <span class="interface">TodoApp</span> {
+  <span class="kw">private</span> todos: <span class="interface">Todo</span>[] = [];
+  <span class="kw">private</span> nextId: <span class="type">number</span> = <span class="num">1</span>;
+  <span class="kw">private</span> filter: <span class="interface">FilterType</span> = <span class="str">"all"</span>;
+
+  <span class="kw">constructor</span>(<span class="kw">private</span> storageKey: <span class="type">string</span>) {
+    <span class="kw">this</span>.<span class="fn">load</span>();
+  }
+
+  <span class="fn">addTodo</span>(text: <span class="type">string</span>): <span class="type">void</span> {
+    <span class="kw">if</span> (!text.<span class="fn">trim</span>()) <span class="kw">return</span>;
+    
+    <span class="kw">const</span> newTodo: <span class="interface">Todo</span> = {
+      <span class="fn">id</span>: <span class="kw">this</span>.nextId++,
+      <span class="fn">text</span>: text.<span class="fn">trim</span>(),
+      <span class="fn">completed</span>: <span class="kw">false</span>,
+      <span class="fn">createdAt</span>: <span class="kw">new</span> <span class="fn">Date</span>()
+    };
+    
+    <span class="kw">this</span>.todos.<span class="fn">push</span>(newTodo);
+    <span class="kw">this</span>.<span class="fn">save</span>();
+  }
+
+  <span class="fn">toggleTodo</span>(id: <span class="type">number</span>): <span class="type">void</span> {
+    <span class="kw">const</span> todo = <span class="kw">this</span>.todos.<span class="fn">find</span>(t => t.id === id);
+    <span class="kw">if</span> (todo) {
+      todo.completed = !todo.completed;
+      <span class="kw">this</span>.<span class="fn">save</span>();
+    }
+  }
+
+  <span class="fn">deleteTodo</span>(id: <span class="type">number</span>): <span class="type">void</span> {
+    <span class="kw">this</span>.todos = <span class="kw">this</span>.todos.<span class="fn">filter</span>(t => t.id !== id);
+    <span class="kw">this</span>.<span class="fn">save</span>();
+  }
+
+  <span class="fn">getFilteredTodos</span>(): <span class="interface">Todo</span>[] {
+    <span class="kw">switch</span> (<span class="kw">this</span>.filter) {
+      <span class="kw">case</span> <span class="str">"active"</span>:
+        <span class="kw">return</span> <span class="kw">this</span>.todos.<span class="fn">filter</span>(t => !t.completed);
+      <span class="kw">case</span> <span class="str">"completed"</span>:
+        <span class="kw">return</span> <span class="kw">this</span>.todos.<span class="fn">filter</span>(t => t.completed);
+      <span class="kw">default</span>:
+        <span class="kw">return</span> [...<span class="kw">this</span>.todos];
+    }
+  }
+
+  <span class="fn">setFilter</span>(filter: <span class="interface">FilterType</span>): <span class="type">void</span> {
+    <span class="kw">this</span>.filter = filter;
+  }
+
+  <span class="kw">private</span> <span class="fn">save</span>(): <span class="type">void</span> {
+    <span class="fn">localStorage</span>.<span class="fn">setItem</span>(<span class="kw">this</span>.storageKey, <span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="kw">this</span>.todos));
+  }
+
+  <span class="kw">private</span> <span class="fn">load</span>(): <span class="type">void</span> {
+    <span class="kw">const</span> data = <span class="fn">localStorage</span>.<span class="fn">getItem</span>(<span class="kw">this</span>.storageKey);
+    <span class="kw">if</span> (data) {
+      <span class="kw">this</span>.todos = <span class="fn">JSON</span>.<span class="fn">parse</span>(data);
+      <span class="kw">this</span>.nextId = <span class="fn">Math</span>.<span class="fn">max</span>(...<span class="kw">this</span>.todos.<span class="fn">map</span>(t => t.id), <span class="num">0</span>) + <span class="num">1</span>;
+    }
+  }
+}
+
+<span class="com">// Initialize app</span>
+<span class="kw">const</span> app = <span class="kw">new</span> <span class="fn">TodoApp</span>(<span class="str">"todos"</span>);</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add due dates to todos! Extend the Todo interface with `dueDate?: Date` and create a new filter for "overdue" tasks.</span></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — TypeScript Course</span>
+  <div class="nav-btns">
+    <a href="learn-rust.html" class="prev-btn" data-i="prev_btn">← Rust</a>
+    <a href="download.html" class="next-btn" data-i="next_btn">More Courses →</a>
+  </div>
+</div>
+
+<script>
+function runTypeScriptDemo() {
+  const output = document.getElementById('demoOutput');
+  output.textContent = '> Alice is 30 years old';
+  output.classList.add('show');
+}
+
+const T = {
+  en: {
+    back: "Back to Courses", title: "TypeScript — JavaScript with Types",
+    hero_desc: "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. It adds static typing, interfaces, and modern features to catch errors early.",
+    b1: "Static Typing", b2: "Better Tooling", b3: "Modern JS",
+    nav_label: "Topics", nav_intro: "What is TypeScript?", nav_types: "Basic Types",
+    nav_interfaces: "Interfaces", nav_functions: "Functions & Types", nav_classes: "Classes",
+    nav_generics: "Generics", nav_utility: "Utility Types", nav_config: "Configuration",
+    nav_practice: "Project: Todo App",
+    s1_title: "What is TypeScript?", s1_intro: "TypeScript adds static types to JavaScript, catching errors at compile time instead of runtime. It's used by millions of developers for large-scale applications.",
+    c1_t: "🔒 Type Safety", c1_d: "Catch type-related bugs before your code runs. No more 'undefined is not a function' in production.",
+    c2_t: "💡 Better IDE Support", c2_d: "Autocomplete, refactoring, and navigation work perfectly with typed code.",
+    c3_t: "🔄 Compiles to JS", c3_d: "TypeScript code compiles to plain JavaScript that runs anywhere JS runs — browsers, Node.js, Deno.",
+    s2_title: "Basic Types", s2_intro: "TypeScript provides a rich set of primitive and complex types to describe your data.",
+    th_type: "Type", th_ex: "Example", th_desc: "Description",
+    desc_string: "Text values", desc_number: "All numbers (integers and floats)",
+    desc_boolean: "True/false values", desc_array: "List of values",
+    desc_tuple: "Fixed-length array with specific types", desc_enum: "Named constants",
+    desc_any: "Opt-out of type checking (use sparingly)", desc_unknown: "Type-safe alternative to any",
+    desc_void: "No return value", desc_null: "Empty or uninitialized values",
+    s3_title: "Interfaces", s3_intro: "Interfaces define the shape of objects. They're a powerful way to describe contracts in your code.",
+    tip_interface: "Use interfaces for objects that can be extended (open). Use type aliases for unions, tuples, and complex types. Both are powerful — choose what fits.",
+    s4_title: "Functions & Types", s4_intro: "TypeScript lets you define function parameters and return types. You can also create function overloads for multiple call signatures.",
+    s5_title: "Classes & Access Modifiers", s5_intro: "TypeScript adds object-oriented features like public, private, protected, and abstract classes.",
+    s6_title: "Generics", s6_intro: "Generics allow you to create reusable components that work with any type while maintaining type safety.",
+    s7_title: "Utility Types", s7_intro: "TypeScript provides built-in utility types to transform existing types — saving you from writing repetitive code.",
+    s8_title: "Configuration (tsconfig.json)", s8_intro: "The tsconfig.json file controls how TypeScript compiles your code. Here are the most important options.",
+    tip_config: "Start with \"strict\": true — it enables the most useful type checks and will save you from many bugs.",
+    s9_title: "🛠 Project: Type-safe Todo App", s9_intro: "Build a simple todo application with TypeScript. This project combines interfaces, types, and DOM manipulation with full type safety.",
+    challenge: "Add due dates to todos! Extend the Todo interface with `dueDate?: Date` and create a new filter for 'overdue' tasks.",
+    footer_txt: "© 2026 Cody Tech — TypeScript Course", prev_btn: "← Rust", next_btn: "More Courses →",
+  },
+  ru: {
+    back: "Назад к курсам", title: "TypeScript — JavaScript с типами",
+    hero_desc: "TypeScript — это типизированное надмножество JavaScript, которое компилируется в обычный JavaScript. Добавляет статическую типизацию, интерфейсы и современные возможности.",
+    b1: "Статическая типизация", b2: "Улучшенная поддержка IDE", b3: "Современный JS",
+    nav_label: "Темы", nav_intro: "Что такое TypeScript?", nav_types: "Базовые типы",
+    nav_interfaces: "Интерфейсы", nav_functions: "Функции и типы", nav_classes: "Классы",
+    nav_generics: "Дженерики", nav_utility: "Утилитарные типы", nav_config: "Конфигурация",
+    nav_practice: "Проект: Todo приложение",
+    s1_title: "Что такое TypeScript?", s1_intro: "TypeScript добавляет статические типы в JavaScript, отлавливая ошибки на этапе компиляции вместо выполнения.",
+    c1_t: "🔒 Безопасность типов", c1_d: "Ловите ошибки типов до выполнения кода. Больше никаких 'undefined is not a function' в продакшене.",
+    c2_t: "💡 Лучшая поддержка IDE", c2_d: "Автодополнение, рефакторинг и навигация отлично работают с типизированным кодом.",
+    c3_t: "🔄 Компилируется в JS", c3_d: "TypeScript компилируется в обычный JavaScript, который работает везде.",
+    s2_title: "Базовые типы", s2_intro: "TypeScript предоставляет богатый набор примитивных и сложных типов.",
+    th_type: "Тип", th_ex: "Пример", th_desc: "Описание",
+    desc_string: "Текстовые значения", desc_number: "Все числа (целые и дробные)",
+    desc_boolean: "True/false значения", desc_array: "Список значений",
+    desc_tuple: "Массив фиксированной длины с типами", desc_enum: "Именованные константы",
+    desc_any: "Отказ от проверки типов (используйте редко)", desc_unknown: "Безопасная альтернатива any",
+    desc_void: "Нет возвращаемого значения", desc_null: "Пустое или неинициализированное значение",
+    s3_title: "Интерфейсы", s3_intro: "Интерфейсы определяют форму объектов. Мощный способ описывать контракты в коде.",
+    tip_interface: "Используйте интерфейсы для объектов, которые можно расширять. Type alias — для объединений, кортежей и сложных типов.",
+    s4_title: "Функции и типы", s4_intro: "TypeScript позволяет определять типы параметров и возвращаемых значений функций.",
+    s5_title: "Классы и модификаторы доступа", s5_intro: "TypeScript добавляет объектно-ориентированные возможности: public, private, protected, abstract.",
+    s6_title: "Дженерики", s6_intro: "Дженерики позволяют создавать переиспользуемые компоненты, работающие с любыми типами.",
+    s7_title: "Утилитарные типы", s7_intro: "Встроенные утилитарные типы для трансформации существующих типов.",
+    s8_title: "Конфигурация (tsconfig.json)", s8_intro: "Файл tsconfig.json управляет компиляцией TypeScript.",
+    tip_config: "Начните с \"strict\": true — это включает самые полезные проверки типов.",
+    s9_title: "🛠 Проект: Type-safe Todo приложение", s9_intro: "Создайте простое todo-приложение с TypeScript, интерфейсами и типами.",
+    challenge: "Добавьте даты выполнения! Расширьте интерфейс Todo полем `dueDate?: Date` и создайте фильтр 'просроченные'.",
+    footer_txt: "© 2026 Cody Tech — Курс TypeScript", prev_btn: "← Rust", next_btn: "Все курсы →",
+  },
+  kz: {
+    back: "Курстарға оралу", title: "TypeScript — JavaScript типтермен",
+    hero_desc: "TypeScript — JavaScript-тың типтелген наджиыны. Статикалық типтеуді, интерфейстерді және заманауи мүмкіндіктерді қосады.",
+    b1: "Статикалық типтеу", b2: "Жақсырақ IDE қолдауы", b3: "Заманауи JS",
+    nav_label: "Тақырыптар", nav_intro: "TypeScript дегеніміз не?", nav_types: "Негізгі типтер",
+    nav_interfaces: "Интерфейстер", nav_functions: "Функциялар мен типтер", nav_classes: "Класстар",
+    nav_generics: "Дженериктер", nav_utility: "Утилитарлық типтер", nav_config: "Конфигурация",
+    nav_practice: "Жоба: Todo қосымшасы",
+    s1_title: "TypeScript дегеніміз не?", s1_intro: "TypeScript JavaScript-ке статикалық типтерді қосады, қателерді орындау кезінде емес, компиляция кезінде ұстайды.",
+    c1_t: "🔒 Тип қауіпсіздігі", c1_d: "Код іске қосылмай тұрып типтік қателерді ұстаңыз.",
+    c2_t: "💡 Жақсырақ IDE қолдауы", c2_d: "Автотолықтыру, рефакторинг және навигация типтелген кодпен тамаша жұмыс істейді.",
+    c3_t: "🔄 JS-ке компиляция", c3_d: "TypeScript коды кәдімгі JavaScript-ке компиляцияланады.",
+    s2_title: "Негізгі типтер", s2_intro: "TypeScript деректерді сипаттауға арналған бай типтер жиынтығын ұсынады.",
+    th_type: "Тип", th_ex: "Мысал", th_desc: "Сипаттама",
+    desc_string: "Мәтіндік мәндер", desc_number: "Барлық сандар",
+    desc_boolean: "Ақиқат/Жалған мәндер", desc_array: "Мәндер тізімі",
+    desc_tuple: "Белгіленген ұзындықтағы массив", desc_enum: "Атаулы тұрақтылар",
+    desc_any: "Тип тексеруден бас тарту", desc_unknown: "Any-ға қауіпсіз балама",
+    desc_void: "Қайтарылатын мән жоқ", desc_null: "Бос немесе инициализацияланбаған мән",
+    s3_title: "Интерфейстер", s3_intro: "Интерфейстер объектілердің пішінін анықтайды.",
+    tip_interface: "Кеңейтілетін объектілер үшін интерфейстерді қолданыңыз. Біріктірулер, кортеждер және күрделі типтер үшін type alias қолданыңыз.",
+    s4_title: "Функциялар мен типтер", s4_intro: "TypeScript функция параметрлері мен қайтарылатын мәндердің типтерін анықтауға мүмкіндік береді.",
+    s5_title: "Класстар мен қолжеткізу модификаторлары", s5_intro: "TypeScript объектілі-бағытталған мүмкіндіктерді қосады: public, private, protected, abstract.",
+    s6_title: "Дженериктер", s6_intro: "Дженериктер кез келген типпен жұмыс істейтін қайта пайдаланылатын компоненттер жасауға мүмкіндік береді.",
+    s7_title: "Утилитарлық типтер", s7_intro: "TypeScript бар типтерді түрлендіруге арналған кірістірілген утилитарлық типтерді ұсынады.",
+    s8_title: "Конфигурация (tsconfig.json)", s8_intro: "tsconfig.json файлы TypeScript компиляциясын басқарады.",
+    tip_config: "\"strict\": true параметрінен бастаңыз — бұл ең пайдалы тип тексерулерін қосады.",
+    s9_title: "🛠 Жоба: Type-safe Todo қосымшасы", s9_intro: "TypeScript, интерфейстер және типтермен қарапайым todo қосымшасын жасаңыз.",
+    challenge: "Орындау мерзімдерін қосыңыз! Todo интерфейсін `dueDate?: Date` өрісімен кеңейтіп, 'мерзімі өткен' фильтрін жасаңыз.",
+    footer_txt: "© 2026 Cody Tech — TypeScript Курсы", prev_btn: "← Rust", next_btn: "Барлық курстар →",
+  }
+};
+let lang = 'en';
+function setLang(l, btn) {
+  lang = l;
+  document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const t = T[l];
+  document.querySelectorAll('[data-i]').forEach(el => {
+    const k = el.getAttribute('data-i');
+    if (t[k] !== undefined) el.textContent = t[k];
+  });
+  // Also update the page title
+  if (t.title) document.title = t.title + " — Cody Tech";
+}
+let dark = true;
+function toggleTheme() {
+  dark = !dark;
+  document.body.classList.toggle('light', !dark);
+  document.getElementById('themeBtn').textContent = dark ? '🌙' : '☀️';
+}
+const secs = document.querySelectorAll('.learn-section');
+const links = document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  links.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#' + cur); });
+});
+</script>
+</body>
+</html>

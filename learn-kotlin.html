@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotlin — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#A97BFF;
+  --accent2:#B98CFF;
+  --bg:#080808;
+  --bg2:#111;
+  --bg3:#181818;
+  --border:#222;
+  --text:#e8e8e8;
+  --muted:#666;
+  --code-bg:#0d0d0d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(8,8,8,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#777;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#fff;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a2a;background:transparent;
+  color:#777;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a2a;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;--border:#ddd;--text:#111;--muted:#888;--code-bg:#1a1a1a;}
+body.light .top-bar{background:rgba(245,245,245,0.97);}
+body.light .back-a{color:#888;}
+body.light .back-a:hover{color:#111;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .sidebar-link{color:#555;}
+body.light .sidebar-link:hover,.body.light .sidebar-link.active{color:var(--accent);}
+
+.hero-strip{
+  margin-top:56px;
+  padding:48px 32px 36px;
+  background:linear-gradient(135deg,#1a0a2a 0%,#2a1a4a 40%,#0a0a2a 100%);
+  border-bottom:1px solid #5a3a8a;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  font-size:64px;width:88px;height:88px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(169,123,255,.35);
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:28px;color:#fff;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;}
+.hero-info p{color:#999;font-size:14px;max-width:560px;line-height:1.6;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{
+  padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;
+  background:rgba(169,123,255,.15);border:1px solid rgba(169,123,255,.3);color:var(--accent2);
+}
+
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#666;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#151515;color:#ccc;}
+.sidebar-link.active{background:rgba(169,123,255,.1);color:var(--accent);border-left:2px solid var(--accent);padding-left:8px;}
+
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+.code-block{
+  background:var(--code-bg);
+  border:1px solid #1e1e1e;
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:16px 0;
+  overflow-x:auto;
+}
+.code-block pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.75;color:#c9d1d9;
+}
+.code-label{
+  font-size:10px;color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;
+  text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:10px;display:block;
+}
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.concept-card h4{font-size:14px;color:var(--accent2);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+.tip{background:rgba(169,123,255,.06);border:1px solid rgba(169,123,255,.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13px;color:#aaa;}
+.tip strong{color:var(--accent2);}
+.page-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1180px;margin:0 auto;font-size:12px;color:#444;}
+.nav-btns{display:flex;gap:10px;}
+.next-btn{padding:10px 20px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;}
+.next-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.prev-btn{padding:10px 20px;background:transparent;border:1px solid #2a2a2a;border-radius:8px;color:#888;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;text-decoration:none;transition:all .2s;}
+.prev-btn:hover{border-color:var(--accent);color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">Kt</div>
+  <div class="hero-info">
+    <h1 data-i="title">Kotlin — Modern Android Development</h1>
+    <p data-i="hero_desc">Kotlin is a modern, concise, and safe programming language that runs on the JVM. It's the official language for Android development, praised for its expressive syntax and null safety features.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Android Official</span>
+      <span class="badge" data-i="b2">Concise & Safe</span>
+      <span class="badge" data-i="b3">JVM Compatible</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is Kotlin?</a>
+      <a href="#syntax" class="sidebar-link" data-i="nav_syntax">Basic Syntax</a>
+      <a href="#null" class="sidebar-link" data-i="nav_null">Null Safety</a>
+      <a href="#functions" class="sidebar-link" data-i="nav_fns">Functions & Lambdas</a>
+      <a href="#classes" class="sidebar-link" data-i="nav_classes">Classes & Data Classes</a>
+      <a href="#collections" class="sidebar-link" data-i="nav_collections">Collections & Sequences</a>
+      <a href="#coroutines" class="sidebar-link" data-i="nav_coroutines">Coroutines</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Project: Weather App</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is Kotlin?</h2>
+      <p class="intro" data-i="s1_intro">Kotlin is a modern programming language developed by JetBrains. It's fully interoperable with Java, runs on the JVM, and is the preferred language for Android development since 2017. Kotlin combines object-oriented and functional programming features with a clean, expressive syntax.</p>
+      <div class="concept-grid">
+        <div class="concept-card"><h4 data-i="c1_t">📱 Android First</h4><p data-i="c1_d">Official language for Android development. Google provides first-class support with Jetpack Compose.</p></div>
+        <div class="concept-card"><h4 data-i="c2_t">🛡️ Null Safety</h4><p data-i="c2_d">Type system eliminates null pointer exceptions at compile time.</p></div>
+        <div class="concept-card"><h4 data-i="c3_t">✍️ Concise</h4><p data-i="c3_d">Reduces boilerplate code by ~40% compared to Java while being fully interoperable.</p></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="syntax">
+      <h2 data-i="s2_title">Basic Syntax</h2>
+      <p class="intro" data-i="s2_intro">Kotlin syntax is clean and expressive. No semicolons required, type inference, and concise data classes.</p>
+      <div class="code-block">
+        <span class="code-label">hello world</span>
+        <pre><span class="com">// This is a comment</span>
+<span class="kw">fun</span> <span class="at">main</span>() {
+    <span class="com">// Variables</span>
+    <span class="kw">val</span> name = <span class="str">"Alice"</span>  <span class="com">// Immutable (like final in Java)</span>
+    <span class="kw">var</span> age = <span class="num">25</span>        <span class="com">// Mutable</span>
+    
+    <span class="com">// Type inference</span>
+    <span class="kw">val</span> pi: Double = <span class="num">3.14159</span>  <span class="com">// Explicit type</span>
+    <span class="kw">val</span> isActive = <span class="kw">true</span>
+    
+    <span class="com">// String templates</span>
+    println(<span class="str">"Hello, $name! You are $age years old."</span>)
+    
+    <span class="com">// Expression body</span>
+    <span class="kw">fun</span> <span class="at">add</span>(a: Int, b: Int) = a + b
+    
+    <span class="com">// When expression (replaces switch)</span>
+    <span class="kw">val</span> grade = <span class="kw">when</span> (score) {
+        <span class="kw">in</span> <span class="num">90</span>..<span class="num">100</span> -> <span class="str">"A"</span>
+        <span class="kw">in</span> <span class="num">80</span>..<span class="num">89</span> -> <span class="str">"B"</span>
+        <span class="kw">else</span> -> <span class="str">"C"</span>
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="null">
+      <h2 data-i="s3_title">Null Safety</h2>
+      <p class="intro" data-i="s3_intro">Kotlin's type system distinguishes between nullable and non-nullable types, eliminating NullPointerExceptions.</p>
+      <div class="code-block">
+        <span class="code-label">null safety</span>
+        <pre><span class="com">// Non-nullable type (cannot be null)</span>
+<span class="kw">var</span> name: String = <span class="str">"Alice"</span>
+<span class="com">// name = null // Compilation error!</span>
+
+<span class="com">// Nullable type (can be null)</span>
+<span class="kw">var</span> middleName: String? = <span class="str">"Marie"</span>
+middleName = <span class="kw">null</span>  <span class="com">// Allowed</span>
+
+<span class="com">// Safe call operator ?.</span>
+<span class="kw">val</span> length = middleName?.length  <span class="com">// Returns null if middleName is null</span>
+
+<span class="com">// Elvis operator ?: (provide default)</span>
+<span class="kw">val</span> len = middleName?.length ?: <span class="num">0</span>
+
+<span class="com">// Not-null assertion !! (use carefully!)</span>
+<span class="kw">val</span> forcedLen = middleName!!.length  <span class="com">// Throws NPE if null</span>
+
+<span class="com">// Safe casts</span>
+<span class="kw">val</span> obj: Any = <span class="str">"Hello"</span>
+<span class="kw">val</span> str = obj <span class="kw">as?</span> String  <span class="com">// Safe cast, returns null if fails</span>
+
+<span class="com">// let for executing code on non-null values</span>
+middleName?.<span class="kw">let</span> {
+    println(<span class="str">"Middle name is $it"</span>)  <span class="com">// Only executes if not null</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="functions">
+      <h2 data-i="s4_title">Functions & Lambdas</h2>
+      <p class="intro" data-i="s4_intro">Kotlin supports functional programming with lambda expressions, higher-order functions, and extension functions.</p>
+      <div class="code-block">
+        <span class="code-label">functions and lambdas</span>
+        <pre><span class="com">// Default parameters</span>
+<span class="kw">fun</span> <span class="at">greet</span>(name: String, prefix: String = <span class="str">"Hello"</span>) = <span class="str">"$prefix, $name!"</span>
+println(greet(<span class="str">"Alice"</span>))  <span class="com">// "Hello, Alice!"</span>
+println(greet(<span class="str">"Bob"</span>, <span class="str">"Hi"</span>))  <span class="com">// "Hi, Bob!"</span>
+
+<span class="com">// Named arguments</span>
+<span class="kw">fun</span> <span class="at">createUser</span>(name: String, age: Int, city: String) { ... }
+createUser(name = <span class="str">"Alice"</span>, city = <span class="str">"NYC"</span>, age = <span class="num">30</span>)  <span class="com">// Order doesn't matter</span>
+
+<span class="com">// Lambda expression</span>
+<span class="kw">val</span> square: (Int) -> Int = { x -> x * x }
+println(square(<span class="num">5</span>))  <span class="com">// 25</span>
+
+<span class="com">// Higher-order function (function that takes a function)</span>
+<span class="kw">fun</span> <span class="at">repeat</span>(times: Int, action: () -> Unit) {
+    <span class="kw">for</span> (i <span class="kw">in</span> <span class="num">1</span>..times) action()
+}
+repeat(<span class="num">3</span>) { println(<span class="str">"Hello!"</span>) }
+
+<span class="com">// Extension function</span>
+<span class="kw">fun</span> String.reverseWords(): String = <span class="kw">this</span>.split(<span class="str">" "</span>).reversed().joinToString(<span class="str">" "</span>)
+println(<span class="str">"Hello World"</span>.reverseWords())  <span class="com">// "World Hello"</span>
+
+<span class="com">// Infix functions</span>
+<span class="kw">infix fun</span> Int.`**`(power: Int): Int = Math.pow(<span class="kw">this</span>.toDouble(), power.toDouble()).toInt()
+println(<span class="num">2</span> `**` <span class="num">3</span>)  <span class="com">// 8</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="classes">
+      <h2 data-i="s5_title">Classes & Data Classes</h2>
+      <p class="intro" data-i="s5_intro">Kotlin classes are concise. Data classes automatically generate equals, hashCode, toString, and copy methods.</p>
+      <div class="code-block">
+        <span class="code-label">classes</span>
+        <pre><span class="com">// Simple class with primary constructor</span>
+<span class="kw">class</span> <span class="at">Person</span>(<span class="kw">val</span> name: String, <span class="kw">var</span> age: Int) {
+    <span class="com">// Initializer block</span>
+    <span class="kw">init</span> {
+        println(<span class="str">"Created person: $name"</span>)
+    }
+    
+    <span class="com">// Secondary constructor</span>
+    <span class="kw">constructor</span>(name: String) : <span class="kw">this</span>(name, <span class="num">0</span>)
+    
+    <span class="com">// Method</span>
+    <span class="kw">fun</span> <span class="at">greet</span>() = <span class="str">"Hello, I'm $name"</span>
+}
+
+<span class="com">// Data class (auto-generates toString, equals, hashCode, copy)</span>
+<span class="kw">data class</span> <span class="at">User</span>(
+    <span class="kw">val</span> id: Int,
+    <span class="kw">val</span> username: String,
+    <span class="kw">val</span> email: String
+)
+
+<span class="com">// Using data class</span>
+<span class="kw">val</span> user1 = User(<span class="num">1</span>, <span class="str">"alice"</span>, <span class="str">"alice@email.com"</span>)
+<span class="kw">val</span> user2 = user1.copy(username = <span class="str">"alice_new"</span>)  <span class="com">// Copy with changes</span>
+
+<span class="com">// Sealed classes (restricted class hierarchies)</span>
+<span class="kw">sealed class</span> <span class="at">Result</span>&lt;T&gt; {
+    <span class="kw">data class</span> <span class="at">Success</span>&lt;T&gt;(<span class="kw">val</span> data: T) : Result<T>()
+    <span class="kw">data class</span> <span class="at">Error</span>(<span class="kw">val</span> message: String) : Result<Nothing>()
+    <span class="kw">object</span> <span class="at">Loading</span> : Result<Nothing>()
+}
+
+<span class="com">// Object declaration (singleton)</span>
+<span class="kw">object</span> <span class="at">AppConfig</span> {
+    <span class="kw">const</span> <span class="kw">val</span> API_URL = <span class="str">"https://api.example.com"</span>
+    <span class="kw">var</span> debugMode = <span class="kw">false</span>
+}
+
+<span class="com">// Companion object (like static members)</span>
+<span class="kw">class</span> <span class="at">Database</span> {
+    <span class="kw">companion object</span> {
+        <span class="kw">fun</span> <span class="at">getInstance</span>() = <span class="at">Database</span>()
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="collections">
+      <h2 data-i="s6_title">Collections & Sequences</h2>
+      <p class="intro" data-i="s6_intro">Kotlin has a rich collection API with immutable and mutable collections, plus functional operations.</p>
+      <div class="code-block">
+        <span class="code-label">collections</span>
+        <pre><span class="com">// Immutable collections (read-only)</span>
+<span class="kw">val</span> numbers = listOf(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>)
+<span class="kw">val</span> names = setOf(<span class="str">"Alice"</span>, <span class="str">"Bob"</span>, <span class="str">"Charlie"</span>)
+<span class="kw">val</span> scores = mapOf(<span class="str">"Alice"</span> to <span class="num">95</span>, <span class="str">"Bob"</span> to <span class="num">87</span>)
+
+<span class="com">// Mutable collections</span>
+<span class="kw">val</span> mutableNumbers = mutableListOf(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
+mutableNumbers.add(<span class="num">4</span>)
+mutableNumbers.removeAt(<span class="num">0</span>)
+
+<span class="com">// Collection operations</span>
+<span class="kw">val</span> doubled = numbers.map { it * <span class="num">2</span> }  <span class="com">// [2,4,6,8,10]</span>
+<span class="kw">val</span> evens = numbers.filter { it % <span class="num">2</span> == <span class="num">0</span> }  <span class="com">// [2,4]</span>
+<span class="kw">val</span> sum = numbers.reduce { acc, i -> acc + i }  <span class="com">// 15</span>
+<span class="kw">val</span> anyEven = numbers.any { it % <span class="num">2</span> == <span class="num">0</span> }  <span class="com">// true</span>
+<span class="kw">val</span> allPositive = numbers.all { it > <span class="num">0</span> }  <span class="com">// true</span>
+
+<span class="com">// Chaining operations (eager)</span>
+<span class="kw">val</span> result = numbers
+    .filter { it > <span class="num">2</span> }
+    .map { it * it }
+    .take(<span class="num">2</span>)  <span class="com">// [9,16]</span>
+
+<span class="com">// Sequences (lazy evaluation for performance)</span>
+<span class="kw">val</span> lazyResult = numbers.asSequence()
+    .filter { it > <span class="num">2</span> }
+    .map { it * it }
+    .take(<span class="num">2</span>)
+    .toList()  <span class="com">// Executes only when needed</span>
+
+<span class="com">// Group by</span>
+<span class="kw">val</span> people = listOf(<span class="str">"Alice"</span> to <span class="num">25</span>, <span class="str">"Bob"</span> to <span class="num">30</span>, <span class="str">"Charlie"</span> to <span class="num">25</span>)
+<span class="kw">val</span> byAge = people.groupBy { it.second }  <span class="com">// Map: 25->[Alice,Charlie], 30->[Bob]</span>
+
+<span class="com">// Associate by</span>
+<span class="kw">val</span> nameToAge = people.associate { it.first to it.second }  <span class="com">// Map: Alice=25, Bob=30, Charlie=25</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="coroutines">
+      <h2 data-i="s7_title">Coroutines — Asynchronous Programming</h2>
+      <p class="intro" data-i="s7_intro">Coroutines simplify asynchronous programming, making concurrent code easier to write and understand.</p>
+      <div class="code-block">
+        <span class="code-label">coroutines</span>
+        <pre><span class="com">// Add dependency: implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")</span>
+
+<span class="kw">import</span> kotlinx.coroutines.*
+
+<span class="kw">suspend fun</span> <span class="at">fetchUserData</span>(userId: Int): String {
+    delay(<span class="num">1000</span>)  <span class="com">// Simulate network call (non-blocking)</span>
+    <span class="kw">return</span> <span class="str">"User $userId"</span>
+}
+
+<span class="kw">fun main</span>() = runBlocking {  <span class="com">// Creates a coroutine scope</span>
+    println(<span class="str">"Start"</span>)
+    
+    <span class="com">// Launch a coroutine</span>
+    <span class="kw">val</span> job = launch {
+        <span class="kw">val</span> user = fetchUserData(<span class="num">1</span>)
+        println(<span class="str">"Fetched: $user"</span>)
+    }
+    
+    <span class="com">// Async (returns a Deferred)</span>
+    <span class="kw">val</span> deferred = async {
+        fetchUserData(<span class="num">2</span>)
+    }
+    <span class="kw">val</span> result = deferred.await()  <span class="com">// Wait for result</span>
+    
+    <span class="com">// Parallel execution</span>
+    <span class="kw">val</span> users = listOf(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>).map { userId ->
+        async { fetchUserData(userId) }
+    }.awaitAll()
+    
+    println(<span class="str">"All users: $users"</span>)
+    job.join()  <span class="com">// Wait for launch to complete</span>
+}
+
+<span class="com">// Coroutine scope and structured concurrency</span>
+<span class="kw">class</span> <span class="at">UserRepository</span> {
+    <span class="kw">private val</span> scope = CoroutineScope(Dispatchers.IO)
+    
+    <span class="kw">fun</span> <span class="at">fetchUsers</span>() {
+        scope.launch {
+            <span class="kw">val</span> users = fetchUserData(<span class="num">1</span>)
+            withContext(Dispatchers.Main) {
+                <span class="com">// Update UI on main thread</span>
+            }
+        }
+    }
+    
+    <span class="kw">fun</span> <span class="at">cleanup</span>() {
+        scope.cancel()  <span class="com">// Cancels all coroutines in this scope</span>
+    }
+}</pre>
+      </div>
+      <div class="tip"><strong>💡 Android Best Practice:</strong> <span data-i="tip_coroutines">Use `viewModelScope` in ViewModels and `lifecycleScope` in Activities/Fragments for automatic cancellation. Use `Dispatchers.IO` for network/database, `Dispatchers.Main` for UI updates.</span></div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s8_title">🛠 Project: Weather App (Android-style)</h2>
+      <p class="intro" data-i="s8_intro">Build a weather data class with API integration simulation using coroutines and data classes.</p>
+      <div class="code-block">
+        <span class="code-label">WeatherApp.kt</span>
+        <pre><span class="kw">import</span> kotlinx.coroutines.*
+<span class="kw">import</span> kotlinx.coroutines.flow.*
+<span class="kw">import</span> kotlin.random.Random
+
+<span class="com">// Data models</span>
+<span class="kw">data class</span> <span class="at">Weather</span>(
+    <span class="kw">val</span> city: String,
+    <span class="kw">val</span> temperature: Double,
+    <span class="kw">val</span> condition: String,
+    <span class="kw">val</span> humidity: Int,
+    <span class="kw">val</span> windSpeed: Double
+)
+
+<span class="kw">sealed class</span> <span class="at">WeatherState</span> {
+    <span class="kw">object</span> <span class="at">Loading</span> : WeatherState()
+    <span class="kw">data class</span> <span class="at">Success</span>(<span class="kw">val</span> weather: Weather) : WeatherState()
+    <span class="kw">data class</span> <span class="at">Error</span>(<span class="kw">val</span> message: String) : WeatherState()
+}
+
+<span class="com">// Repository with simulated API</span>
+<span class="kw">class</span> <span class="at">WeatherRepository</span> {
+    <span class="kw">private val</span> conditions = listOf(<span class="str">"Sunny"</span>, <span class="str">"Cloudy"</span>, <span class="str">"Rainy"</span>, <span class="str">"Stormy"</span>, <span class="str">"Snowy"</span>)
+    
+    <span class="kw">suspend fun</span> <span class="at">fetchWeather</span>(city: String): Weather = withContext(Dispatchers.IO) {
+        <span class="com">// Simulate network delay</span>
+        delay(<span class="num">1500</span>)
+        
+        <span class="com">// Simulate random weather data</span>
+        <span class="kw">val</span> temp = Random.nextDouble(<span class="num">-10.0</span>, <span class="num">35.0</span>)
+        <span class="kw">val</span> condition = conditions.random()
+        <span class="kw">val</span> humidity = Random.nextInt(<span class="num">20</span>, <span class="num">90</span>)
+        <span class="kw">val</span> windSpeed = Random.nextDouble(<span class="num">0.0</span>, <span class="num">30.0</span>)
+        
+        Weather(city, temp, condition, humidity, windSpeed)
+    }
+    
+    <span class="kw">suspend fun</span> <span class="at">fetchWeatherFlow</span>(city: String): Flow&lt;WeatherState&gt; = flow {
+        emit(WeatherState.Loading)
+        <span class="kw">try</span> {
+            <span class="kw">val</span> weather = fetchWeather(city)
+            emit(WeatherState.Success(weather))
+        } <span class="kw">catch</span> (e: Exception) {
+            emit(WeatherState.Error(e.message ?: <span class="str">"Unknown error"</span>))
+        }
+    }.flowOn(Dispatchers.IO)
+}
+
+<span class="com">// ViewModel (simplified)</span>
+<span class="kw">class</span> <span class="at">WeatherViewModel</span> {
+    <span class="kw">private val</span> repository = WeatherRepository()
+    <span class="kw">private val</span> _weatherState = MutableStateFlow&lt;WeatherState&gt;(WeatherState.Loading)
+    <span class="kw">val</span> weatherState: StateFlow&lt;WeatherState&gt; = _weatherState
+    
+    <span class="kw">private val</span> scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    
+    <span class="kw">fun</span> <span class="at">loadWeather</span>(city: String) {
+        scope.launch {
+            repository.fetchWeatherFlow(city).collect { state ->
+                _weatherState.value = state
+            }
+        }
+    }
+    
+    <span class="kw">fun</span> <span class="at">cleanup</span>() {
+        scope.cancel()
+    }
+}
+
+<span class="com">// Main function to simulate UI</span>
+<span class="kw">suspend fun</span> <span class="at">main</span>() = coroutineScope {
+    <span class="kw">val</span> viewModel = WeatherViewModel()
+    
+    <span class="com">// Collect weather state</span>
+    <span class="kw">val</span> job = launch {
+        viewModel.weatherState.collect { state ->
+            <span class="kw">when</span> (state) {
+                <span class="kw">is</span> WeatherState.Loading -> println(<span class="str">"⏳ Loading weather..."</span>)
+                <span class="kw">is</span> WeatherState.Success -> {
+                    <span class="kw">val</span> w = state.weather
+                    println(<span class="str">"""
+                        |📍 City: ${w.city}
+                        |🌡️ Temperature: ${"%.1f".format(w.temperature)}°C
+                        |☁️ Condition: ${w.condition}
+                        |💧 Humidity: ${w.humidity}%
+                        |💨 Wind: ${"%.1f".format(w.windSpeed)} km/h
+                    """.trimMargin()</span>)
+                }
+                <span class="kw">is</span> WeatherState.Error -> println(<span class="str">"❌ Error: ${state.message}"</span>)
+            }
+        }
+    }
+    
+    <span class="com">// Load weather for different cities</span>
+    viewModel.loadWeather(<span class="str">"Almaty"</span>)
+    delay(<span class="num">2000</span>)
+    viewModel.loadWeather(<span class="str">"Astana"</span>)
+    delay(<span class="num">2000</span>)
+    viewModel.loadWeather(<span class="str">"New York"</span>)
+    delay(<span class="num">3000</span>)
+    
+    job.cancel()
+    viewModel.cleanup()
+}</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Add a real API using Retrofit and Kotlin Flow. Implement search history with Room database. Add temperature unit toggle (Celsius/Fahrenheit).</span></div>
+    </div>
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — Kotlin Course</span>
+  <div class="nav-btns">
+    <a href="learn-sql.html" class="prev-btn" data-i="prev_btn">← SQL</a>
+    <a href="learn-swift.html" class="next-btn" data-i="next_btn">Next: Swift →</a>
+  </div>
+</div>
+
+<script>
+const T = {
+  en:{
+    back:"Back to Courses", title:"Kotlin — Modern Android Development",
+    hero_desc:"Kotlin is a modern, concise, and safe programming language that runs on the JVM. It's the official language for Android development, praised for its expressive syntax and null safety features.",
+    b1:"Android Official", b2:"Concise & Safe", b3:"JVM Compatible",
+    nav_label:"Topics", nav_intro:"What is Kotlin?", nav_syntax:"Basic Syntax",
+    nav_null:"Null Safety", nav_fns:"Functions & Lambdas", nav_classes:"Classes & Data Classes",
+    nav_collections:"Collections & Sequences", nav_coroutines:"Coroutines", nav_practice:"Project: Weather App",
+    s1_title:"What is Kotlin?", s1_intro:"Kotlin is a modern programming language developed by JetBrains. It's fully interoperable with Java, runs on the JVM, and is the preferred language for Android development.",
+    c1_t:"📱 Android First", c1_d:"Official language for Android development with first-class support from Google.",
+    c2_t:"🛡️ Null Safety", c2_d:"Type system eliminates null pointer exceptions at compile time.",
+    c3_t:"✍️ Concise", c3_d:"Reduces boilerplate code by ~40% compared to Java.",
+    s2_title:"Basic Syntax", s2_intro:"Kotlin syntax is clean and expressive. No semicolons required, type inference, and concise data classes.",
+    s3_title:"Null Safety", s3_intro:"Kotlin's type system distinguishes between nullable and non-nullable types, eliminating NullPointerExceptions.",
+    s4_title:"Functions & Lambdas", s4_intro:"Kotlin supports functional programming with lambda expressions, higher-order functions, and extension functions.",
+    s5_title:"Classes & Data Classes", s5_intro:"Kotlin classes are concise. Data classes automatically generate equals, hashCode, toString, and copy methods.",
+    s6_title:"Collections & Sequences", s6_intro:"Kotlin has a rich collection API with immutable and mutable collections, plus functional operations.",
+    s7_title:"Coroutines — Asynchronous Programming", s7_intro:"Coroutines simplify asynchronous programming, making concurrent code easier to write and understand.",
+    tip_coroutines:"Use `viewModelScope` in ViewModels and `lifecycleScope` in Activities/Fragments for automatic cancellation.",
+    s8_title:"🛠 Project: Weather App", s8_intro:"Build a weather data class with API integration simulation using coroutines and data classes.",
+    challenge:"Add a real API using Retrofit and Kotlin Flow. Implement search history with Room database. Add temperature unit toggle.",
+    footer_txt:"© 2026 Cody Tech — Kotlin Course", prev_btn:"← SQL", next_btn:"Next: Swift →",
+  },
+  ru:{
+    back:"Назад к курсам", title:"Kotlin — Современная Android разработка",
+    hero_desc:"Kotlin — современный, лаконичный и безопасный язык программирования, работающий на JVM. Это официальный язык для Android разработки.",
+    b1:"Официальный Android", b2:"Лаконичный", b3:"Совместим с Java",
+    nav_label:"Темы", nav_intro:"Что такое Kotlin?", nav_syntax:"Синтаксис",
+    nav_null:"Null Safety", nav_fns:"Функции и лямбды", nav_classes:"Классы",
+    nav_collections:"Коллекции", nav_coroutines:"Корутины", nav_practice:"Проект: Погода",
+    s1_title:"Что такое Kotlin?", s1_intro:"Kotlin — современный язык от JetBrains. Полностью совместим с Java, работает на JVM, предпочтительный язык для Android.",
+    c1_t:"📱 Android First", c1_d:"Официальный язык Android разработки с поддержкой от Google.",
+    c2_t:"🛡️ Null Safety", c2_d:"Система типов исключает NullPointerException на этапе компиляции.",
+    c3_t:"✍️ Лаконичный", c3_d:"Сокращает шаблонный код на ~40% по сравнению с Java.",
+    s2_title:"Базовый синтаксис", s2_intro:"Синтаксис Kotlin чистый и выразительный. Точки с запятой не нужны, вывод типов, лаконичные data классы.",
+    s3_title:"Null Safety", s3_intro:"Система типов Kotlin различает nullable и non-nullable типы, устраняя NullPointerException.",
+    s4_title:"Функции и лямбды", s4_intro:"Kotlin поддерживает функциональное программирование: лямбды, функции высшего порядка, функции расширения.",
+    s5_title:"Классы", s5_intro:"Классы Kotlin лаконичны. Data классы автоматически генерируют equals, hashCode, toString и copy.",
+    s6_title:"Коллекции", s6_intro:"Kotlin имеет богатый API коллекций с неизменяемыми и изменяемыми коллекциями, плюс функциональные операции.",
+    s7_title:"Корутины", s7_intro:"Корутины упрощают асинхронное программирование, делая конкурентный код проще.",
+    tip_coroutines:"Используйте `viewModelScope` во ViewModels и `lifecycleScope` в Activities/Fragments для автоматической отмены.",
+    s8_title:"🛠 Проект: Приложение Погоды", s8_intro:"Создайте класс погоды с симуляцией API интеграции, используя корутины и data классы.",
+    challenge:"Добавьте реальное API с Retrofit и Kotlin Flow. Реализуйте историю поиска с Room. Добавьте переключение единиц температуры.",
+    footer_txt:"© 2026 Cody Tech — Курс Kotlin", prev_btn:"← SQL", next_btn:"Далее: Swift →",
+  },
+  kz:{
+    back:"Курстарға оралу", title:"Kotlin — Заманауи Android әзірлемесі",
+    hero_desc:"Kotlin — JVM-де жұмыс істейтін заманауи, қысқа және қауіпсіз бағдарламалау тілі. Android әзірлемесінің ресми тілі.",
+    b1:"Android ресми", b2:"Қысқа әрі қауіпсіз", b3:"JVM үйлесімді",
+    nav_label:"Тақырыптар", nav_intro:"Kotlin дегеніміз не?", nav_syntax:"Синтаксис",
+    nav_null:"Null Safety", nav_fns:"Функциялар мен лямбдалар", nav_classes:"Класстар",
+    nav_collections:"Коллекциялар", nav_coroutines:"Корутиндер", nav_practice:"Жоба: Ауа райы",
+    s1_title:"Kotlin дегеніміз не?", s1_intro:"Kotlin — JetBrains әзірлеген заманауи бағдарламалау тілі. Java-мен толық үйлесімді, Android әзірлемесінің ресми тілі.",
+    c1_t:"📱 Android First", c1_d:"Android әзірлемесінің ресми тілі, Google тарапынан қолдау көрсетіледі.",
+    c2_t:"🛡️ Null Safety", c2_d:"Типтер жүйесі NullPointerException қателерін компиляция кезінде жояды.",
+    c3_t:"✍️ Қысқа", c3_d:"Java-мен салыстырғанда шаблонды кодты ~40% қысқартады.",
+    s2_title:"Негізгі синтаксис", s2_intro:"Kotlin синтаксисі таза және мәнерлі. Нүктелі үтір қажет емес, типтерді болжау, қысқа data класстар.",
+    s3_title:"Null Safety", s3_intro:"Kotlin типтер жүйесі nullable және non-nullable типтерді ажыратады, NullPointerException қателерін жояды.",
+    s4_title:"Функциялар мен лямбдалар", s4_intro:"Kotlin функционалды бағдарламалауды қолдайды: лямбдалар, жоғары ретті функциялар, кеңейту функциялары.",
+    s5_title:"Класстар", s5_intro:"Kotlin класстары қысқа. Data класстары equals, hashCode, toString және copy әдістерін автоматты түрде жасайды.",
+    s6_title:"Коллекциялар", s6_intro:"Kotlin-де өзгермейтін және өзгеретін коллекцияларға арналған бай API, сонымен қатар функционалды операциялар бар.",
+    s7_title:"Корутиндер", s7_intro:"Корутиндер асинхронды бағдарламалауды жеңілдетіп, конкурентті кодты жазу мен түсінуді қарапайым етеді.",
+    tip_coroutines:"Автоматты тоқтату үшін ViewModels-те `viewModelScope`, Activities/Fragments-те `lifecycleScope` пайдаланыңыз.",
+    s8_title:"🛠 Жоба: Ауа райы қосымшасы", s8_intro:"Корутиндер мен data класстарды пайдаланып, API интеграциясын симуляциялайтын ауа райы класын жасаңыз.",
+    challenge:"Retrofit және Kotlin Flow арқылы нақты API қосыңыз. Room дерекқорымен іздеу тарихын жасаңыз. Температура бірліктерін ауыстыруды қосыңыз.",
+    footer_txt:"© 2026 Cody Tech — Kotlin Курсы", prev_btn:"← SQL", next_btn:"Келесі: Swift →",
+  }
+};
+let lang='en';
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+}
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.body.classList.toggle('light',!dark);
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+});
+</script>
+</body>
+</html>
