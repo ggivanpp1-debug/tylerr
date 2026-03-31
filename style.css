@@ -1,0 +1,256 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #0f0f0f;
+    color: white;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo-img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+
+/* BUTTONS */
+.btn {
+    padding: 15px 35px;
+    border: none;
+    cursor: pointer;
+    margin-top: 25px;
+    border-radius: 30px;
+    font-size: 16px;
+    position: relative;
+    z-index: 5;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn:active {
+    transform: scale(0.95);
+}
+.neon {
+    background: #1100ff;
+    color: white;
+    box-shadow: 0 0 15px #0077ff, 0 0 30px #0084ff;
+}
+.neon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #0011ff, 0 0 60px #0011ff;
+}
+.large {
+    font-size: 18px;
+}
+
+
+/* NAVBAR */
+
+.navbar {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.navbar a:hover {
+    color: crimson;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+/* HERO */
+
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    background: linear-gradient(to bottom, #000000cc, #000000ee),
+                url("https://algorithmman.com/wp-content/uploads/2024/04/programming-languages.png") center/cover no-repeat;
+}
+
+.hero h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 20px;
+    margin-bottom: 30px;
+    max-width: 600px;
+}
+
+.buttons {
+    display: flex;
+    gap: 20px;
+}
+
+/* BUTTONS */
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.primary {
+    background: crimson;
+    color: white;
+}
+
+.primary:hover {
+    background: darkred;
+}
+
+.secondary {
+    border: 1px solid white;
+    color: white;
+}
+
+.secondary:hover {
+    background: white;
+    color: black;
+}
+
+.big {
+    padding: 15px 40px;
+    font-size: 18px;
+}
+
+/* SECTIONS */
+
+.section {
+    padding: 100px 50px;
+    text-align: center;
+}
+
+.section.dark {
+    background: #1a1a1a;
+}
+
+.grid {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #222;
+    padding: 30px;
+    width: 250px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    background: #2b2b2b;
+}
+
+footer {
+    padding: 30px;
+    text-align: center;
+    background: black;
+    color: gray;
+}
+.btn {
+    padding: 12px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: 0.3s;
+    display: block;
+    margin-top: 20px;
+}
+
+.primary {
+    background: crimson;
+    color: white;
+}
+
+.primary:hover {
+    background: darkred;
+}
+
+.secondary {
+    border: 1px solid white;
+    color: white;
+}
+
+.secondary:hover {
+    background: white;
+    color: black;
+}
+
+.big {
+    padding: 15px 40px;
+    font-size: 18px;
+}
+.section1{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+}
+.section2 {
+    padding: 50px 50px;
+    text-align: left;
+}
+
+.section.dark2 {
+    background: #1a1a1a;
+}
+
+.grid2 {
+    margin-top: 50px;
+    display: flex;
+    justify-content: left;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.card2 {
+    background: #222;
+    padding: 30px;
+    width: 250px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
