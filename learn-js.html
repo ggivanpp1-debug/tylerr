@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript — Cody Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#f0db4f;
+  --accent2:#e8c900;
+  --accentd:#2a2200;
+  --bg:#090908;
+  --bg2:#111108;
+  --bg3:#181810;
+  --border:#222218;
+  --text:#eeeec8;
+  --muted:#666655;
+  --code-bg:#07070500;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;line-height:1.7;}
+
+.top-bar{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 32px;
+  background:rgba(9,9,8,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+.logo-txt{font-weight:800;font-size:16px;color:#fff;letter-spacing:3px;}
+.top-left{display:flex;align-items:center;gap:24px;}
+.back-a{color:#666644;text-decoration:none;font-size:13px;transition:color .2s;}
+.back-a:hover{color:#f0db4f;}
+.top-right{display:flex;gap:6px;align-items:center;}
+.ctrl-btn{
+  padding:4px 10px;border-radius:6px;
+  border:1px solid #2a2a18;background:transparent;
+  color:#666644;cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;transition:all .2s;
+}
+.ctrl-btn:hover,.ctrl-btn.active{background:var(--accent);border-color:var(--accent);color:#111;}
+.theme-btn{padding:4px 8px;border-radius:6px;border:1px solid #2a2a18;background:transparent;cursor:pointer;font-size:14px;}
+body.light{--bg:#fafaf0;--bg2:#f0f0e0;--bg3:#e8e8d0;--border:#e0e0c0;--text:#1a1a00;--muted:#888866;--code-bg:#1a1a08;}
+body.light .top-bar{background:rgba(250,250,240,0.97);}
+body.light .back-a{color:#888866;}body.light .back-a:hover{color:#c8a800;}
+body.light .ctrl-btn{border-color:#ccc;color:#666;}
+body.light .ctrl-btn:hover,.body.light .ctrl-btn.active{color:#111;}
+body.light .sidebar-link{color:#666644;}
+
+.hero-strip{
+  margin-top:56px;padding:48px 32px 36px;
+  background:linear-gradient(135deg,#0a0900 0%,#1a1600 50%,#060500 100%);
+  border-bottom:1px solid #2a2200;
+  display:flex;align-items:center;gap:24px;
+}
+.lang-badge{
+  width:88px;height:88px;
+  background:linear-gradient(135deg,#f0db4f,#e8c900);
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 0 40px rgba(240,219,79,.3);
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:26px;color:#111;
+}
+.hero-info h1{font-size:34px;font-weight:800;margin-bottom:6px;color:#fff;}
+.hero-info p{color:#88885a;font-size:14px;max-width:560px;}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.badge{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(240,219,79,.1);border:1px solid rgba(240,219,79,.25);color:var(--accent2);}
+
+.layout{display:flex;max-width:1180px;margin:0 auto;padding:0 0 80px;}
+.sidebar{width:220px;flex-shrink:0;padding:28px 0 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{margin-bottom:6px;padding:0 18px;}
+.sidebar-label{font-size:10px;color:#333320;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:18px;}
+body.light .sidebar-label{color:#aaa980;}
+.sidebar-link{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:#555544;font-size:13px;transition:all .2s;margin-bottom:1px;}
+.sidebar-link:hover{background:#141408;color:#e0d060;}
+body.light .sidebar-link:hover{background:#e8e8c0;color:#111;}
+.sidebar-link.active{background:rgba(240,219,79,.08);color:var(--accent);border-left:2px solid var(--accent2);padding-left:8px;}
+
+.content{flex:1;padding:36px 40px 0 36px;min-width:0;}
+.learn-section{margin-bottom:56px;}
+.learn-section h2{font-size:22px;font-weight:800;margin-bottom:4px;color:#fff;padding-bottom:12px;border-bottom:1px solid var(--border);}
+body.light .learn-section h2{color:#111100;}
+.learn-section .intro{color:var(--muted);font-size:14px;margin-bottom:20px;margin-top:6px;}
+
+.code-block{
+  background:#050503;
+  border:1px solid #1c1c0e;
+  border-left:3px solid var(--accent2);
+  border-radius:10px;padding:20px 22px;margin:16px 0;overflow-x:auto;
+}
+body.light .code-block{background:#1a1a08;}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;color:#c9c980;}
+.code-label{font-size:10px;color:var(--accent2);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:block;}
+.kw{color:#ff79c6;}.fn{color:#f0db4f;}.str{color:#a8d8a8;}.num{color:#bd93f9;}.com{color:#555544;font-style:italic;}.op{color:#ff9966;}.bool{color:#ffb347;}
+
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.concept-card h4{font-size:14px;color:var(--accent2);margin-bottom:6px;}
+.concept-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+.tip{background:rgba(240,219,79,.05);border:1px solid rgba(240,219,79,.15);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:13px;color:#aaa870;}
+.tip strong{color:var(--accent2);}
+
+/* INTERACTIVE DEMO */
+.demo-area{
+  background:#050503;border:1px solid #1c1c0e;
+  border-radius:12px;overflow:hidden;margin:16px 0;
+}
+body.light .demo-area{background:#1a1a08;}
+.demo-header{
+  padding:10px 16px;background:#0d0d04;
+  border-bottom:1px solid #1c1c0e;
+  display:flex;justify-content:space-between;align-items:center;
+}
+body.light .demo-header{background:#111104;}
+.demo-header span{font-size:11px;color:#555544;font-family:'JetBrains Mono',monospace;}
+.run-btn{
+  padding:5px 14px;background:var(--accent2);border:none;border-radius:6px;
+  color:#111;cursor:pointer;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  transition:all .2s;
+}
+.run-btn:hover{background:var(--accent);transform:scale(1.05);}
+.demo-code{padding:16px 22px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;color:#c9c980;white-space:pre;}
+.demo-output{
+  padding:12px 16px;background:#0a0a02;
+  border-top:1px solid #1c1c0e;
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:#7ee787;min-height:40px;
+  display:none;
+}
+body.light .demo-output{background:#111104;}
+.demo-output.show{display:block;}
+
+.table-style{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px;}
+.table-style th{text-align:left;padding:10px 14px;background:#07070300;color:#444430;font-size:11px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border);}
+body.light .table-style th{background:#e8e8b8;color:#888866;}
+.table-style td{padding:10px 14px;border-bottom:1px solid #111108;color:#c0c090;}
+body.light .table-style td{color:#333310;border-bottom:1px solid #e0e0c0;}
+.table-style tr:hover td{background:#0d0d04;}
+body.light .table-style tr:hover td{background:#e8e8c0;}
+.t-name{color:var(--accent2);font-family:'JetBrains Mono',monospace;font-weight:600;}
+
+.page-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1180px;margin:0 auto;font-size:12px;color:#333320;}
+.nav-btns{display:flex;gap:10px;}
+.next-btn{padding:10px 20px;background:var(--accent2);border:none;border-radius:8px;color:#111;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-decoration:none;transition:all .2s;}
+.next-btn:hover{background:var(--accent);transform:translateY(-1px);}
+.prev-btn{padding:10px 20px;background:transparent;border:1px solid #2a2a18;border-radius:8px;color:#666644;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;text-decoration:none;transition:all .2s;}
+.prev-btn:hover{border-color:var(--accent2);color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-left">
+    <span class="logo-txt">CODY</span>
+    <a href="download.html" class="back-a">← <span data-i="back">Back to Courses</span></a>
+  </div>
+  <div class="top-right">
+    <button class="ctrl-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="ctrl-btn" onclick="setLang('ru',this)">RU</button>
+    <button class="ctrl-btn" onclick="setLang('kz',this)">KZ</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="hero-strip">
+  <div class="lang-badge">JS</div>
+  <div class="hero-info">
+    <h1 data-i="title">JavaScript — The Language of the Web</h1>
+    <p data-i="hero_desc">Make web pages interactive and dynamic. From DOM manipulation to APIs, JavaScript powers everything modern on the web.</p>
+    <div class="badges">
+      <span class="badge" data-i="b1">Interactive Pages</span>
+      <span class="badge" data-i="b2">Most Used Language</span>
+      <span class="badge" data-i="b3">Frontend & Backend</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label" data-i="nav_label">Topics</div>
+      <a href="#intro" class="sidebar-link active" data-i="nav_intro">What is JS?</a>
+      <a href="#variables" class="sidebar-link" data-i="nav_vars">Variables</a>
+      <a href="#types" class="sidebar-link" data-i="nav_types">Data Types</a>
+      <a href="#functions" class="sidebar-link" data-i="nav_fns">Functions</a>
+      <a href="#conditionals" class="sidebar-link" data-i="nav_cond">Conditionals</a>
+      <a href="#loops" class="sidebar-link" data-i="nav_loops">Loops</a>
+      <a href="#arrays" class="sidebar-link" data-i="nav_arr">Arrays & Objects</a>
+      <a href="#dom" class="sidebar-link" data-i="nav_dom">DOM & Events</a>
+      <a href="#practice" class="sidebar-link" data-i="nav_practice">Project: Counter</a>
+    </div>
+  </nav>
+
+  <main class="content">
+
+    <div class="learn-section" id="intro">
+      <h2 data-i="s1_title">What is JavaScript?</h2>
+      <p class="intro" data-i="s1_intro">JavaScript is the programming language of the web. It runs in every browser and makes HTML pages interactive — from form validation to complex apps.</p>
+      <div class="concept-grid">
+        <div class="concept-card"><h4 data-i="c1_t">🖱 Interactivity</h4><p data-i="c1_d">Respond to user clicks, keyboard input, form submissions and mouse events.</p></div>
+        <div class="concept-card"><h4 data-i="c2_t">🌐 DOM Control</h4><p data-i="c2_d">Read and modify HTML and CSS on the fly — add elements, change styles, show/hide content.</p></div>
+        <div class="concept-card"><h4 data-i="c3_t">🔗 APIs</h4><p data-i="c3_d">Fetch data from servers, work with JSON, connect to third-party services.</p></div>
+        <div class="concept-card"><h4 data-i="c4_t">⚙️ Server-side</h4><p data-i="c4_d">With Node.js, JavaScript runs on servers too — full-stack in one language.</p></div>
+      </div>
+      <div class="code-block">
+        <span class="code-label">how to add JS to a page</span>
+        <pre><span class="com">// Method 1: inline &lt;script&gt; tag</span>
+&lt;<span class="kw">script</span>&gt;
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"Hello, world!"</span>);
+&lt;/<span class="kw">script</span>&gt;
+
+<span class="com">// Method 2: external file (preferred)</span>
+&lt;<span class="kw">script</span> <span class="op">src</span>=<span class="str">"script.js"</span>&gt;&lt;/<span class="kw">script</span>&gt;</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="variables">
+      <h2 data-i="s2_title">Variables</h2>
+      <p class="intro" data-i="s2_intro">Variables store data. JavaScript has three ways to declare them — understanding when to use each is essential.</p>
+      <div class="code-block">
+        <span class="code-label">var / let / const</span>
+        <pre><span class="com">// let — can be reassigned</span>
+<span class="kw">let</span> score = <span class="num">0</span>;
+score = <span class="num">10</span>; <span class="com">// ✅ OK</span>
+
+<span class="com">// const — cannot be reassigned</span>
+<span class="kw">const</span> MAX_SCORE = <span class="num">100</span>;
+<span class="com">// MAX_SCORE = 200; ❌ Error!</span>
+
+<span class="com">// var — old way, avoid it</span>
+<span class="kw">var</span> name = <span class="str">"Alice"</span>; <span class="com">// has scoping issues</span></pre>
+      </div>
+      <div class="tip"><strong>💡 Rule of thumb:</strong> <span data-i="tip_vars">Use <code>const</code> by default. Switch to <code>let</code> only when you need to reassign. Never use <code>var</code> in modern code.</span></div>
+    </div>
+
+    <div class="learn-section" id="types">
+      <h2 data-i="s3_title">Data Types</h2>
+      <p class="intro" data-i="s3_intro">JavaScript has several built-in types. Understanding them prevents common bugs.</p>
+      <table class="table-style">
+        <thead><tr><th data-i="th_type">Type</th><th data-i="th_ex">Example</th><th data-i="th_note">Note</th></tr></thead>
+        <tbody>
+          <tr><td class="t-name">String</td><td><code>"Hello"</code> / <code>'World'</code></td><td data-i="type1">Text. Use template literals for interpolation.</td></tr>
+          <tr><td class="t-name">Number</td><td><code>42</code> / <code>3.14</code></td><td data-i="type2">All numbers (int and float) are the same type.</td></tr>
+          <tr><td class="t-name">Boolean</td><td><code>true</code> / <code>false</code></td><td data-i="type3">Yes/No, on/off values.</td></tr>
+          <tr><td class="t-name">Array</td><td><code>[1, 2, 3]</code></td><td data-i="type4">Ordered list of values.</td></tr>
+          <tr><td class="t-name">Object</td><td><code>{ name: "Bob" }</code></td><td data-i="type5">Key-value pairs.</td></tr>
+          <tr><td class="t-name">null</td><td><code>null</code></td><td data-i="type6">Intentionally empty value.</td></tr>
+          <tr><td class="t-name">undefined</td><td><code>undefined</code></td><td data-i="type7">Variable declared but not assigned.</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <span class="code-label">template literals</span>
+        <pre><span class="kw">const</span> name = <span class="str">"Alice"</span>;
+<span class="kw">const</span> age = <span class="num">25</span>;
+
+<span class="com">// Old way:</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"My name is "</span> + name + <span class="str">" and I am "</span> + age);
+
+<span class="com">// Modern: template literal with backticks</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`My name is <span class="op">${name}</span> and I am <span class="op">${age}</span>`</span>);</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="functions">
+      <h2 data-i="s4_title">Functions</h2>
+      <p class="intro" data-i="s4_intro">Functions are reusable blocks of code. JavaScript has several ways to write them — arrow functions are the modern standard.</p>
+      <div class="code-block">
+        <span class="code-label">function types</span>
+        <pre><span class="com">// Function declaration</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name) {
+  <span class="kw">return</span> <span class="str">`Hello, <span class="op">${name}</span>!`</span>;
+}
+
+<span class="com">// Arrow function (modern)</span>
+<span class="kw">const</span> <span class="fn">greet</span> = (name) => <span class="str">`Hello, <span class="op">${name}</span>!`</span>;
+
+<span class="com">// With default parameter</span>
+<span class="kw">const</span> <span class="fn">greet</span> = (name = <span class="str">"World"</span>) => <span class="str">`Hello, <span class="op">${name}</span>!`</span>;
+
+<span class="com">// Call the function</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">greet</span>(<span class="str">"Alice"</span>)); <span class="com">// → "Hello, Alice!"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">greet</span>());        <span class="com">// → "Hello, World!"</span></pre>
+      </div>
+
+      <!-- INTERACTIVE DEMO -->
+      <div class="demo-area">
+        <div class="demo-header">
+          <span>▶ INTERACTIVE — click Run to execute</span>
+          <button class="run-btn" onclick="runDemo1()">▶ Run</button>
+        </div>
+        <div class="demo-code"><span class="kw">const</span> <span class="fn">add</span> = (a, b) => a + b;
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">add</span>(<span class="num">5</span>, <span class="num">3</span>));   <span class="com">// 8</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">add</span>(<span class="num">10</span>, <span class="num">25</span>));  <span class="com">// 35</span></div>
+        <div class="demo-output" id="out1"></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="conditionals">
+      <h2 data-i="s5_title">Conditionals</h2>
+      <p class="intro" data-i="s5_intro">Conditionals let your code make decisions based on values. The if/else statement is the foundation of program logic.</p>
+      <div class="code-block">
+        <span class="code-label">if / else / ternary</span>
+        <pre><span class="kw">const</span> score = <span class="num">72</span>;
+
+<span class="com">// if / else if / else</span>
+<span class="kw">if</span> (score >= <span class="num">90</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"A — Excellent!"</span>);
+} <span class="kw">else if</span> (score >= <span class="num">70</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"B — Good"</span>);
+} <span class="kw">else</span> {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">"C — Keep practicing"</span>);
+}
+
+<span class="com">// Ternary — compact version</span>
+<span class="kw">const</span> result = score >= <span class="num">70</span> ? <span class="str">"Pass"</span> : <span class="str">"Fail"</span>;</pre>
+      </div>
+      <div class="demo-area">
+        <div class="demo-header">
+          <span>▶ INTERACTIVE — check login</span>
+          <button class="run-btn" onclick="runDemo2()">▶ Run</button>
+        </div>
+        <div class="demo-code"><span class="kw">const</span> user = <span class="str">"admin"</span>;
+<span class="kw">const</span> pass = <span class="str">"1234"</span>;
+<span class="kw">const</span> ok = user === <span class="str">"admin"</span> && pass === <span class="str">"1234"</span>;
+<span class="fn">console</span>.<span class="fn">log</span>(ok ? <span class="str">"✅ Logged in!"</span> : <span class="str">"❌ Wrong credentials"</span>);</div>
+        <div class="demo-output" id="out2"></div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="loops">
+      <h2 data-i="s6_title">Loops</h2>
+      <p class="intro" data-i="s6_intro">Loops repeat code. The <code>for</code> loop and <code>forEach</code> method are the ones you'll use most.</p>
+      <div class="code-block">
+        <span class="code-label">loops</span>
+        <pre><span class="com">// Classic for loop</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i < <span class="num">5</span>; i++) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`Step <span class="op">${i + 1}</span>`</span>);
+}
+
+<span class="com">// while loop</span>
+<span class="kw">let</span> count = <span class="num">3</span>;
+<span class="kw">while</span> (count > <span class="num">0</span>) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`Countdown: <span class="op">${count}</span>`</span>);
+  count--;
+}
+
+<span class="com">// forEach on array (most common)</span>
+[<span class="str">"HTML"</span>, <span class="str">"CSS"</span>, <span class="str">"JS"</span>].<span class="fn">forEach</span>(lang => {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`Learning: <span class="op">${lang}</span>`</span>);
+});</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="arrays">
+      <h2 data-i="s7_title">Arrays &amp; Objects</h2>
+      <p class="intro" data-i="s7_intro">Arrays store ordered lists; objects store named properties. Together they model almost any real-world data.</p>
+      <div class="code-block">
+        <span class="code-label">arrays</span>
+        <pre><span class="kw">const</span> skills = [<span class="str">"HTML"</span>, <span class="str">"CSS"</span>, <span class="str">"JavaScript"</span>];
+
+skills.<span class="fn">push</span>(<span class="str">"React"</span>);     <span class="com">// add to end</span>
+skills.<span class="fn">pop</span>();             <span class="com">// remove from end</span>
+skills.<span class="fn">length</span>;           <span class="com">// → 3</span>
+skills[<span class="num">0</span>];               <span class="com">// → "HTML"</span>
+
+<span class="com">// Powerful array methods</span>
+<span class="kw">const</span> upper = skills.<span class="fn">map</span>(s => s.<span class="fn">toUpperCase</span>());
+<span class="kw">const</span> web   = skills.<span class="fn">filter</span>(s => s !== <span class="str">"HTML"</span>);</pre>
+      </div>
+      <div class="code-block">
+        <span class="code-label">objects</span>
+        <pre><span class="kw">const</span> user = {
+  name: <span class="str">"Alice"</span>,
+  age: <span class="num">25</span>,
+  skills: [<span class="str">"HTML"</span>, <span class="str">"CSS"</span>],
+  <span class="fn">greet</span>() { <span class="kw">return</span> <span class="str">`Hi, I'm <span class="op">${<span class="kw">this</span>.name}</span>`</span>; }
+};
+
+<span class="fn">console</span>.<span class="fn">log</span>(user.name);      <span class="com">// → "Alice"</span>
+<span class="fn">console</span>.<span class="fn">log</span>(user[<span class="str">"age"</span>]);   <span class="com">// → 25</span>
+<span class="fn">console</span>.<span class="fn">log</span>(user.<span class="fn">greet</span>()); <span class="com">// → "Hi, I'm Alice"</span></pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="dom">
+      <h2 data-i="s8_title">DOM &amp; Events</h2>
+      <p class="intro" data-i="s8_intro">The DOM (Document Object Model) is JavaScript's view of the HTML page. You can read and change it — and react to user events.</p>
+      <div class="code-block">
+        <span class="code-label">select & modify elements</span>
+        <pre><span class="com">// Select elements</span>
+<span class="kw">const</span> btn   = document.<span class="fn">getElementById</span>(<span class="str">"myBtn"</span>);
+<span class="kw">const</span> title = document.<span class="fn">querySelector</span>(<span class="str">"h1"</span>);
+<span class="kw">const</span> cards = document.<span class="fn">querySelectorAll</span>(<span class="str">".card"</span>);
+
+<span class="com">// Modify content and style</span>
+title.textContent = <span class="str">"New Title"</span>;
+title.style.color  = <span class="str">"crimson"</span>;
+btn.classList.<span class="fn">add</span>(<span class="str">"active"</span>);
+btn.classList.<span class="fn">remove</span>(<span class="str">"hidden"</span>);
+btn.classList.<span class="fn">toggle</span>(<span class="str">"open"</span>);</pre>
+      </div>
+      <div class="code-block">
+        <span class="code-label">event listeners</span>
+        <pre><span class="kw">const</span> btn = document.<span class="fn">getElementById</span>(<span class="str">"myBtn"</span>);
+
+<span class="com">// Listen for a click event</span>
+btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () => {
+  <span class="fn">alert</span>(<span class="str">"Button clicked!"</span>);
+});
+
+<span class="com">// Input event — fires every keypress</span>
+<span class="kw">const</span> input = document.<span class="fn">getElementById</span>(<span class="str">"search"</span>);
+input.<span class="fn">addEventListener</span>(<span class="str">"input"</span>, (e) => {
+  <span class="fn">console</span>.<span class="fn">log</span>(e.target.value);
+});</pre>
+      </div>
+    </div>
+
+    <div class="learn-section" id="practice">
+      <h2 data-i="s9_title">🛠 Project: Interactive Counter</h2>
+      <p class="intro" data-i="s9_intro">Build a click counter that combines HTML, CSS and JavaScript — your first fully interactive web component!</p>
+      <div class="code-block">
+        <span class="code-label">counter.html</span>
+        <pre><span class="com">&lt;!-- HTML --&gt;</span>
+&lt;div <span class="op">id</span>=<span class="str">"app"</span>&gt;
+  &lt;h2 <span class="op">id</span>=<span class="str">"count"</span>&gt;<span class="num">0</span>&lt;/h2&gt;
+  &lt;button <span class="op">onclick</span>=<span class="str">"change(-1)"</span>&gt;−&lt;/button&gt;
+  &lt;button <span class="op">onclick</span>=<span class="str">"change(1)"</span>&gt;+&lt;/button&gt;
+  &lt;button <span class="op">onclick</span>=<span class="str">"reset()"</span>&gt;Reset&lt;/button&gt;
+&lt;/div&gt;
+
+<span class="com">&lt;!-- JavaScript --&gt;</span>
+&lt;<span class="kw">script</span>&gt;
+<span class="kw">let</span> n = <span class="num">0</span>;
+
+<span class="kw">function</span> <span class="fn">change</span>(delta) {
+  n += delta;
+  document.<span class="fn">getElementById</span>(<span class="str">"count"</span>).textContent = n;
+}
+
+<span class="kw">function</span> <span class="fn">reset</span>() {
+  n = <span class="num">0</span>;
+  document.<span class="fn">getElementById</span>(<span class="str">"count"</span>).textContent = n;
+}
+&lt;/<span class="kw">script</span>&gt;</pre>
+      </div>
+      <div class="tip"><strong>🎯 Challenge:</strong> <span data-i="challenge">Make the counter color change: red when negative, green when positive, white at zero. Use JavaScript to update <code>style.color</code> inside the <code>change()</code> function.</span></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="page-footer">
+  <span data-i="footer_txt">© 2026 Cody Tech — JavaScript Course</span>
+  <div class="nav-btns">
+    <a href="learn-css.html" class="prev-btn" data-i="prev_btn">← CSS</a>
+    <a href="download.html" class="next-btn" data-i="next_btn">More Courses →</a>
+  </div>
+</div>
+
+<script>
+function runDemo1(){
+  const add=(a,b)=>a+b;
+  const out=document.getElementById('out1');
+  out.textContent='> '+add(5,3)+'\n> '+add(10,25);
+  out.classList.add('show');
+}
+function runDemo2(){
+  const user='admin',pass='1234';
+  const ok=user==='admin'&&pass==='1234';
+  const out=document.getElementById('out2');
+  out.textContent='> '+(ok?'✅ Logged in!':'❌ Wrong credentials');
+  out.classList.add('show');
+}
+
+const T={
+  en:{
+    back:"Back to Courses",title:"JavaScript — The Language of the Web",
+    hero_desc:"Make web pages interactive and dynamic. From DOM manipulation to APIs, JavaScript powers everything modern on the web.",
+    b1:"Interactive Pages",b2:"Most Used Language",b3:"Frontend & Backend",
+    nav_label:"Topics",nav_intro:"What is JS?",nav_vars:"Variables",nav_types:"Data Types",
+    nav_fns:"Functions",nav_cond:"Conditionals",nav_loops:"Loops",
+    nav_arr:"Arrays & Objects",nav_dom:"DOM & Events",nav_practice:"Project: Counter",
+    s1_title:"What is JavaScript?",s1_intro:"JavaScript is the programming language of the web. It runs in every browser and makes HTML pages interactive.",
+    c1_t:"🖱 Interactivity",c1_d:"Respond to user clicks, keyboard input, form submissions and mouse events.",
+    c2_t:"🌐 DOM Control",c2_d:"Read and modify HTML and CSS on the fly — add elements, change styles.",
+    c3_t:"🔗 APIs",c3_d:"Fetch data from servers, work with JSON, connect to third-party services.",
+    c4_t:"⚙️ Server-side",c4_d:"With Node.js, JavaScript runs on servers too — full-stack in one language.",
+    s2_title:"Variables",s2_intro:"Variables store data. JavaScript has three ways to declare them.",
+    tip_vars:"Use const by default. Switch to let only when you need to reassign. Never use var in modern code.",
+    s3_title:"Data Types",s3_intro:"JavaScript has several built-in types. Understanding them prevents common bugs.",
+    th_type:"Type",th_ex:"Example",th_note:"Note",
+    type1:"Text. Use template literals for interpolation.",type2:"All numbers (int and float) are the same type.",
+    type3:"Yes/No, on/off values.",type4:"Ordered list of values.",type5:"Key-value pairs.",
+    type6:"Intentionally empty value.",type7:"Variable declared but not assigned.",
+    s4_title:"Functions",s4_intro:"Functions are reusable blocks of code. Arrow functions are the modern standard.",
+    s5_title:"Conditionals",s5_intro:"Conditionals let your code make decisions. The if/else statement is the foundation of program logic.",
+    s6_title:"Loops",s6_intro:"Loops repeat code. for and forEach are the ones you'll use most.",
+    s7_title:"Arrays & Objects",s7_intro:"Arrays store ordered lists; objects store named properties. Together they model any real-world data.",
+    s8_title:"DOM & Events",s8_intro:"The DOM is JavaScript's view of the HTML page. You can read, change it and react to user events.",
+    s9_title:"🛠 Project: Interactive Counter",s9_intro:"Build a click counter that combines HTML, CSS and JavaScript — your first fully interactive component!",
+    challenge:"Make the counter color change: red when negative, green when positive, white at zero.",
+    footer_txt:"© 2026 Cody Tech — JavaScript Course",prev_btn:"← CSS",next_btn:"More Courses →",
+  },
+  ru:{
+    back:"Назад к курсам",title:"JavaScript — Язык веба",
+    hero_desc:"Делайте страницы интерактивными. От DOM до API — JavaScript управляет всем современным вебом.",
+    b1:"Интерактивность",b2:"Самый используемый",b3:"Frontend и Backend",
+    nav_label:"Темы",nav_intro:"Что такое JS?",nav_vars:"Переменные",nav_types:"Типы данных",
+    nav_fns:"Функции",nav_cond:"Условия",nav_loops:"Циклы",
+    nav_arr:"Массивы и объекты",nav_dom:"DOM и события",nav_practice:"Проект: Счётчик",
+    s1_title:"Что такое JavaScript?",s1_intro:"JavaScript — язык программирования веба. Работает в каждом браузере и делает HTML-страницы интерактивными.",
+    c1_t:"🖱 Интерактивность",c1_d:"Реакция на клики, клавиатуру, формы и события мыши.",
+    c2_t:"🌐 Управление DOM",c2_d:"Читайте и изменяйте HTML и CSS на лету — добавляйте элементы, меняйте стили.",
+    c3_t:"🔗 API",c3_d:"Получайте данные с серверов, работайте с JSON, подключайтесь к сторонним сервисам.",
+    c4_t:"⚙️ Серверная часть",c4_d:"С Node.js JavaScript работает и на серверах — full-stack на одном языке.",
+    s2_title:"Переменные",s2_intro:"Переменные хранят данные. В JavaScript три способа их объявить.",
+    tip_vars:"Используйте const по умолчанию. Переключайтесь на let только при необходимости переприсвоения. Никогда не используйте var.",
+    s3_title:"Типы данных",s3_intro:"JavaScript имеет несколько встроенных типов. Понимание их предотвращает распространённые ошибки.",
+    th_type:"Тип",th_ex:"Пример",th_note:"Примечание",
+    type1:"Текст. Используйте шаблонные строки для интерполяции.",type2:"Все числа (целые и дробные) — один тип.",
+    type3:"Да/Нет, вкл/выкл.",type4:"Упорядоченный список значений.",type5:"Пары ключ-значение.",
+    type6:"Намеренно пустое значение.",type7:"Переменная объявлена, но не присвоена.",
+    s4_title:"Функции",s4_intro:"Функции — многократно используемые блоки кода. Стрелочные функции — современный стандарт.",
+    s5_title:"Условия",s5_intro:"Условия позволяют коду принимать решения. Оператор if/else — основа логики программы.",
+    s6_title:"Циклы",s6_intro:"Циклы повторяют код. for и forEach — самые часто используемые.",
+    s7_title:"Массивы и объекты",s7_intro:"Массивы хранят упорядоченные списки; объекты — именованные свойства.",
+    s8_title:"DOM и события",s8_intro:"DOM — представление JavaScript об HTML-странице. Можно читать, изменять и реагировать на события.",
+    s9_title:"🛠 Проект: Интерактивный счётчик",s9_intro:"Создайте счётчик кликов, объединяющий HTML, CSS и JavaScript.",
+    challenge:"Измените цвет счётчика: красный при отрицательных, зелёный при положительных, белый при нуле.",
+    footer_txt:"© 2026 Cody Tech — Курс JavaScript",prev_btn:"← CSS",next_btn:"Все курсы →",
+  },
+  kz:{
+    back:"Курстарға оралу",title:"JavaScript — Веб тілі",
+    hero_desc:"Беттерді интерактивті етіңіз. DOM-нан API-ға дейін — JavaScript заманауи вебтің барлығын басқарады.",
+    b1:"Интерактивтілік",b2:"Ең танымал тіл",b3:"Frontend және Backend",
+    nav_label:"Тақырыптар",nav_intro:"JS дегеніміз не?",nav_vars:"Айнымалылар",nav_types:"Деректер түрлері",
+    nav_fns:"Функциялар",nav_cond:"Шарттар",nav_loops:"Циклдер",
+    nav_arr:"Массивтер мен объектілер",nav_dom:"DOM және оқиғалар",nav_practice:"Жоба: Санауыш",
+    s1_title:"JavaScript дегеніміз не?",s1_intro:"JavaScript — веб бағдарламалау тілі. Барлық браузерлерде жұмыс істейді және HTML беттерін интерактивті етеді.",
+    c1_t:"🖱 Интерактивтілік",c1_d:"Шерту, пернетақта, форма жіберу және тышқан оқиғаларына жауап беру.",
+    c2_t:"🌐 DOM басқару",c2_d:"HTML мен CSS-ті «ұшу кезінде» оқыңыз және өзгертіңіз.",
+    c3_t:"🔗 API-лар",c3_d:"Серверлерден деректер алыңыз, JSON-мен жұмыс жасаңыз.",
+    c4_t:"⚙️ Серверлік",c4_d:"Node.js арқылы JavaScript серверлерде де жұмыс істейді.",
+    s2_title:"Айнымалылар",s2_intro:"Айнымалылар деректерді сақтайды. JavaScript-те оларды жариялаудың үш тәсілі бар.",
+    tip_vars:"Әдепкі бойынша const қолданыңыз. Қайта тағайындау қажет болса ғана let-ке ауысыңыз. Ешқашан var қолданбаңыз.",
+    s3_title:"Деректер түрлері",s3_intro:"JavaScript-те бірнеше кірістірілген тіп бар.",
+    th_type:"Тіп",th_ex:"Мысал",th_note:"Ескертпе",
+    type1:"Мәтін. Интерполяция үшін шаблон жолдарын қолданыңыз.",type2:"Барлық сандар (бүтін және бөлшек) — бір тіп.",
+    type3:"Иә/Жоқ мәндері.",type4:"Реттелген мәндер тізімі.",type5:"Кілт-мән жұптары.",
+    type6:"Әдейі бос мән.",type7:"Айнымалы жарияланды, бірақ тағайындалмады.",
+    s4_title:"Функциялар",s4_intro:"Функциялар — қайта қолданылатын код блоктары. Жебелі функциялар — заманауи стандарт.",
+    s5_title:"Шарттар",s5_intro:"Шарттар кодқа шешім қабылдауға мүмкіндік береді.",
+    s6_title:"Циклдер",s6_intro:"Циклдер кодты қайталайды. for пен forEach — ең жиі қолданылатыны.",
+    s7_title:"Массивтер мен объектілер",s7_intro:"Массивтер реттелген тізімдерді сақтайды; объектілер — атаулы қасиеттерді.",
+    s8_title:"DOM және оқиғалар",s8_intro:"DOM — JavaScript-тің HTML бетін көрінісі.",
+    s9_title:"🛠 Жоба: Интерактивті санауыш",s9_intro:"HTML, CSS және JavaScript-ті біріктіретін санауыш жасаңыз.",
+    challenge:"Санауыш түсін өзгертіңіз: теріс — қызыл, оң — жасыл, нөл — ақ.",
+    footer_txt:"© 2026 Cody Tech — JavaScript Курсы",prev_btn:"← CSS",next_btn:"Барлық курстар →",
+  }
+};
+let lang='en';
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+}
+let dark=true;
+function toggleTheme(){
+  dark=!dark;
+  document.body.classList.toggle('light',!dark);
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
+}
+const secs=document.querySelectorAll('.learn-section');
+const links=document.querySelectorAll('.sidebar-link');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+});
+</script>
+</body>
+</html>
