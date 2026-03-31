@@ -59,7 +59,7 @@ h2 {
     color: #00ffff
 }
 .submit-btn {
-background: linear-gradient(90deg, #00ffff, #00ff80);
+background: linear-gradient(90deg, #1100ff, #0077ff);
 border: none;
 padding: 12px 30px;
 border-radius: 25px;
@@ -70,7 +70,7 @@ transition: 0.4s;
 margin-top: 10px;
 }
 .submit-btn:hover {
-background: linear-gradient(90deg, #00ff80, #00ffff);
+background: linear-gradient(90deg, #0084ff, #1100ff);
 }
 .navbar {
     position: fixed;
